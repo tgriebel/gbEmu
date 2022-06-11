@@ -1,0 +1,8 @@
+﻿  tomboyMain.cpp
+  z80.cpp
+  Generating code
+  24 of 195 functions (12.3%) were compiled, the rest were copied from previous compilation.
+    1 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  tomboy.vcxproj -> C:\Users\thoma\source\repos\gbEmu\tomBoy\x64\Release\tomboyCore.exe
