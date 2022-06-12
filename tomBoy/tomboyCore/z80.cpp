@@ -99,8 +99,7 @@ ADDR_MODE_DEF( IM_16 ) {
 }
 
 void CpuZ80::SetAluFlags( const uint16_t value ) {
-	fl = 0;
-	z = CheckZero( value );
+	psw = CheckZero( value );
 }
 
 bool CpuZ80::CheckSign( const uint16_t checkValue ) {

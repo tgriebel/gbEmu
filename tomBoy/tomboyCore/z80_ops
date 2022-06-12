@@ -45,75 +45,175 @@ OP_DEF( STOP ) {
 }
 
 OP_DEF( ADD ) {
-	uint16_t lhsValue, rhsValue;
-	Load<RHS>( o, lhsValue );
-	Load<LHS>( o, rhsValue );
+	uint16_t value;
+	Load<RHS>( o, value );
 
-	const uint16_t result = lhsValue + rhsValue;
-	Store<LHS>( o, result );
-
-	SetAluFlags( result );
+	A = A + value;
+	SetAluFlags( A ); // TODO
 }
 
 OP_DEF( ADD_HL ) {
+	uint16_t value;
+	Load<RHS>( o, value );
+
+	HL = HL + value;
+	SetAluFlags( HL ); // TODO
+}
+
+OP_DEF( ADD_SP ) {
+	uint16_t value;
+	Load<RHS>( o, value );
+
+	SP = SP + value;
+	SetAluFlags( SP ); // TODO
 }
 
 OP_DEF( ADC ) {
+	uint16_t value;
+	Load<RHS>( o, value );
 
+	A = A + value + cy;
+	SetAluFlags( A ); // TODO
 }
 
 OP_DEF( SUB ) {
+	uint16_t value;
+	Load<RHS>( o, value );
 
+	A = A - value;
+	SetAluFlags( A ); // TODO
 }
 
 OP_DEF( SBC ) {
+	uint16_t value;
+	Load<RHS>( o, value );
 
+	A = A - value - cy;
+	SetAluFlags( A ); // TODO
 }
 
 OP_DEF( AND ) {
+	uint16_t value;
+	Load<RHS>( o, value );
 
+	A = A & value;
+
+	z = CheckZero( A );
+	n = 0;
+	hc = 1;
+	cy = 0;
 }
 
 OP_DEF( XOR ) {
-	uint16_t lhsValue, rhsValue;
-	Load<RHS>( o, lhsValue );
-	Load<LHS>( o, rhsValue );
-	const uint16_t result = lhsValue ^ rhsValue;
-	Store<LHS>( o, result );
+	uint16_t value;
+	Load<RHS>( o, value );
 
-	z = CheckZero( result );
+	A = A ^ value;
+	psw = CheckZero( A );
 }
 
 OP_DEF( OR ) {
+	uint16_t value;
+	Load<RHS>( o, value );
 
+	A = A | value;
+	psw = CheckZero( A );
 }
 
 OP_DEF( CP ) {
+	uint16_t value;
+	Load<RHS>( o, value );
 
+	z = CheckZero( A - value );
+	n = 1;
+	//h = 0; // TODO
+	cy = ( value > A ) ? 1 : 0;
 }
 
 OP_DEF( INC ) {
+	uint16_t value;
+	Load<RHS>( o, value );
+	++value;
+	Store<LHS>( o, value );
 
+	z = CheckZero( value );
+	n = 0;
+	//hc = 0; // TODO
 }
 
 OP_DEF( DEC ) {
+	uint16_t value;
+	Load<RHS>( o, value );
+	--value;
+	Store<LHS>( o, value );
 
+	z = CheckZero( value );
+	n = 1;
+	hc = 0;
 }
 
 OP_DEF( RLCA ) {
+	uint16_t value;
+	Load<RHS>( o, value );
 
+	const uint8_t bit7 = value & 0x80;
+	value <<= 1;
+	value = ( value & 0xFE ) | bit7;
+
+	A = value;
+
+	z = 0;
+	n = 0;
+	hc = 0;
+	cy = bit7;
 }
 
 OP_DEF( RRCA ) {
+	uint16_t value;
+	Load<RHS>( o, value );
 
+	const uint8_t bit0 = value & 0x01;
+	value >>= 1;
+	value = ( value & 0x7F ) | ( bit0 << 7 );
+
+	A = value;
+
+	z = 0;
+	n = 0;
+	hc = 0;
+	cy = bit0;
 }
 
 OP_DEF( RRA ) {
+	uint16_t value;
+	Load<RHS>( o, value );
 
+	const uint8_t bit0 = value & 0x01;
+	value >>= 1;
+	value = ( value & 0x7F ) | ( cy << 7 );
+
+	A = value;
+
+	z = 0;
+	n = 0;
+	hc = 0;
+	cy = bit0;
 }
 
 OP_DEF( RLA ) {
+	uint16_t value;
+	Load<RHS>( o, value );
 
+	const uint8_t bit7 = value & 0x80;
+	value <<= 1;
+	value = ( value & 0x7F ) | cy;
+
+	A = value;
+
+	z = 0;
+	n = 0;
+	hc = 0;
+	cy = bit7;
 }
 
 OP_DEF( RST ) {
@@ -129,13 +229,13 @@ OP_DEF( RETI ) {
 }
 
 OP_DEF( JR ) {
-	if ( ( fh & BIT ) == CHK ) {
+	if ( ( psw & BIT ) == CHK ) {
 
 	}
 }
 
 OP_DEF( JP ) {
-	if ( ( fh & BIT ) == CHK ) {
+	if ( ( psw & BIT ) == CHK ) {
 
 	}
 }
@@ -145,11 +245,15 @@ OP_DEF( DAA ) {
 }
 
 OP_DEF( SCF ) {
-
+	n = 0;
+	hc = 0;
+	cy = 1;
 }
 
 OP_DEF( CPL ) {
-
+	A = ~A;
+	n = 1;
+	hc = 1;
 }
 
 OP_DEF( DI ) {
@@ -161,7 +265,7 @@ OP_DEF( EI ) {
 }
 
 OP_DEF( CCF ) {
-
+	cy = ~cy;
 }
 
 OP_DEF( POP ) {
@@ -173,35 +277,112 @@ OP_DEF( PUSH ) {
 }
 
 OP_DEF( CALL ) {
-	if ( ( fl & BIT ) == CHK ) {
+	if ( ( psw & BIT ) == CHK ) {
 
 	}
 }
 
 OP_DEF( BIT ) {
-}
+	uint16_t value;
+	Load<RHS>( o, value );
 
-OP_DEF( RLC ) {
-}
-
-OP_DEF( RRC ) {
+	z = ~( ( value >> BIT ) & 0x01 );
+	n = 0;
+	hc = 1;
 }
 
 OP_DEF( RL ) {
+	uint16_t value;
+	Load<RHS>( o, value );
+
+	const uint8_t bit7 = value & 0x80;
+	value <<= 1;
+	value = ( value & 0xFE ) | cy;
+
+	Store<LHS>( o, value );
+
+	z = CheckZero( value );
+	n = 0;
+	hc = 0;
+	cy = bit7;
+}
+
+OP_DEF( RLC ) {
+	uint16_t value;
+	Load<RHS>( o, value );
+
+	const uint8_t bit7 = value & 0x80;
+	value <<= 1;
+	value = ( value & 0xFE ) | bit7;
+
+	Store<LHS>( o, value );
+
+	z = CheckZero( value );
+	n = 0;
+	hc = 0;
+	cy = bit7;
 }
 
 OP_DEF( RR ) {
+	uint16_t value;
+	Load<RHS>( o, value );
+
+	const uint8_t bit0 = value & 0x01;
+	value >>= 1;
+	value = ( value & 0x7F ) | ( cy << 7 );
+
+	Store<LHS>( o, value );
+
+	z = CheckZero( value );
+	n = 0;
+	hc = 0;
+	cy = bit0;
+}
+
+OP_DEF( RRC ) {
+	uint16_t value;
+	Load<RHS>( o, value );
+
+	const uint8_t bit0 = value & 0x01;
+	value >>= 1;
+	value = ( value & 0x7F ) | ( bit0 << 7 );
+
+	Store<LHS>( o, value );
+
+	z = CheckZero( value );
+	n = 0;
+	hc = 0;
+	cy = bit0;
 }
 
 OP_DEF( SLA ) {
 	uint16_t value;
 	Load<RHS>( o, value );
-	uint8_t bit7 = value & 0x80;
-	value <<= 1;
-	Store<LHS>( o, value & 0xFE );
+	const uint8_t bit7 = value & 0x80;
+	value = ( value << 1 ) & 0xFE;
+	Store<LHS>( o, value );
+
+	z = CheckZero( value );
+	n = 0;
+	hc = 0;
+	cy = bit7;
 }
 
 OP_DEF( SRA ) {
+	uint16_t value;
+	Load<RHS>( o, value );
+
+	const uint8_t bit0 = value & 0x01;
+	const uint8_t bit7 = value & 0x80;
+
+	value >>= 1;
+	value = ( value & 0x7F ) | bit7;
+	Store<LHS>( o, value );
+
+	z = CheckZero( value );
+	n = 0;
+	hc = 0;
+	cy = bit0;
 }
 
 OP_DEF( SWAP ) {
@@ -209,9 +390,22 @@ OP_DEF( SWAP ) {
 	Load<RHS>( o, value );
 	value = ( ( value << 4 ) & 0xF0 ) | ( ( value >> 4 ) & 0x0F );
 	Store<LHS>( o, value );
+
+	psw = CheckZero( value );
 }
 
 OP_DEF( SRL ) {
+	uint16_t value;
+	Load<RHS>( o, value );
+
+	const uint8_t bit0 = value & 0x01;
+	value = ( value >> 1 ) & 0x7F;
+	Store<LHS>( o, value );
+
+	z = CheckZero( value );
+	n = 0;
+	hc = 0;
+	cy = bit0;
 }
 
 OP_DEF( RES ) {
@@ -237,7 +431,7 @@ void BuildOpLUT()
 	OP_ADDR( 0xF3, DI,		NONE,	NONE,	0, 1 )
 	OP_ADDR( 0xFB, EI,		A,		IM_16_A, 2, 4 )
 
-	// Illegal
+	// Illegal instructions
 	OP_ADDR( 0xCB, ILL,		NONE,	NONE,	0, 0 )	
 	OP_ADDR( 0xD3, ILL,		NONE,	NONE,	0, 0 )
 	OP_ADDR( 0xDB, ILL,		NONE,	NONE,	0, 0 )
@@ -382,7 +576,6 @@ void BuildOpLUT()
 	OP_ADDR( 0xD5, PUSH,	SP,		DE,		0, 4 )
 	OP_ADDR( 0xE1, POP,		HL,		NONE,	0, 3 )
 	OP_ADDR( 0xE5, PUSH,	NONE,	HL,		0, 4 )
-	OP_ADDR( 0xE8, ADD,		SP,		IM_8,	1, 4 )
 	OP_ADDR( 0xF1, POP,		AF,		NONE,	0, 3 )
 	OP_ADDR( 0xF5, PUSH,	NONE,	AF,		0, 4 )
 	OP_ADDR( 0xF8, LDI,		NONE,	NONE,	1, 3 )
@@ -402,99 +595,100 @@ void BuildOpLUT()
 	OP_ADDR( 0x27, DAA,		A,		A,		0, 1 )
 	OP_ADDR( 0x2C, INC,		L,		L,		0, 1 )
 	OP_ADDR( 0x2D, DEC,		L,		L,		0, 1 )
-	OP_ADDR( 0x2F, CPL,		A,		A,		0, 1 )
+	OP_ADDR( 0x2F, CPL,		NONE,	NONE,	0, 1 )
 	OP_ADDR( 0x34, INC,		HL_A,	HL_A,	0, 3 )
 	OP_ADDR( 0x35, DEC,		HL_A,	HL_A,	0, 3 )
 	OP_ADDR( 0x37, SCF,		NONE,	NONE,	0, 1 )
 	OP_ADDR( 0x3C, INC,		A,		A,		0, 1 )
 	OP_ADDR( 0x3D, DEC,		A,		A,		0, 1 )
 	OP_ADDR( 0x3F, CCF,		NONE,	NONE,	0, 1 )
-	OP_ADDR( 0x80, ADD,		A,		B,		0, 1 )
-	OP_ADDR( 0x81, ADD,		A,		C,		0, 1 )
-	OP_ADDR( 0x82, ADD,		A,		D,		0, 1 )
-	OP_ADDR( 0x83, ADD,		A,		E,		0, 1 )
-	OP_ADDR( 0x84, ADD,		A,		H,		0, 1 )
-	OP_ADDR( 0x85, ADD,		A,		L,		0, 1 )
-	OP_ADDR( 0x86, ADD,		A,		HL_A,	0, 2 )
-	OP_ADDR( 0x87, ADD,		A,		A,		0, 1 )
-	OP_ADDR( 0x88, ADC,		A,		B,		0, 1 )
-	OP_ADDR( 0x89, ADC,		A,		C,		0, 1 )
-	OP_ADDR( 0x8A, ADC,		A,		D,		0, 1 )
-	OP_ADDR( 0x8B, ADC,		A,		E,		0, 1 )
-	OP_ADDR( 0x8C, ADC,		A,		H,		0, 1 )
-	OP_ADDR( 0x8D, ADC,		A,		L,		0, 1 )
-	OP_ADDR( 0x8E, ADC,		A,		HL_A,	0, 2 )
-	OP_ADDR( 0x8F, ADC,		A,		A,		0, 1 )
-	OP_ADDR( 0x90, SUB,		A,		B,		0, 1 )
-	OP_ADDR( 0x91, SUB,		A,		C,		0, 1 )
-	OP_ADDR( 0x92, SUB,		A,		D,		0, 1 )
-	OP_ADDR( 0x93, SUB,		A,		E,		0, 1 )
-	OP_ADDR( 0x94, SUB,		A,		H,		0, 1 )
-	OP_ADDR( 0x95, SUB,		A,		L,		0, 1 )
-	OP_ADDR( 0x96, SUB,		A,		HL_A,	0, 2 )
-	OP_ADDR( 0x97, SUB,		A,		A,		0, 1 )
-	OP_ADDR( 0x98, SBC,		A,		B,		0, 1 )
-	OP_ADDR( 0x99, SBC,		A,		C,		0, 1 )
-	OP_ADDR( 0x9A, SBC,		A,		D,		0, 1 )
-	OP_ADDR( 0x9B, SBC,		A,		E,		0, 1 )
-	OP_ADDR( 0x9C, SBC,		A,		H,		0, 1 )
-	OP_ADDR( 0x9D, SBC,		A,		L,		0, 1 )
-	OP_ADDR( 0x9E, SBC,		A,		HL_A,	0, 2 )
-	OP_ADDR( 0x9F, SBC,		A,		A,		0, 1 )
-	OP_ADDR( 0xA0, AND,		A,		B,		0, 1 )
-	OP_ADDR( 0xA1, AND,		A,		C,		0, 1 )
-	OP_ADDR( 0xA2, AND,		A,		D,		0, 1 )
-	OP_ADDR( 0xA3, AND,		A,		E,		0, 1 )
-	OP_ADDR( 0xA4, AND,		A,		H,		0, 1 )
-	OP_ADDR( 0xA5, AND,		A,		L,		0, 1 )
-	OP_ADDR( 0xA6, AND,		A,		HL_A,	0, 2 )
-	OP_ADDR( 0xA7, AND,		A,		A,		0, 1 )
-	OP_ADDR( 0xA8, XOR,		A,		B,		0, 1 )
-	OP_ADDR( 0xA9, XOR,		A,		C,		0, 1 )
-	OP_ADDR( 0xAA, XOR,		A,		D,		0, 1 )
-	OP_ADDR( 0xAB, XOR,		A,		E,		0, 1 )
-	OP_ADDR( 0xAC, XOR,		A,		H,		0, 1 )
-	OP_ADDR( 0xAD, XOR,		A,		L,		0, 1 )
-	OP_ADDR( 0xAE, XOR,		A,		HL_A,	0, 2 )
-	OP_ADDR( 0xAF, XOR,		A,		A,		0, 1 )
-	OP_ADDR( 0xB0, OR,		A,		B,		0, 1 )
-	OP_ADDR( 0xB1, OR,		A,		C,		0, 1 )
-	OP_ADDR( 0xB2, OR,		A,		D,		0, 1 )
-	OP_ADDR( 0xB3, OR,		A,		E,		0, 1 )
-	OP_ADDR( 0xB4, OR,		A,		H,		0, 1 )
-	OP_ADDR( 0xB5, OR,		A,		L,		0, 1 )
-	OP_ADDR( 0xB6, OR,		A,		HL_A,	0, 2 )
-	OP_ADDR( 0xB7, OR,		A,		A,		0, 1 )
-	OP_ADDR( 0xB8, CP,		A,		B,		0, 1 )
-	OP_ADDR( 0xB9, CP,		A,		C,		0, 1 )
-	OP_ADDR( 0xBA, CP,		A,		D,		0, 1 )
-	OP_ADDR( 0xBB, CP,		A,		E,		0, 1 )
-	OP_ADDR( 0xBC, CP,		A,		H,		0, 1 )
-	OP_ADDR( 0xBD, CP,		A,		L,		0, 1 )
-	OP_ADDR( 0xBE, CP,		A,		HL_A,	0, 2 )
-	OP_ADDR( 0xBF, CP,		A,		A,		0, 1 )
-	OP_ADDR( 0xC6, AND,		A,		IM_8,	1, 2 )
-	OP_ADDR( 0xCE, ADC,		A,		IM_8,	1, 2 )
-	OP_ADDR( 0xD6, SUB,		A,		IM_8,	1, 2 )
-	OP_ADDR( 0xDE, SBC,		A,		IM_8,	1, 2 )
-	OP_ADDR( 0xE6, AND,		A,		IM_8,	1, 2 )
-	OP_ADDR( 0xEE, XOR,		A,		IM_8,	1, 2 )
-	OP_ADDR( 0xF6, OR,		A,		IM_8,	1, 1 )
-	OP_ADDR( 0xFE, CP,		A,		IM_8,	1, 2 )
+	OP_ADDR( 0x80, ADD,		NONE,	B,		0, 1 )
+	OP_ADDR( 0x81, ADD,		NONE,	C,		0, 1 )
+	OP_ADDR( 0x82, ADD,		NONE,	D,		0, 1 )
+	OP_ADDR( 0x83, ADD,		NONE,	E,		0, 1 )
+	OP_ADDR( 0x84, ADD,		NONE,	H,		0, 1 )
+	OP_ADDR( 0x85, ADD,		NONE,	L,		0, 1 )
+	OP_ADDR( 0x86, ADD,		NONE,	HL_A,	0, 2 )
+	OP_ADDR( 0x87, ADD,		NONE,	A,		0, 1 )
+	OP_ADDR( 0x88, ADC,		NONE,	B,		0, 1 )
+	OP_ADDR( 0x89, ADC,		NONE,	C,		0, 1 )
+	OP_ADDR( 0x8A, ADC,		NONE,	D,		0, 1 )
+	OP_ADDR( 0x8B, ADC,		NONE,	E,		0, 1 )
+	OP_ADDR( 0x8C, ADC,		NONE,	H,		0, 1 )
+	OP_ADDR( 0x8D, ADC,		NONE,	L,		0, 1 )
+	OP_ADDR( 0x8E, ADC,		NONE,	HL_A,	0, 2 )
+	OP_ADDR( 0x8F, ADC,		NONE,	A,		0, 1 )
+	OP_ADDR( 0x90, SUB,		NONE,	B,		0, 1 )
+	OP_ADDR( 0x91, SUB,		NONE,	C,		0, 1 )
+	OP_ADDR( 0x92, SUB,		NONE,	D,		0, 1 )
+	OP_ADDR( 0x93, SUB,		NONE,	E,		0, 1 )
+	OP_ADDR( 0x94, SUB,		NONE,	H,		0, 1 )
+	OP_ADDR( 0x95, SUB,		NONE,	L,		0, 1 )
+	OP_ADDR( 0x96, SUB,		NONE,	HL_A,	0, 2 )
+	OP_ADDR( 0x97, SUB,		NONE,	A,		0, 1 )
+	OP_ADDR( 0x98, SBC,		NONE,	B,		0, 1 )
+	OP_ADDR( 0x99, SBC,		NONE,	C,		0, 1 )
+	OP_ADDR( 0x9A, SBC,		NONE,	D,		0, 1 )
+	OP_ADDR( 0x9B, SBC,		NONE,	E,		0, 1 )
+	OP_ADDR( 0x9C, SBC,		NONE,	H,		0, 1 )
+	OP_ADDR( 0x9D, SBC,		NONE,	L,		0, 1 )
+	OP_ADDR( 0x9E, SBC,		NONE,	HL_A,	0, 2 )
+	OP_ADDR( 0x9F, SBC,		NONE,	A,		0, 1 )
+	OP_ADDR( 0xA0, AND,		NONE,	B,		0, 1 )
+	OP_ADDR( 0xA1, AND,		NONE,	C,		0, 1 )
+	OP_ADDR( 0xA2, AND,		NONE,	D,		0, 1 )
+	OP_ADDR( 0xA3, AND,		NONE,	E,		0, 1 )
+	OP_ADDR( 0xA4, AND,		NONE,	H,		0, 1 )
+	OP_ADDR( 0xA5, AND,		NONE,	L,		0, 1 )
+	OP_ADDR( 0xA6, AND,		NONE,	HL_A,	0, 2 )
+	OP_ADDR( 0xA7, AND,		NONE,	A,		0, 1 )
+	OP_ADDR( 0xA8, XOR,		NONE,	B,		0, 1 )
+	OP_ADDR( 0xA9, XOR,		NONE,	C,		0, 1 )
+	OP_ADDR( 0xAA, XOR,		NONE,	D,		0, 1 )
+	OP_ADDR( 0xAB, XOR,		NONE,	E,		0, 1 )
+	OP_ADDR( 0xAC, XOR,		NONE,	H,		0, 1 )
+	OP_ADDR( 0xAD, XOR,		NONE,	L,		0, 1 )
+	OP_ADDR( 0xAE, XOR,		NONE,	HL_A,	0, 2 )
+	OP_ADDR( 0xAF, XOR,		NONE,	A,		0, 1 )
+	OP_ADDR( 0xB0, OR,		NONE,	B,		0, 1 )
+	OP_ADDR( 0xB1, OR,		NONE,	C,		0, 1 )
+	OP_ADDR( 0xB2, OR,		NONE,	D,		0, 1 )
+	OP_ADDR( 0xB3, OR,		NONE,	E,		0, 1 )
+	OP_ADDR( 0xB4, OR,		NONE,	H,		0, 1 )
+	OP_ADDR( 0xB5, OR,		NONE,	L,		0, 1 )
+	OP_ADDR( 0xB6, OR,		NONE,	HL_A,	0, 2 )
+	OP_ADDR( 0xB7, OR,		NONE,	A,		0, 1 )
+	OP_ADDR( 0xB8, CP,		NONE,	B,		0, 1 )
+	OP_ADDR( 0xB9, CP,		NONE,	C,		0, 1 )
+	OP_ADDR( 0xBA, CP,		NONE,	D,		0, 1 )
+	OP_ADDR( 0xBB, CP,		NONE,	E,		0, 1 )
+	OP_ADDR( 0xBC, CP,		NONE,	H,		0, 1 )
+	OP_ADDR( 0xBD, CP,		NONE,	L,		0, 1 )
+	OP_ADDR( 0xBE, CP,		NONE,	HL_A,	0, 2 )
+	OP_ADDR( 0xBF, CP,		NONE,	A,		0, 1 )
+	OP_ADDR( 0xC6, AND,		NONE,	IM_8,	1, 2 )
+	OP_ADDR( 0xCE, ADC,		NONE,	IM_8,	1, 2 )
+	OP_ADDR( 0xD6, SUB,		NONE,	IM_8,	1, 2 )
+	OP_ADDR( 0xDE, SBC,		NONE,	IM_8,	1, 2 )
+	OP_ADDR( 0xE6, AND,		NONE,	IM_8,	1, 2 )
+	OP_ADDR( 0xEE, XOR,		NONE,	IM_8,	1, 2 )
+	OP_ADDR( 0xF6, OR,		NONE,	IM_8,	1, 1 )
+	OP_ADDR( 0xFE, CP,		NONE,	IM_8,	1, 2 )
 
 	// 16bit ALU instructions
 	OP_ADDR( 0x03, INC,		BC,		BC,		0, 2 )		
-	OP_ADDR( 0x09, ADD,		HL,		BC,		0, 2 )	
+	OP_ADDR( 0x09, ADD_HL,	NONE,	BC,		0, 2 )
 	OP_ADDR( 0x0B, DEC,		BC,		BC,		0, 2 )		
 	OP_ADDR( 0x13, INC,		DE,		DE,		0, 2 )
-	OP_ADDR( 0x19, ADD,		HL,		DE,		0, 2 )
+	OP_ADDR( 0x19, ADD_HL,	NONE,	DE,		0, 2 )
 	OP_ADDR( 0x1B, DEC,		DE,		DE,		0, 2 )	
 	OP_ADDR( 0x23, INC,		HL,		HL,		0, 2 )	
-	OP_ADDR( 0x29, ADD,		HL,		HL,		0, 2 )
+	OP_ADDR( 0x29, ADD_HL,	NONE,	HL,		0, 2 )
 	OP_ADDR( 0x2B, DEC,		HL,		HL,		0, 2 )
 	OP_ADDR( 0x33, INC,		SP,		SP,		0, 2 )
-	OP_ADDR( 0x39, ADD,		HL,		SP,		0, 2 )
+	OP_ADDR( 0x39, ADD_HL,	NONE,	SP,		0, 2 )
 	OP_ADDR( 0x3B, DEC,		SP,		SP,		0, 2 )
+	OP_ADDR( 0xE8, ADD_SP,	NONE,	IM_8,	1, 4 )
 
 	// 8bit rotations/shift instructions
 	OP_ADDR( 0x07, RLCA,	A,		A,		0, 1 )

@@ -10,7 +10,7 @@ enum class opType_t : uint8_t
 {
 	NOP, ILL, STOP, HALT,
 	LD, LDI, LD_INC, LD_DEC,
-	INC, DEC, ADD, ADD_HL, ADC, SUB, SBC, DAA, CPL,
+	INC, DEC, ADD, ADD_HL, ADD_SP, ADC, SUB, SBC, DAA, CPL,
 	OR, XOR, AND, BIT, RES, SET, SWAP,
 	RLC, RRC, RR, RL, SLA, SRA, SRL, RLA, RRA, RLCA, RRCA,
 	JP, JR, CALL, RST, RET, RETI,
@@ -152,7 +152,7 @@ union u32i32 {
 															opLUT[num].func			= &CpuZ80::##name<ADDR(lhs),ADDR(rhs), bit, chk >; \
 														}
 
-#define OP_ADDR( num, name, rhs, lhs, ops, cycles )			_OP_ADDR( num, name, lhs, rhs, ops, ops, cycles, 0, 0 )
+#define OP_ADDR( num, name, lhs, rhs, ops, cycles )			_OP_ADDR( num, name, lhs, rhs, ops, ops, cycles, 0, 0 )
 #define OP_JUMP( num, name, lhs, ops, cycles, bit, chk )	_OP_ADDR( num, name, lhs, NONE, ops, ops, cycles, bit, chk )
 #define OP_BIT( num, name, rhs, bit, cycles )				_OP_ADDR( num + 0xFF, name, rhs, rhs, 0, 0, cycles, bit, 0 )
 
@@ -170,8 +170,8 @@ public:
 			uint8_t cy	: 1; // Carry
 		};
 		struct {
-			uint8_t fl	: 4; // F lower
-			uint8_t fh	: 4; // F higher
+			uint8_t FLow	: 4; // F lower
+			uint8_t psw		: 4; // F higher
 		};
 		struct {
 			uint8_t F;
