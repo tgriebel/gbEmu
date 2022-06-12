@@ -98,13 +98,34 @@ ADDR_MODE_DEF( IM_16 ) {
 	addr = o.op;
 }
 
-void CpuZ80::AdvancePC( const uint16_t places )
+void CpuZ80::SetAluFlags( const uint16_t value ) {
+	fl = 0;
+	z = CheckZero( value );
+}
+
+bool CpuZ80::CheckSign( const uint16_t checkValue ) {
+	return ( checkValue & 0x0080 );
+}
+
+bool CpuZ80::CheckCarry( const uint16_t checkValue ) {
+	return ( checkValue > 0x00ff );
+}
+
+bool CpuZ80::CheckZero( const uint16_t checkValue ) {
+	return ( checkValue == 0 );
+}
+
+bool CpuZ80::CheckOverflow( const uint16_t src, const uint16_t temp, const uint8_t finalValue )
 {
+	const uint8_t signedBound = 0x80;
+	return CheckSign( finalValue ^ src ) && CheckSign( temp ^ src ) && !CheckCarry( temp );
+}
+
+void CpuZ80::AdvancePC( const uint16_t places ) {
 	PC += places;
 }
 
-uint8_t CpuZ80::ReadOperand( const uint16_t offset ) const
-{
+uint8_t CpuZ80::ReadOperand( const uint16_t offset ) const {
 	return system->ReadMemory( PC + offset );
 }
 

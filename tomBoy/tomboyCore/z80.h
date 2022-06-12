@@ -8,14 +8,14 @@ class GameboySystem;
 
 enum class opType_t : uint8_t
 {
-	NOP, ILL,
+	NOP, ILL, STOP, HALT,
 	LD, LDI, LD_INC, LD_DEC,
-	INC, DEC, ADD, ADC, SUB, SBC,
-	OR, XOR, AND, BIT, RES, SET,
-	RLC, RRC, RR, RL, SLA, SRA, DA, RLA, SRL, RLCA, RRCA,
-	HALT, JP, JR, CALL,
-	PUSH, POP, DI, EI, RST, RET, RETI, 
-	STOP, SWAP, CP, CPL, CCF, DDA, SCF
+	INC, DEC, ADD, ADD_HL, ADC, SUB, SBC, DAA, CPL,
+	OR, XOR, AND, BIT, RES, SET, SWAP,
+	RLC, RRC, RR, RL, SLA, SRA, SRL, RLA, RRA, RLCA, RRCA,
+	JP, JR, CALL, RST, RET, RETI,
+	PUSH, POP,
+	DI, EI, SCF, CCF, CP,
 };
 
 enum class addrMode_t : uint8_t
@@ -45,7 +45,8 @@ enum class addrMode_t : uint8_t
 	IM_16,
 };
 
-enum regIndex {
+enum regIndex_t 
+{
 	A_IX = 0,
 	F_IX = 1,
 	C_IX = 2,
@@ -62,7 +63,18 @@ enum regIndex {
 	PC_IX = 5,
 };
 
-enum addrType_t {
+enum statusBit_t
+{
+	STATUS_NONE			= 0x00,
+	STATUS_ALL			= 0x0F,
+	STATUS_ZERO			= ( 1 << 0 ),
+	STATUS_SUBRACTION	= ( 1 << 1 ),
+	STATUS_HALF_CARRY	= ( 1 << 2 ),
+	STATUS_CARRY		= ( 1 << 3 ),
+};
+
+enum addrType_t
+{
 	UNSPECIFIED = 0,
 	REGISTER_8 = 1,
 	REGISTER_16 = 2,
@@ -112,7 +124,7 @@ union u32i32 {
 	int8_t	i32;
 };
 
-#define OP_DEF( name )									template <class LHS, class RHS, size_t BIT >							\
+#define OP_DEF( name )									template <class LHS, class RHS, size_t BIT, size_t CHK >				\
 														void name( opState_t& o )
 
 #define ADDR_MODE_DECL( name, addrType )				struct addrMode##name													\
@@ -128,7 +140,7 @@ union u32i32 {
 
 #define ADDR( name )									CpuZ80::addrMode##name
 
-#define _OP_ADDR( num, name, lhs, rhs, ops, advance, cycles, bit )																	\
+#define _OP_ADDR( num, name, lhs, rhs, ops, advance, cycles, bit, chk )															\
 														{																		\
 															opLUT[num].mnemonic		= #name;									\
 															opLUT[num].type			= opType_t::##name;							\
@@ -137,11 +149,12 @@ union u32i32 {
 															opLUT[num].pcInc		= advance;									\
 															opLUT[num].lhsMode		= addrMode_t::##lhs;						\
 															opLUT[num].rhsMode		= addrMode_t::##rhs;						\
-															opLUT[num].func			= &CpuZ80::##name<ADDR(lhs),ADDR(rhs), bit>;\
+															opLUT[num].func			= &CpuZ80::##name<ADDR(lhs),ADDR(rhs), bit, chk >; \
 														}
 
-#define OP_ADDR( num, name, lhs, rhs, ops, cycles )		_OP_ADDR( num, name, lhs, rhs, ops, ops, cycles, 0 )
-#define OP_BIT( num, name, rhs, bit, cycles )			_OP_ADDR( num + 0xFF, name, rhs, rhs, 0, 0, cycles, bit )
+#define OP_ADDR( num, name, rhs, lhs, ops, cycles )			_OP_ADDR( num, name, lhs, rhs, ops, ops, cycles, 0, 0 )
+#define OP_JUMP( num, name, lhs, ops, cycles, bit, chk )	_OP_ADDR( num, name, lhs, NONE, ops, ops, cycles, bit, chk )
+#define OP_BIT( num, name, rhs, bit, cycles )				_OP_ADDR( num + 0xFF, name, rhs, rhs, 0, 0, cycles, bit, 0 )
 
 class CpuZ80
 {
@@ -149,6 +162,17 @@ public:
 	static const uint32_t NumInstructions = 512;
 
 	union {
+		struct {
+			uint8_t unused : 4;
+			uint8_t z	: 1; // Zero
+			uint8_t n	: 1; // Substration
+			uint8_t hc	: 1; // Half carry
+			uint8_t cy	: 1; // Carry
+		};
+		struct {
+			uint8_t fl	: 4; // F lower
+			uint8_t fh	: 4; // F higher
+		};
 		struct {
 			uint8_t F;
 			uint8_t A;
@@ -185,16 +209,6 @@ public:
 	uint8_t memory[ 1024 * 16 ];
 	GameboySystem* system;
 
-	union {
-		struct {
-			uint8_t Z : 1;
-			uint8_t N : 1;
-			uint8_t H : 1;
-			uint8_t C : 1;
-		};
-		uint16_t flags;
-	};
-
 	opInfo_t opLUT[ NumInstructions ];
 
 	CpuZ80() {
@@ -228,6 +242,12 @@ public:
 			value = memory[ addr ];
 		}
 	}
+
+	void		SetAluFlags( const uint16_t value );
+	bool		CheckSign( const uint16_t checkValue );
+	bool		CheckCarry( const uint16_t checkValue );
+	bool		CheckZero( const uint16_t checkValue );
+	bool		CheckOverflow( const uint16_t src, const uint16_t temp, const uint8_t finalValue );
 
 	uint8_t		ReadOperand( const uint16_t offset ) const;
 	void		AdvancePC( const uint16_t places );
