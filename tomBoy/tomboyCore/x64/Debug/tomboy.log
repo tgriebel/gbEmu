@@ -1,2 +1,20 @@
 ﻿  tomboyMain.cpp
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(161,6): warning C4244: '=': conversion from 'uint16_t' to 'uint8_t', possible loss of data
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(695): message : see reference to function template instantiation 'void CpuZ80::RLCA<CpuZ80::addrModeA,CpuZ80::addrModeA,0,0>(opState_t &)' being compiled
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(177,6): warning C4244: '=': conversion from 'uint16_t' to 'uint8_t', possible loss of data
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(696): message : see reference to function template instantiation 'void CpuZ80::RRCA<CpuZ80::addrModeA,CpuZ80::addrModeA,0,0>(opState_t &)' being compiled
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(209,6): warning C4244: '=': conversion from 'uint16_t' to 'uint8_t', possible loss of data
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(697): message : see reference to function template instantiation 'void CpuZ80::RLA<CpuZ80::addrModeA,CpuZ80::addrModeA,0,0>(opState_t &)' being compiled
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(193,6): warning C4244: '=': conversion from 'uint16_t' to 'uint8_t', possible loss of data
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(698): message : see reference to function template instantiation 'void CpuZ80::RRA<CpuZ80::addrModeA,CpuZ80::addrModeA,0,0>(opState_t &)' being compiled
+  z80.cpp
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(161,6): warning C4244: '=': conversion from 'uint16_t' to 'uint8_t', possible loss of data
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(695): message : see reference to function template instantiation 'void CpuZ80::RLCA<CpuZ80::addrModeA,CpuZ80::addrModeA,0,0>(opState_t &)' being compiled
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(177,6): warning C4244: '=': conversion from 'uint16_t' to 'uint8_t', possible loss of data
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(696): message : see reference to function template instantiation 'void CpuZ80::RRCA<CpuZ80::addrModeA,CpuZ80::addrModeA,0,0>(opState_t &)' being compiled
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(209,6): warning C4244: '=': conversion from 'uint16_t' to 'uint8_t', possible loss of data
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(697): message : see reference to function template instantiation 'void CpuZ80::RLA<CpuZ80::addrModeA,CpuZ80::addrModeA,0,0>(opState_t &)' being compiled
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(193,6): warning C4244: '=': conversion from 'uint16_t' to 'uint8_t', possible loss of data
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(698): message : see reference to function template instantiation 'void CpuZ80::RRA<CpuZ80::addrModeA,CpuZ80::addrModeA,0,0>(opState_t &)' being compiled
+  Generating Code...
   tomboy.vcxproj -> C:\Users\thoma\source\repos\gbEmu\tomBoy\x64\Debug\tomboyCore.exe

@@ -31,9 +31,7 @@ OP_DEF( LD_DEC ) {
 }
 
 OP_DEF( LDI ) {
-	u8i8 value;
-	value.u8 = o.op0;
-	HL = SP + value.i8;
+	HL = SP + u8i8( o.op0 ).i8;
 }
 
 OP_DEF( HALT ) {
@@ -64,7 +62,7 @@ OP_DEF( ADD_SP ) {
 	uint16_t value;
 	Load<RHS>( o, value );
 
-	SP = SP + value;
+	SP = SP + u8i8( (uint8_t)value ).i8;
 	SetAluFlags( SP ); // TODO
 }
 
@@ -230,14 +228,17 @@ OP_DEF( RETI ) {
 
 OP_DEF( JR ) {
 	if ( ( psw & BIT ) == CHK ) {
-
+		uint16_t value;
+		Load<RHS>( o, value );
+		PC += u8i8( (uint8_t)value ).i8;
+		o.opCycles += 1;
 	}
 }
 
 OP_DEF( JP ) {
-	if ( ( psw & BIT ) == CHK ) {
-
-	}
+	uint16_t value;
+	Load<RHS>( o, value );
+	PC = value;
 }
 
 OP_DEF( DAA ) {
@@ -257,11 +258,11 @@ OP_DEF( CPL ) {
 }
 
 OP_DEF( DI ) {
-
+	ime = false;
 }
 
 OP_DEF( EI ) {
-
+	ime = true;
 }
 
 OP_DEF( CCF ) {
@@ -269,11 +270,13 @@ OP_DEF( CCF ) {
 }
 
 OP_DEF( POP ) {
-
+	Store<LHS>( PopWord( value ) );
 }
 
 OP_DEF( PUSH ) {
-
+	uint16_t value;
+	Load<RHS>( o, value );
+	PushWord( value );
 }
 
 OP_DEF( CALL ) {
@@ -446,11 +449,11 @@ void BuildOpLUT()
 	OP_ADDR( 0xFD, ILL,		NONE,	NONE,	0, 0 )
 
 	// Jump/call instructions
-	OP_JUMP( 0x18, JR,		IM_8,	2, 3, STATUS_NONE, 0 )
+	OP_JUMP( 0x18, JR,		IM_8,	2, 3, STATUS_NONE, STATUS_NONE )
 	OP_JUMP( 0x20, JR,		IM_8,	1, 2, STATUS_ZERO, 0 )
-	OP_JUMP( 0x28, JR,		IM_8,	2, 2, STATUS_ZERO, 1 )
+	OP_JUMP( 0x28, JR,		IM_8,	2, 2, STATUS_ZERO, STATUS_ZERO )
 	OP_JUMP( 0x30, JR,		IM_8,	1, 2, STATUS_CARRY, 0 )
-	OP_JUMP( 0x38, JR,		IM_8,	2, 2, STATUS_CARRY, 1 )
+	OP_JUMP( 0x38, JR,		IM_8,	2, 2, STATUS_CARRY, STATUS_CARRY )
 	OP_ADDR( 0xC2, JP,		PC,		IM_16,	2, 3 )
 	OP_ADDR( 0xC3, JP,		PC,		IM_16,	0, 4 )
 	OP_ADDR( 0xCA, JP,		PC,		IM_16,	2, 3 )
@@ -570,10 +573,10 @@ void BuildOpLUT()
 	OP_ADDR( 0x11, LD,		DE,		IM_16,	2, 3 )
 	OP_ADDR( 0x21, LD,		HL,		IM_16,	2, 3 )
 	OP_ADDR( 0x31, LD,		HL,		IM_16,	2, 3 )
-	OP_ADDR( 0xC1, POP,		BC,		SP,		0, 3 )
-	OP_ADDR( 0xC5, PUSH,	SP,		BC,		0, 4 )
+	OP_ADDR( 0xC1, POP,		BC,		NONE,	0, 3 )
+	OP_ADDR( 0xC5, PUSH,	NONE,	BC,		0, 4 )
 	OP_ADDR( 0xD1, POP,		DE,		SP,		0, 3 )
-	OP_ADDR( 0xD5, PUSH,	SP,		DE,		0, 4 )
+	OP_ADDR( 0xD5, PUSH,	NONE,	DE,		0, 4 )
 	OP_ADDR( 0xE1, POP,		HL,		NONE,	0, 3 )
 	OP_ADDR( 0xE5, PUSH,	NONE,	HL,		0, 4 )
 	OP_ADDR( 0xF1, POP,		AF,		NONE,	0, 3 )

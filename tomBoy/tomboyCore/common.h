@@ -9,7 +9,7 @@
 #include "util.h"
 #include "serializer.h"
 #include "assert.h"
-#include "time.h"
+#include "gbTime.h"
 
 #define NES_MODE			(1)
 #define DEBUG_MODE			(0)

@@ -87,9 +87,6 @@
     <ClInclude Include="assert.h">
       <Filter>Source Files\Debug</Filter>
     </ClInclude>
-    <ClInclude Include="time.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cart.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -101,6 +98,9 @@
     </ClInclude>
     <ClInclude Include="gbSystem.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gbTime.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

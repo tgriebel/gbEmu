@@ -8,8 +8,8 @@
 #include <queue>
 #include <algorithm>
 #include "stdafx.h"
-#include "wintendoApp.h"
-#include "wintendoApp_dx12.h"
+#include "tomboyApp.h"
+#include "tomboyApp_dx12.h"
 
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;

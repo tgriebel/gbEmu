@@ -98,6 +98,32 @@ ADDR_MODE_DEF( IM_16 ) {
 	addr = o.op;
 }
 
+void CpuZ80::Push( const uint8_t value )
+{
+	system->GetStack() = value;
+	SP--;
+}
+
+void CpuZ80::PushWord( const uint16_t value )
+{
+	Push( ( value >> 8 ) & 0xFF );
+	Push( value & 0xFF );
+}
+
+uint8_t CpuZ80::Pop()
+{
+	SP++;
+	return system->GetStack();
+}
+
+uint16_t CpuZ80::PopWord()
+{
+	const uint8_t loByte = Pop();
+	const uint8_t hiByte = Pop();
+
+	return Combine( loByte, hiByte );
+}
+
 void CpuZ80::SetAluFlags( const uint16_t value ) {
 	psw = CheckZero( value );
 }
@@ -134,10 +160,74 @@ cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t byteCode ) {
 	opState_t opState;
 	opState.opCode = byteCode;
 	opState.opCycles = cpuCycle_t( op.baseCycles );
-	opState.op0 = 0;
-	opState.op1 = 0;
+	opState.op0 = system->ReadMemory( instrAddr + 1 );
+	opState.op1 = system->ReadMemory( instrAddr + 2 );
 
 	( this->*( op.func ) )( opState );
 
 	return opState.opCycles;
+}
+
+cpuCycle_t CpuZ80::Exec()
+{
+	cpuCycle_t opCycle = cpuCycle_t( 0 );
+
+	//if ( oamInProcess )
+	//{
+	//	// http://wiki.nesdev.com/w/index.php/PPU_registers#OAMDMA
+	//	if ( ( cycle.count() % 2 ) == 0 ) {
+	//		opCycle += cpuCycle_t( 514 );
+	//	}
+	//	else {
+	//		opCycle += cpuCycle_t( 513 );
+	//	}
+	//	oamInProcess = false;
+
+	//	return opCycle;
+	//}
+	//else if ( dmcTransfer )
+	//{
+	//	return cpuCycle_t( 1 );
+	//}
+
+	const uint16_t instrAddr = PC;
+
+	const uint8_t curbyte = system->ReadMemory( instrAddr );
+
+	AdvancePC( 1 );
+
+	//if ( interruptRequestNMI )
+	//{
+	//	NMI( irqAddr );
+	//	interruptRequestNMI = false;
+	//	if ( IsTraceLogOpen() )
+	//	{
+	//		OpDebugInfo& instrDbg = dbgLog.NewLine();
+	//		instrDbg.nmi = true;
+	//		instrDbg.cpuCycles = cycle.count();
+	//	}
+	//	return opCycle;
+	//}
+	//else if ( interruptRequest )
+	//{
+	//	IRQ();
+	//	interruptRequest = false;
+	//	if ( IsTraceLogOpen() )
+	//	{
+	//		OpDebugInfo& instrDbg = dbgLog.NewLine();
+	//		instrDbg.irq = true;
+	//		instrDbg.cpuCycles = cycle.count();
+	//	}
+	//	return opCycle;
+	//}
+
+	return OpExec( instrAddr, curbyte );
+}
+
+bool CpuZ80::Step( const cpuCycle_t& nextCycle )
+{
+	while ( ( cycle < nextCycle ) && !halt ) {
+		cycle += cpuCycle_t( Exec() );
+	}
+	return !halt;
 }

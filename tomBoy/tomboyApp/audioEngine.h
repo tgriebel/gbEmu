@@ -8,7 +8,7 @@
 #include <xaudio2.h>
 #include <queue>
 #include <comdef.h>
-#include "wintendoApp.h"
+#include "tomboyApp.h"
 
 enum SoundState
 {

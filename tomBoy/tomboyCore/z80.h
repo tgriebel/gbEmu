@@ -110,18 +110,24 @@ struct opInfo_t
 };
 
 union u8i8 {
+	u8i8( uint8_t value ) : u8( value ) {}
+	u8i8( int8_t value ) : i8( value ) {}
 	uint8_t	u8;
 	int8_t	i8;
 };
 
 union u16i16 {
-	uint8_t	u16;
-	int8_t	i16;
+	u16i16( uint16_t value ) : u16( value ) {}
+	u16i16( int16_t value ) : i16( value ) {}
+	uint16_t u16;
+	int16_t i16;
 };
 
 union u32i32 {
-	uint8_t	u32;
-	int8_t	i32;
+	u32i32( uint32_t value ) : u32( value ) {}
+	u32i32( int32_t value ) : i32( value ) {}
+	uint32_t u32;
+	int32_t	i32;
 };
 
 #define OP_DEF( name )									template <class LHS, class RHS, size_t BIT, size_t CHK >				\
@@ -203,14 +209,24 @@ public:
 	uint16_t SP;
 	uint16_t PC;
 
-	uint8_t* const r8[ 8 ] = { &A, &F, &C, &B, &E, &D, &L, &H };
-	uint16_t* const r16[ 6 ] = { &AF, &BC, &DE, &HL, &SP, &PC };
+	uint8_t* const		r8[ 8 ] = { &A, &F, &C, &B, &E, &D, &L, &H };
+	uint16_t* const		r16[ 6 ] = { &AF, &BC, &DE, &HL, &SP, &PC };
 
-	uint8_t memory[ 1024 * 16 ];
-	GameboySystem* system;
+	GameboySystem*		system;
 
-	opInfo_t opLUT[ NumInstructions ];
+	uint16_t			nmiVector;
+	uint16_t			irqVector;
+	uint16_t			resetVector;
+	bool				ime; // interrupt-mask-enable
 
+	cpuCycle_t			cycle;
+
+	opInfo_t			opLUT[ NumInstructions ];
+
+private:
+	bool				halt;
+
+public:
 	CpuZ80() {
 		BuildOpLUT();
 	}
@@ -225,7 +241,7 @@ public:
 		} else if ( LHS::type == addrType_t::REGISTER_16 ) {
 			*r16[ addr ] = value;
 		} else if ( LHS::type == addrType_t::MEMORY ) {
-			memory[ addr ] = static_cast<uint8_t>( value & 0xFF );
+			system->WriteMemory( addr, 0, static_cast<uint8_t>( value & 0xFF ) );
 		}
 	}
 
@@ -239,9 +255,14 @@ public:
 		} else if ( RHS::type == addrType_t::REGISTER_16 ) {
 			value = *r16[ addr ];
 		} else if ( RHS::type == addrType_t::MEMORY ) {
-			value = memory[ addr ];
+			value = system->ReadMemory( addr );
 		}
 	}
+
+	void		Push( const uint8_t value );
+	void		PushWord( const uint16_t value );
+	uint8_t		Pop();
+	uint16_t	PopWord();
 
 	void		SetAluFlags( const uint16_t value );
 	bool		CheckSign( const uint16_t checkValue );
@@ -252,6 +273,8 @@ public:
 	uint8_t		ReadOperand( const uint16_t offset ) const;
 	void		AdvancePC( const uint16_t places );
 	cpuCycle_t	OpExec( const uint16_t instrAddr, const uint8_t byteCode );
+	cpuCycle_t	Exec();
+	bool		Step( const cpuCycle_t& nextCycle );
 
 	#include "z80_ops"
 

@@ -1,4 +1,4 @@
-#include "wintendoApp.h"
+#include "tomboyApp.h"
 extern wtAppInterface	app;
 
 static void TestRomUnit( std::wstring& testFilePath )

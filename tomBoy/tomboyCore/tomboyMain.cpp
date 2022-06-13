@@ -18,7 +18,7 @@ int main()
 	gbZ80.system = &gbSystem;
 	gbZ80.A = 0x8F;
 	gbZ80.B = 0xF8;
-	gbZ80.OpExec( 0, 0xA8 );
+	gbZ80.Step( 1 );
 	//gbSystem.Store< CpuZ80::addrModeA >( 0 );
 	//std::cout << "Test: " << std::hex << gbSystem.AF << std::endl;
 	return gbZ80.A;
