@@ -215,15 +215,24 @@ OP_DEF( RLA ) {
 }
 
 OP_DEF( RST ) {
-
+	PushWord( PC );
+	const uint8_t high = system->ReadMemory( 0x00 );
+	const uint8_t low = system->ReadMemory( BIT );
+	PC = ( high << 8 ) | low;
 }
 
 OP_DEF( RET ) {
-
+	if ( ( psw & BIT ) == CHK ) {
+		PC = PopWord();
+		o.opCycles += 3;
+	}
 }
 
 OP_DEF( RETI ) {
-
+	if ( ( psw & BIT ) == CHK ) {
+		PC = PopWord();
+		ime = true;
+	}
 }
 
 OP_DEF( JR ) {
@@ -281,7 +290,11 @@ OP_DEF( PUSH ) {
 
 OP_DEF( CALL ) {
 	if ( ( psw & BIT ) == CHK ) {
+		uint16_t value;
+		Load<RHS>( o, value );
 
+		PushWord( PC + 2 );
+		PC = value;
 	}
 }
 
@@ -454,31 +467,31 @@ void BuildOpLUT()
 	OP_JUMP( 0x28, JR,		IM_8,	2, 2, STATUS_ZERO, STATUS_ZERO )
 	OP_JUMP( 0x30, JR,		IM_8,	1, 2, STATUS_CARRY, 0 )
 	OP_JUMP( 0x38, JR,		IM_8,	2, 2, STATUS_CARRY, STATUS_CARRY )
-	OP_ADDR( 0xC2, JP,		PC,		IM_16,	2, 3 )
-	OP_ADDR( 0xC3, JP,		PC,		IM_16,	0, 4 )
-	OP_ADDR( 0xCA, JP,		PC,		IM_16,	2, 3 )
-	OP_ADDR( 0xD2, JP,		PC,		IM_16,	2, 3 )
-	OP_ADDR( 0xDA, JP,		PC,		IM_16,	2, 3 )
-	OP_ADDR( 0xE9, JP,		NONE,	HL,		0, 1 )
-	OP_JUMP( 0xC4, CALL,	IM_16,	0, 3, 0, 0 )
-	OP_JUMP( 0xCC, CALL,	IM_16,	2, 3, 0, 0 )
-	OP_JUMP( 0xCD, CALL,	IM_16,	2, 6, 0, 0 )
-	OP_JUMP( 0xD4, CALL,	IM_16,	0, 3, 0, 0 )
-	OP_JUMP( 0xDC, CALL,	IM_16,	2, 3, 0, 0 )
-	OP_ADDR( 0xC0, RET,		NONE,	NONE,	0, 2 )
-	OP_ADDR( 0xC8, RET,		NONE,	NONE,	0, 2 )
-	OP_ADDR( 0xC9, RET,		NONE,	NONE,	0, 4 )
-	OP_ADDR( 0xD0, RET,		NONE,	NONE,	0, 2 )
-	OP_ADDR( 0xD8, RET,		NONE,	NONE,	0, 2 )
-	OP_ADDR( 0xD9, RETI,	NONE,	NONE,	0, 4 )
-	OP_ADDR( 0xC7, RST,		NONE,	NONE,	0, 4 )
-	OP_ADDR( 0xCF, RST,		NONE,	NONE,	0, 4 )
-	OP_ADDR( 0xD7, RST,		NONE,	NONE,	0, 4 )
-	OP_ADDR( 0xDF, RST,		NONE,	NONE,	0, 4 )
-	OP_ADDR( 0xE7, RST,		A,		IM_8,	0, 4 )
-	OP_ADDR( 0xEF, RST,		NONE,	NONE,	0, 4 )
-	OP_ADDR( 0xF7, RST,		NONE,	NONE,	0, 4 )
-	OP_ADDR( 0xFF, RST,		NONE,	NONE,	0, 4 )
+	OP_ADDR( 0xC2, JP,		IM_16,	2, 3, STATUS_ZERO, 0 )
+	OP_ADDR( 0xC3, JP,		IM_16,	2, 3, STATUS_NONE, 0 )
+	OP_ADDR( 0xCA, JP,		IM_16,	2, 3, STATUS_ZERO, STATUS_ZERO )
+	OP_ADDR( 0xD2, JP,		IM_16,	2, 3, STATUS_CARRY, 0 )
+	OP_ADDR( 0xDA, JP,		IM_16,	2, 3, STATUS_CARRY, STATUS_CARRY )
+	OP_ADDR( 0xE9, JP,		HL,		0, 1, STATUS_NONE, 0 )
+	OP_JUMP( 0xC4, CALL,	IM_16,	2, 3, STATUS_ZERO, 0 )
+	OP_JUMP( 0xCC, CALL,	IM_16,	2, 3, STATUS_ZERO, STATUS_ZERO )
+	OP_JUMP( 0xCD, CALL,	IM_16,	2, 6, STATUS_NONE, 0 )
+	OP_JUMP( 0xD4, CALL,	IM_16,	2, 3, STATUS_CARRY, 0 )
+	OP_JUMP( 0xDC, CALL,	IM_16,	2, 3, STATUS_CARRY, STATUS_CARRY )
+	OP_JUMP( 0xC0, RET,		NONE,	0, 2, STATUS_ZERO, 0 )
+	OP_JUMP( 0xC8, RET,		NONE,	0, 2, STATUS_ZERO, STATUS_ZERO )
+	OP_JUMP( 0xC9, RET,		NONE,	0, 2, STATUS_NONE, 0 )
+	OP_JUMP( 0xD0, RET,		NONE,	0, 2, STATUS_CARRY, 0 )
+	OP_JUMP( 0xD8, RET,		NONE,	0, 2, STATUS_CARRY, STATUS_CARRY )
+	OP_JUMP( 0xD9, RETI,	NONE,	0, 4, STATUS_NONE, 0 )
+	OP_JUMP( 0xC7, RST,		NONE,	0, 4, 0x00, 0 )
+	OP_JUMP( 0xCF, RST,		NONE,	0, 4, 0x08, 0 )
+	OP_JUMP( 0xD7, RST,		NONE,	0, 4, 0x10, 0 )
+	OP_JUMP( 0xDF, RST,		NONE,	0, 4, 0x18, 0 )
+	OP_JUMP( 0xE7, RST,		NONE,	0, 4, 0x20, 0 )
+	OP_JUMP( 0xEF, RST,		NONE,	0, 4, 0x28, 0 )
+	OP_JUMP( 0xF7, RST,		NONE,	0, 4, 0x30, 0 )
+	OP_JUMP( 0xFF, RST,		NONE,	0, 4, 0x38, 0 )
 	
 	// 8bit load/store/move instructions
 	OP_ADDR( 0x02, LD,		BC_A,	A,		0, 2 )
