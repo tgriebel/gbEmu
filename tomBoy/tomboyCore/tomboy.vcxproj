@@ -168,6 +168,7 @@
     <ClInclude Include="assert.h" />
     <ClInclude Include="cart.h" />
     <ClInclude Include="command.h" />
+    <ClInclude Include="gbCart.h" />
     <ClInclude Include="gbSystem.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="mappers\MMC1.h" />
@@ -196,6 +197,7 @@
     <ClCompile Include="apu.cpp" />
     <ClCompile Include="command.cpp" />
     <ClCompile Include="debug.cpp" />
+    <ClCompile Include="gbSystem.cpp" />
     <ClCompile Include="mos6502.cpp" />
     <ClCompile Include="bitmap.cpp" />
     <ClCompile Include="nesSystem.cpp" />

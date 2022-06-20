@@ -122,11 +122,16 @@
 
 struct regDebugInfo_t
 {
-	uint8_t			X;
-	uint8_t			Y;
 	uint8_t			A;
-	uint8_t			SP;
-	uint8_t			P;
+	uint8_t			F;
+	uint8_t			B;
+	uint8_t			C;
+	uint8_t			D;
+	uint8_t			E;
+	uint8_t			H;
+	uint8_t			L;
+	uint8_t			psw;
+	uint16_t		SP;
 	uint16_t		PC;
 };
 
@@ -147,11 +152,10 @@ public:
 
 	uint16_t		instrBegin;
 	uint16_t		address;
-	uint16_t		offset;
-	uint16_t		targetAddress;
 
 	uint8_t			opType;
 	uint8_t			addrMode;
+	uint8_t			addrType;
 	uint8_t			memValue;
 	uint8_t			byteCode;
 
@@ -171,10 +175,9 @@ public:
 
 		opType			= 0;
 		addrMode		= 0;
+		addrType		= 0;
 		memValue		= 0;
 		address			= 0;
-		offset			= 0;
-		targetAddress	= 0;
 		instrBegin		= 0;
 		curScanline		= 0;
 		cpuCycles		= 0;

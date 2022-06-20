@@ -19,3 +19,4 @@
 *.manifest
 tomBoy/.vs/wintendo/v16/.suo
 tomBoy/.vs/tomBoy/v16/.suo
+tomBoy/tomboyCore/Games/*.gb

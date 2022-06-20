@@ -79,23 +79,27 @@ ADDR_MODE_DEF( C_A ) {
 }
 
 ADDR_MODE_DEF( IM_8_A ) {
-	assert( 0 );
 	addr = o.op0;
 }
 
 ADDR_MODE_DEF( IM_16_A ) {
-	assert( 0 );
 	addr = o.op0;
 }
 
 ADDR_MODE_DEF( IM_8 ) {
-	assert( 0 );
 	addr = o.op0;
 }
 
 ADDR_MODE_DEF( IM_16 ) {
-	assert( 0 );
 	addr = o.op;
+}
+
+uint8_t CpuZ80::ReadMemoryBus( const uint16_t address ) {
+	return system->ReadMemory( address );
+}
+
+void CpuZ80::WriteMemoryBus( const uint16_t address, const uint16_t offset, const uint8_t value ) {
+	system->WriteMemory( address, offset, value );
 }
 
 void CpuZ80::Push( const uint8_t value )
@@ -150,8 +154,40 @@ void CpuZ80::AdvancePC( const uint16_t places ) {
 	PC += places;
 }
 
+uint16_t CpuZ80::GetRestartAddress( const uint16_t highAddr, const uint16_t lowAddr ) const {
+	const uint8_t high = system->ReadMemory( highAddr );
+	const uint8_t low = system->ReadMemory( lowAddr );
+	return ( high << 8 ) | low;
+}
+
 uint8_t CpuZ80::ReadOperand( const uint16_t offset ) const {
 	return system->ReadMemory( PC + offset );
+}
+
+void CpuZ80::RegisterSystem( GameboySystem* sys )
+{
+	system = sys;
+}
+
+
+bool CpuZ80::IsTraceLogOpen() const
+{
+	return 0;// ( logFrameCount > 0 );
+}
+
+
+void CpuZ80::StartTraceLog( const uint32_t frameCount )
+{
+	//	logFrameCount = static_cast<int32_t>( frameCount );
+	//	logFrameTotal = logFrameCount;
+
+	//	dbgLog.Reset( logFrameTotal );
+}
+
+
+void CpuZ80::StopTraceLog()
+{
+	//	logFrameCount = logFrameTotal;
 }
 
 cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t byteCode ) {
@@ -162,6 +198,24 @@ cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t byteCode ) {
 	opState.opCycles = cpuCycle_t( op.baseCycles );
 	opState.op0 = system->ReadMemory( instrAddr + 1 );
 	opState.op1 = system->ReadMemory( instrAddr + 2 );
+
+#if DEBUG_ADDR == 1
+	if ( IsTraceLogOpen() ) // TODO: deep log and shallow log. Basic logging is very fast
+	{
+		OpDebugInfo& instrDbg = dbgLog.NewLine();
+		instrDbg.loadCnt = 0;
+		instrDbg.storeCnt = 0;
+		instrDbg.byteCode = opState.opCode;
+		instrDbg.regInfo = { A, F, B, C, D, E, H, L, psw, SP, PC };
+		instrDbg.instrBegin = instrAddr;
+		instrDbg.cpuCycles = cycle.count();
+		instrDbg.instrCycles = opState.opCycles.count();
+		instrDbg.op0 = opState.op0;
+		instrDbg.op1 = opState.op1;
+		instrDbg.mnemonic = op.mnemonic;
+		instrDbg.operands = op.operands;
+	}
+#endif
 
 	( this->*( op.func ) )( opState );
 

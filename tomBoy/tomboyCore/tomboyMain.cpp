@@ -9,17 +9,23 @@
 
 #include "z80.h"
 #include "gbSystem.h"
+#include "debug.h"
 
 GameboySystem gbSystem;
-CpuZ80 gbZ80;
+
+void LoadGameboyFile( const std::wstring& fileName, unique_ptr<gbCart>& outCart );
 
 int main()
 {
-	gbZ80.system = &gbSystem;
-	gbZ80.A = 0x8F;
-	gbZ80.B = 0xF8;
-	gbZ80.Step( 1 );
+	LoadGameboyFile( L"C:\\Users\\thoma\\source\\repos\\gbEmu\\tomBoy\\tomboyCore\\Games\\Alleyway.gb", gbSystem.cart );
+	gbSystem.cpu.PC = 0x0100;
+	gbSystem.cpu.system = &gbSystem;
+	gbSystem.cpu.A = 0x8F;
+	gbSystem.cpu.B = 0xF8;
+
+	gbSystem.cpu.dbgLog.Reset( 10 );
+	gbSystem.cpu.Step( 1 );
 	//gbSystem.Store< CpuZ80::addrModeA >( 0 );
 	//std::cout << "Test: " << std::hex << gbSystem.AF << std::endl;
-	return gbZ80.A;
+	return gbSystem.cpu.A;
 }

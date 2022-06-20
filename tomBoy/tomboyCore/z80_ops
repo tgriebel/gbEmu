@@ -216,9 +216,7 @@ OP_DEF( RLA ) {
 
 OP_DEF( RST ) {
 	PushWord( PC );
-	const uint8_t high = system->ReadMemory( 0x00 );
-	const uint8_t low = system->ReadMemory( BIT );
-	PC = ( high << 8 ) | low;
+	PC = GetRestartAddress( 0x00, BIT );
 }
 
 OP_DEF( RET ) {
@@ -279,7 +277,7 @@ OP_DEF( CCF ) {
 }
 
 OP_DEF( POP ) {
-	Store<LHS>( PopWord( value ) );
+	Store<LHS>( o, PopWord() );
 }
 
 OP_DEF( PUSH ) {
@@ -467,12 +465,12 @@ void BuildOpLUT()
 	OP_JUMP( 0x28, JR,		IM_8,	2, 2, STATUS_ZERO, STATUS_ZERO )
 	OP_JUMP( 0x30, JR,		IM_8,	1, 2, STATUS_CARRY, 0 )
 	OP_JUMP( 0x38, JR,		IM_8,	2, 2, STATUS_CARRY, STATUS_CARRY )
-	OP_ADDR( 0xC2, JP,		IM_16,	2, 3, STATUS_ZERO, 0 )
-	OP_ADDR( 0xC3, JP,		IM_16,	2, 3, STATUS_NONE, 0 )
-	OP_ADDR( 0xCA, JP,		IM_16,	2, 3, STATUS_ZERO, STATUS_ZERO )
-	OP_ADDR( 0xD2, JP,		IM_16,	2, 3, STATUS_CARRY, 0 )
-	OP_ADDR( 0xDA, JP,		IM_16,	2, 3, STATUS_CARRY, STATUS_CARRY )
-	OP_ADDR( 0xE9, JP,		HL,		0, 1, STATUS_NONE, 0 )
+	OP_JUMP( 0xC2, JP,		IM_16,	2, 3, STATUS_ZERO, 0 )
+	OP_JUMP( 0xC3, JP,		IM_16,	2, 3, STATUS_NONE, 0 )
+	OP_JUMP( 0xCA, JP,		IM_16,	2, 3, STATUS_ZERO, STATUS_ZERO )
+	OP_JUMP( 0xD2, JP,		IM_16,	2, 3, STATUS_CARRY, 0 )
+	OP_JUMP( 0xDA, JP,		IM_16,	2, 3, STATUS_CARRY, STATUS_CARRY )
+	OP_JUMP( 0xE9, JP,		HL,		0, 1, STATUS_NONE, 0 )
 	OP_JUMP( 0xC4, CALL,	IM_16,	2, 3, STATUS_ZERO, 0 )
 	OP_JUMP( 0xCC, CALL,	IM_16,	2, 3, STATUS_ZERO, STATUS_ZERO )
 	OP_JUMP( 0xCD, CALL,	IM_16,	2, 6, STATUS_NONE, 0 )

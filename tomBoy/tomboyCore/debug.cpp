@@ -4,7 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include "debug.h"
-#include "mos6502.h"
+#include "z80.h"
 
 static void PrintHex( std::stringstream& debugStream, const uint32_t value, const uint32_t charCount, const bool markup )
 {
@@ -26,7 +26,7 @@ static std::string GetOpName( const OpDebugInfo& info )
 		name += " ";
 	}
 
-	if( ( info.opType == (uint8_t)opType_t::SKB ) || ( info.opType == (uint8_t)opType_t::SKW ) )
+	if( ( info.opType == (uint8_t)opType_t::NOP ) || ( info.opType == (uint8_t)opType_t::ILL ) )
 	{
 		name += "NOP";
 	}
@@ -86,89 +86,18 @@ void OpDebugInfo::ToString( std::string& buffer, const bool registerDebug, const
 	
 	const addrMode_t mode = static_cast<addrMode_t>( addrMode );
 
-	const bool isXReg = ( mode == addrMode_t::IndexedAbsoluteX ) || ( mode == addrMode_t::IndexedZeroX );
-
 	switch ( mode )
 	{
-	default: break;
-	case addrMode_t::Absolute:
+	default:
 		PrintHex( debugStream, address, 4, true );
 		debugStream << " = ";
 		PrintHex( debugStream, static_cast<uint32_t>( memValue ), 2, false );
 		break;
-
-	case addrMode_t::Zero:
-		PrintHex( debugStream, address, 2, true );
-		debugStream << " = ";
-		PrintHex( debugStream, static_cast<uint32_t>( memValue ), 2, false );
-		break;
-
-	case addrMode_t::IndexedAbsoluteX:
-	case addrMode_t::IndexedAbsoluteY:
-		PrintHex( debugStream, targetAddress, 4, true );
-		debugStream << "," << ( isXReg ? "X" : "Y" ) << " @ ";
-		PrintHex( debugStream, address, 4, false );
-		debugStream << " = ";
-		PrintHex( debugStream, static_cast<uint32_t>( memValue ), 2, false );
-		break;
-
-	case addrMode_t::IndexedZeroX:
-	case addrMode_t::IndexedZeroY:
-		PrintHex( debugStream, targetAddress, 2, true );
-		debugStream << "," << ( isXReg ? "X" : "Y" ) << " @ ";
-		PrintHex( debugStream, address, 2, false );
-		debugStream << " = ";
-		PrintHex( debugStream, static_cast<uint32_t>( memValue ), 2, false );
-		break;
-
-	case addrMode_t::Immediate:
-		debugStream << "#";
-		PrintHex( debugStream, static_cast<uint32_t>( memValue ), 2, true );
-		break;
-
-	case addrMode_t::IndirectIndexed:
-		debugStream << "(";
-		PrintHex( debugStream, static_cast<uint32_t>( op0 ), 2, true );
-		debugStream << "),Y = ";
-		PrintHex( debugStream, address, 4, false );
-		debugStream << " @ ";
-		PrintHex( debugStream, targetAddress, 4, false );
-		debugStream << " = ";
-		PrintHex( debugStream, static_cast<uint32_t>( memValue ), 2, false );
-		break;
-
-	case addrMode_t::IndexedIndirect:
-		debugStream << "(";
-		PrintHex( debugStream, static_cast<uint32_t>( op0 ), 2, true );
-		debugStream << ",X) @ ";
-		PrintHex( debugStream, static_cast<uint32_t>( targetAddress ), 2, false );
-		debugStream << " = ";
-		PrintHex( debugStream, address, 4, false );
-		debugStream << " = ";
-		PrintHex( debugStream, static_cast<uint32_t>( memValue ), 2, false );
-		break;
-
-	case addrMode_t::Accumulator:
-		debugStream << "A";
-		break;
-
-	case addrMode_t::Jmp:
-		PrintHex( debugStream, address, 2, true );
-		break;
-
-	case addrMode_t::JmpIndirect:
-		debugStream << "(";
-		PrintHex( debugStream, offset, 4, true );
-		debugStream << ") = ";
-		PrintHex( debugStream, address, 4, false );
-		break;
-
-	case addrMode_t::Jsr:
+	case addrMode_t::BC_A:
 		PrintHex( debugStream, address, 4, true );
-		break;
-
-	case addrMode_t::Branch:
-		PrintHex( debugStream, address, 2, true );
+		debugStream << " = (";
+		PrintHex( debugStream, static_cast<uint32_t>( memValue ), 2, false );
+		debugStream << ")";
 		break;
 	}
 
@@ -182,12 +111,20 @@ void OpDebugInfo::ToString( std::string& buffer, const bool registerDebug, const
 		debugStream << setfill( ' ' ) << setw( width ) << right;
 		debugStream << uppercase << "A:";
 		PrintHex( debugStream, static_cast<int>( regInfo.A ), 2, false );
-		debugStream << uppercase << " X:";
-		PrintHex( debugStream, static_cast<int>( regInfo.X ), 2, false );
-		debugStream << uppercase << " Y:";
-		PrintHex( debugStream, static_cast<int>( regInfo.Y ), 2, false );
-		debugStream << uppercase << " P:";
-		PrintHex( debugStream, static_cast<int>( regInfo.P ), 2, false );
+		debugStream << uppercase << " F:";
+		PrintHex( debugStream, static_cast<int>( regInfo.F ), 2, false );
+		debugStream << uppercase << " B:";
+		PrintHex( debugStream, static_cast<int>( regInfo.B ), 2, false );
+		debugStream << uppercase << " C:";
+		PrintHex( debugStream, static_cast<int>( regInfo.C ), 2, false );
+		debugStream << uppercase << " D:";
+		PrintHex( debugStream, static_cast<int>( regInfo.D ), 2, false );
+		debugStream << uppercase << " E:";
+		PrintHex( debugStream, static_cast<int>( regInfo.E ), 2, false );
+		debugStream << uppercase << " H:";
+		PrintHex( debugStream, static_cast<int>( regInfo.H ), 2, false );
+		debugStream << uppercase << " L:";
+		PrintHex( debugStream, static_cast<int>( regInfo.L ), 2, false );
 		debugStream << uppercase << " SP:";
 		PrintHex( debugStream, static_cast<int>( regInfo.SP ), 2, false );
 	}

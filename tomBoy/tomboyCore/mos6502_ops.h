@@ -278,14 +278,14 @@ OP_DEF( ORA )
 OP_DEF( JMP )
 {
 	PC = ReadAddressOperand( o );
-	DEBUG_ADDR_JMP( PC )
+//	DEBUG_ADDR_JMP( PC )
 }
 
 OP_DEF( JMPI )
 {
 	const uint16_t addr = ReadAddressOperand( o );
 	PC = JumpImmediateAddr( addr );
-	DEBUG_ADDR_JMPI( addr, PC )
+//	DEBUG_ADDR_JMPI( addr, PC )
 }
 
 OP_DEF( JSR )
@@ -297,7 +297,7 @@ OP_DEF( JSR )
 
 	PC = ReadAddressOperand( o );
 
-	DEBUG_ADDR_JSR( PC )
+//	DEBUG_ADDR_JSR( PC )
 }
 
 OP_DEF( BRK )

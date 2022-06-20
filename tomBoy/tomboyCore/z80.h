@@ -2,9 +2,11 @@
 
 #include <stdint.h>
 #include "common.h"
+#include "debug.h"
 
 class CpuZ80;
 class GameboySystem;
+class wtLog;
 
 enum class opType_t : uint8_t
 {
@@ -61,6 +63,7 @@ enum regIndex_t
 	HL_IX = 3,
 	SP_IX = 4,
 	PC_IX = 5,
+	UNKNOWN = 0xFF,
 };
 
 enum statusBit_t
@@ -81,12 +84,27 @@ enum addrType_t
 	MEMORY = 3,
 };
 
+struct addrInfo_t
+{
+	addrInfo_t() : addr( addrMode_t::NONE ), type( UNSPECIFIED ), value( 0 ) {}
+
+	addrInfo_t( const addrMode_t _addr, const addrType_t _type ) :
+		addr( _addr ), type( _type ) {}
+
+	addrMode_t	addr;
+	addrType_t	type;
+	uint8_t		value;
+	bool		indirect;
+};
+
 struct opState_t
 {
 	opState_t() : opCode( 0 ), op0( 0 ), op1( 0 ) {}
 
 	cpuCycle_t		opCycles;
 	uint8_t			opCode;
+	addrInfo_t		lhsInfo;
+	addrInfo_t		rhsInfo;
 	union {
 		struct {
 			uint8_t op0;
@@ -101,6 +119,8 @@ struct opInfo_t
 {
 	OpCodeFn	func;
 	const char* mnemonic;
+	const char* lhsName;
+	const char* rhsName;
 	opType_t	type		: 7;
 	addrMode_t	lhsMode		: 5;
 	addrMode_t	rhsMode		: 5;
@@ -120,7 +140,7 @@ union u16i16 {
 	u16i16( uint16_t value ) : u16( value ) {}
 	u16i16( int16_t value ) : i16( value ) {}
 	uint16_t u16;
-	int16_t i16;
+	int16_t	i16;
 };
 
 union u32i32 {
@@ -149,6 +169,8 @@ union u32i32 {
 #define _OP_ADDR( num, name, lhs, rhs, ops, advance, cycles, bit, chk )															\
 														{																		\
 															opLUT[num].mnemonic		= #name;									\
+															opLUT[num].lhsName		= #lhs;										\
+															opLUT[num].rhsName		= #rhs;										\
 															opLUT[num].type			= opType_t::##name;							\
 															opLUT[num].operands		= ops;										\
 															opLUT[num].baseCycles	= cycles;									\
@@ -222,6 +244,13 @@ public:
 	cpuCycle_t			cycle;
 
 	opInfo_t			opLUT[ NumInstructions ];
+	wtLog				dbgLog;
+
+#if DEBUG_ADDR == 1
+	bool				logToFile = false;
+	int32_t				logFrameCount = 0;
+	int32_t				logFrameTotal = 0;
+#endif
 
 private:
 	bool				halt;
@@ -232,31 +261,33 @@ public:
 	}
 
 	template <class LHS>
-	void Store( opState_t& opState, const uint16 value ) {
+	void Store( opState_t& o, const uint16 value ) {
 		uint16_t addr;
-		LHS( *this )( opState, addr );
+		LHS( *this )( o, addr );
 
 		if ( LHS::type == addrType_t::REGISTER_8 ) {
 			*r8[ addr ] = static_cast<uint8_t>( value & 0xFF );
 		} else if ( LHS::type == addrType_t::REGISTER_16 ) {
 			*r16[ addr ] = value;
 		} else if ( LHS::type == addrType_t::MEMORY ) {
-			system->WriteMemory( addr, 0, static_cast<uint8_t>( value & 0xFF ) );
+			WriteMemoryBus( addr, 0, static_cast<uint8_t>( value & 0xFF ) );
 		}
+		o.lhsInfo = addrInfo_t( LHS::addrMode, LHS::type );
 	}
 
 	template <class RHS>
-	void Load( opState_t& opState, uint16_t& value ) {
+	void Load( opState_t& o, uint16_t& value ) {
 		uint16_t addr;
-		RHS( *this )( opState, addr );
+		RHS( *this )( o, addr );
 
 		if ( RHS::type == addrType_t::REGISTER_8 ) {
 			value = *r8[ addr ];
 		} else if ( RHS::type == addrType_t::REGISTER_16 ) {
 			value = *r16[ addr ];
 		} else if ( RHS::type == addrType_t::MEMORY ) {
-			value = system->ReadMemory( addr );
+			value = ReadMemoryBus( addr );
 		}
+		o.rhsInfo = addrInfo_t( RHS::addrMode, RHS::type );
 	}
 
 	void		Push( const uint8_t value );
@@ -264,11 +295,21 @@ public:
 	uint8_t		Pop();
 	uint16_t	PopWord();
 
+	void		RegisterSystem( GameboySystem* sys );
+	bool		IsTraceLogOpen() const;
+	void		StartTraceLog( const uint32_t frameCount );
+	void		StopTraceLog();
+
 	void		SetAluFlags( const uint16_t value );
 	bool		CheckSign( const uint16_t checkValue );
 	bool		CheckCarry( const uint16_t checkValue );
 	bool		CheckZero( const uint16_t checkValue );
 	bool		CheckOverflow( const uint16_t src, const uint16_t temp, const uint8_t finalValue );
+
+	// FIXME: These just wrap main system functions that need to be used in headers
+	uint8_t		ReadMemoryBus( const uint16_t address );
+	void		WriteMemoryBus( const uint16_t address, const uint16_t offset, const uint8_t value );
+	uint16_t	GetRestartAddress( const uint16_t highAddr, const uint16_t lowAddr ) const;
 
 	uint8_t		ReadOperand( const uint16_t offset ) const;
 	void		AdvancePC( const uint16_t places );
