@@ -39,6 +39,42 @@ static std::string GetOpName( const OpDebugInfo& info )
 	return name;
 }
 
+static void PrintAddrName( std::stringstream& debugStream, const char* name, const addrMode_t mode, const uint16_t addr, const uint16_t value, const bool dereference ) {
+	switch ( mode ) {
+		case addrMode_t::IM_8_A:
+		case addrMode_t::IM_16_A:
+			{
+				debugStream << "(" << hex << value << ")";
+			}
+			break;
+		case addrMode_t::IM_8:
+		case addrMode_t::IM_16:
+			{
+				debugStream << hex << value;
+			}
+			break;
+		case addrMode_t::C_A:
+		case addrMode_t::BC_A:
+		case addrMode_t::DE_A:
+		case addrMode_t::HL_A:
+			if ( dereference ) {
+				debugStream << "(" << hex << value << ")";
+			} else {
+				string baseName = string( name );
+				baseName = baseName.substr( 0, baseName.size() - 2 );
+				debugStream << "(" << baseName << ")";
+			}
+			break;
+		case addrMode_t::NONE: break;
+		default:
+			if ( dereference ) {
+				debugStream << hex << value;
+			} else {
+				debugStream << name;
+			}
+			break;
+	}
+}
 
 void OpDebugInfo::ToString( std::string& buffer, const bool registerDebug, const bool cycleDebug ) const
 {
@@ -64,15 +100,12 @@ void OpDebugInfo::ToString( std::string& buffer, const bool registerDebug, const
 	if ( operands == 1 )
 	{
 		PrintHex( hexString, disassemblyBytes[ 0 ], 2, false );
-		hexString << " ";
 		PrintHex( hexString, disassemblyBytes[ 1 ], 2, false );
 	}
 	else if ( operands == 2 )
 	{
 		PrintHex( hexString, disassemblyBytes[ 0 ], 2, false );
-		hexString << " ";
 		PrintHex( hexString, disassemblyBytes[ 1 ], 2, false );
-		hexString << " ";
 		PrintHex( hexString, disassemblyBytes[ 2 ], 2, false );
 	}
 	else
@@ -84,21 +117,14 @@ void OpDebugInfo::ToString( std::string& buffer, const bool registerDebug, const
 	debugStream << setfill( ' ' ) << "  " << setw( 9 ) << left << hexString.str();
 	debugStream << GetOpName( *this ) << " ";
 	
-	const addrMode_t mode = static_cast<addrMode_t>( addrMode );
-
-	switch ( mode )
-	{
-	default:
-		PrintHex( debugStream, address, 4, true );
-		debugStream << " = ";
-		PrintHex( debugStream, static_cast<uint32_t>( memValue ), 2, false );
-		break;
-	case addrMode_t::BC_A:
-		PrintHex( debugStream, address, 4, true );
-		debugStream << " = (";
-		PrintHex( debugStream, static_cast<uint32_t>( memValue ), 2, false );
-		debugStream << ")";
-		break;
+	if ( lhsName != "NONE" ) {
+		const addrMode_t mode = static_cast<addrMode_t>( lhsAddrMode );
+		PrintAddrName( debugStream, lhsName, mode, lhsAddress, lhsMemValue, false );
+		debugStream << ", ";
+	}
+	if ( rhsName != "NONE" ) {
+		const addrMode_t mode = static_cast<addrMode_t>( rhsAddrMode );
+		PrintAddrName( debugStream, rhsName, mode, rhsAddress, rhsMemValue, false );
 	}
 
 	if ( registerDebug )

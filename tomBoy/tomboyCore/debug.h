@@ -142,6 +142,8 @@ public:
 
 	regDebugInfo_t	regInfo;
 	const char*		mnemonic;
+	const char*		lhsName;
+	const char*		rhsName;
 	int32_t			curScanline;
 	uint64_t		cpuCycles;
 	uint64_t		ppuCycles;
@@ -151,13 +153,17 @@ public:
 	uint32_t		storeCnt;
 
 	uint16_t		instrBegin;
-	uint16_t		address;
-
 	uint8_t			opType;
-	uint8_t			addrMode;
-	uint8_t			addrType;
-	uint8_t			memValue;
 	uint8_t			byteCode;
+
+	uint8_t			lhsAddrMode;
+	uint8_t			lhsAddrType;
+	uint8_t			rhsAddrMode;
+	uint8_t			rhsAddrType;
+	uint8_t			lhsMemValue;
+	uint8_t			rhsMemValue;
+	uint16_t		lhsAddress;
+	uint16_t		rhsAddress;
 
 	uint8_t			operands;
 	uint8_t			op0;
@@ -174,10 +180,14 @@ public:
 		storeCnt		= 0;
 
 		opType			= 0;
-		addrMode		= 0;
-		addrType		= 0;
-		memValue		= 0;
-		address			= 0;
+		lhsAddrMode		= 0;
+		lhsAddrType		= 0;
+		rhsAddrMode		= 0;
+		rhsAddrType		= 0;
+		lhsMemValue		= 0;
+		rhsMemValue		= 0;
+		lhsAddress		= 0;
+		rhsAddress		= 0;
 		instrBegin		= 0;
 		curScanline		= 0;
 		cpuCycles		= 0;

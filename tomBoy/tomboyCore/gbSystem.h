@@ -57,6 +57,7 @@ public:
 
 	uint8_t ReadMemory( const uint16_t address ) {
 		if ( IsRomBank( address ) ) {
+		//	cart->
 		} else {
 			return memory[ address ];
 		}

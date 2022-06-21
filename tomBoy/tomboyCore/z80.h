@@ -10,7 +10,7 @@ class wtLog;
 
 enum class opType_t : uint8_t
 {
-	NOP, ILL, STOP, HALT,
+	ILL, NOP, STOP, HALT,
 	LD, LDI, LD_INC, LD_DEC,
 	INC, DEC, ADD, ADD_HL, ADD_SP, ADC, SUB, SBC, DAA, CPL,
 	OR, XOR, AND, BIT, RES, SET, SWAP,
@@ -78,10 +78,10 @@ enum statusBit_t
 
 enum addrType_t
 {
-	UNSPECIFIED = 0,
-	REGISTER_8 = 1,
-	REGISTER_16 = 2,
-	MEMORY = 3,
+	UNSPECIFIED	= 0,
+	REGISTER_8	= 1,
+	REGISTER_16	= 2,
+	MEMORY		= 3,
 };
 
 struct addrInfo_t
@@ -272,7 +272,12 @@ public:
 		} else if ( LHS::type == addrType_t::MEMORY ) {
 			WriteMemoryBus( addr, 0, static_cast<uint8_t>( value & 0xFF ) );
 		}
-		o.lhsInfo = addrInfo_t( LHS::addrMode, LHS::type );
+		
+		OpDebugInfo& dbgInfo = dbgLog.GetLogLine();
+		dbgInfo.lhsAddrMode = static_cast<uint8_t>( LHS::addrMode );
+		dbgInfo.lhsAddrType = static_cast<uint8_t>( LHS::type );
+		dbgInfo.lhsAddress = addr;
+		dbgInfo.lhsMemValue = value;
 	}
 
 	template <class RHS>
@@ -287,7 +292,12 @@ public:
 		} else if ( RHS::type == addrType_t::MEMORY ) {
 			value = ReadMemoryBus( addr );
 		}
-		o.rhsInfo = addrInfo_t( RHS::addrMode, RHS::type );
+
+		OpDebugInfo& dbgInfo = dbgLog.GetLogLine();
+		dbgInfo.rhsAddrMode = static_cast<uint8_t>( RHS::addrMode );
+		dbgInfo.rhsAddrType = static_cast<uint8_t>( RHS::type );
+		dbgInfo.rhsAddress = addr;
+		dbgInfo.rhsMemValue = value;
 	}
 
 	void		Push( const uint8_t value );

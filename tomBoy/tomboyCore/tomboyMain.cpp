@@ -24,8 +24,11 @@ int main()
 	gbSystem.cpu.B = 0xF8;
 
 	gbSystem.cpu.dbgLog.Reset( 10 );
+	gbSystem.cpu.StartTraceLog( 1 );
 	gbSystem.cpu.Step( 1 );
-	//gbSystem.Store< CpuZ80::addrModeA >( 0 );
-	//std::cout << "Test: " << std::hex << gbSystem.AF << std::endl;
-	return gbSystem.cpu.A;
+
+	string logBuffer;
+	gbSystem.cpu.dbgLog.ToString( logBuffer, 0, 1 );
+	std::cout << "Log: " << logBuffer << std::endl;
+	return 0;
 }

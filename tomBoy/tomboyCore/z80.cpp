@@ -172,16 +172,16 @@ void CpuZ80::RegisterSystem( GameboySystem* sys )
 
 bool CpuZ80::IsTraceLogOpen() const
 {
-	return 0;// ( logFrameCount > 0 );
+	return ( logFrameCount > 0 );
 }
 
 
 void CpuZ80::StartTraceLog( const uint32_t frameCount )
 {
-	//	logFrameCount = static_cast<int32_t>( frameCount );
-	//	logFrameTotal = logFrameCount;
+	logFrameCount = static_cast<int32_t>( frameCount );
+	logFrameTotal = logFrameCount;
 
-	//	dbgLog.Reset( logFrameTotal );
+	dbgLog.Reset( logFrameTotal );
 }
 
 
@@ -200,12 +200,13 @@ cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t byteCode ) {
 	opState.op1 = system->ReadMemory( instrAddr + 2 );
 
 #if DEBUG_ADDR == 1
-	if ( IsTraceLogOpen() ) // TODO: deep log and shallow log. Basic logging is very fast
+	if ( IsTraceLogOpen() )
 	{
 		OpDebugInfo& instrDbg = dbgLog.NewLine();
 		instrDbg.loadCnt = 0;
 		instrDbg.storeCnt = 0;
 		instrDbg.byteCode = opState.opCode;
+		instrDbg.opType = static_cast<uint8_t>( op.type );
 		instrDbg.regInfo = { A, F, B, C, D, E, H, L, psw, SP, PC };
 		instrDbg.instrBegin = instrAddr;
 		instrDbg.cpuCycles = cycle.count();
@@ -213,6 +214,8 @@ cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t byteCode ) {
 		instrDbg.op0 = opState.op0;
 		instrDbg.op1 = opState.op1;
 		instrDbg.mnemonic = op.mnemonic;
+		instrDbg.lhsName = op.lhsName;
+		instrDbg.rhsName = op.rhsName;
 		instrDbg.operands = op.operands;
 	}
 #endif
