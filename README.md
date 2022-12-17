@@ -1,2 +1,3 @@
 # TomBoy
- Gameboy Emulator
+ Gameboy Emulator - WIP
+Incomplete and untested
