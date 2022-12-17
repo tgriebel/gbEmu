@@ -1,6 +1,8 @@
 #pragma once
 #include "common.h"
 
+class GameboySystem;
+
 struct gbRomHeader
 {
 	uint8_t	entry[ 4 ];
@@ -20,6 +22,26 @@ struct gbRomHeader
 	uint8_t globalChecksum[ 2 ];
 };
 
+class gbMapper
+{
+protected:
+	uint32_t mapperId;
+
+public:
+	GameboySystem* system;
+
+	virtual uint8_t			OnLoadCpu() { return 0; };
+	virtual uint8_t			OnLoadPpu() { return 0; };
+	virtual uint8_t			ReadRom( const uint16_t addr ) const = 0;
+	virtual uint8_t			ReadChrRom( const uint16_t addr ) const { return 0; };
+	virtual uint8_t			WriteChrRam( const uint16_t addr, const uint8_t value ) { return 0; };
+	virtual uint8_t			Write( const uint16_t addr, const uint8_t value ) { return 0; };
+	virtual bool			InWriteWindow( const uint16_t addr, const uint16_t offset ) const { return false; };
+
+	//virtual void			Serialize( Serializer& serializer ) {};
+	//virtual void			Clock() {};
+};
+
 class gbCart
 {
 private:
@@ -28,6 +50,7 @@ private:
 
 public:
 	gbRomHeader				h;
+	shared_ptr<gbMapper>	mapper;
 
 	gbCart()
 	{
@@ -38,7 +61,10 @@ public:
 
 	gbCart( gbRomHeader& header, uint8_t* romData, uint32_t romSize )
 	{
+		h = header;
 		rom = new uint8_t[ romSize ];
+		memcpy( rom, romData, romSize );
+		size = romSize;
 	}
 
 	~gbCart()
@@ -50,5 +76,21 @@ public:
 			rom = nullptr;
 		}
 		size = 0;
+	}
+
+	uint8_t* GetPrgRomBank( const uint32_t bankNum, const uint32_t bankSize = KB( 32 ) )
+	{
+		const size_t addr = ( bankNum * (size_t)bankSize ) % KB( 32 );
+		assert( addr < size );
+		return &rom[ addr ];
+	}
+
+	uint8_t GetPrgBankCount() const
+	{
+		return 1; // FIXME
+	}
+
+	uint32_t GetMapperId() const {
+		return 0; // TODO
 	}
 };

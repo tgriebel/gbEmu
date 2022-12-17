@@ -1,4 +1,14 @@
 #include "gbSystem.h"
+#include "mappers/NoMBC.h"
+
+unique_ptr<gbMapper> GameboySystem::AssignMapper( const uint32_t mapperId )
+{
+	switch ( mapperId )
+	{
+	default:
+	case 0: return make_unique<NoMBC>( mapperId );	break;
+	}
+}
 
 /*static*/ void LoadGameboyFile( const std::wstring& fileName, unique_ptr<gbCart>& outCart )
 {
@@ -8,17 +18,17 @@
 	assert( gbFile.good() );
 
 	gbFile.seekg( 0, std::ios::end );
-	uint32_t len = static_cast<uint32_t>( gbFile.tellg() );
+	uint32_t size = static_cast<uint32_t>( gbFile.tellg() );
 
 	const uint32_t headerOffset = 0x0100;	
 	const uint32_t headerSize = 0x50;
 	uint8_t headerBytes[ 100 ];
 
-	uint32_t size = len - headerSize - headerOffset;
 	uint8_t* romData = new uint8_t[ size ];
 
 	gbFile.seekg( headerOffset, std::ios::beg );
 	gbFile.read( reinterpret_cast<char*>( &headerBytes ), headerSize );
+	gbFile.seekg( 0, std::ios::beg );
 	gbFile.read( reinterpret_cast<char*>( romData ), size );
 	gbFile.close();
 

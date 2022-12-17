@@ -258,6 +258,13 @@ private:
 public:
 	CpuZ80() {
 		BuildOpLUT();
+
+		AF = 0;
+		BC = 0;
+		DE = 0;
+		HL = 0;
+		SP = 0;
+		PC = 0x0100;
 	}
 
 	template <class LHS>

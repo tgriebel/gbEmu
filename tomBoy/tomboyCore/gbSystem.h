@@ -57,7 +57,7 @@ public:
 
 	uint8_t ReadMemory( const uint16_t address ) {
 		if ( IsRomBank( address ) ) {
-		//	cart->
+			return cart->mapper->ReadRom( address );
 		} else {
 			return memory[ address ];
 		}
@@ -72,4 +72,7 @@ public:
 		assert( cpu.SP < PhysicalMemorySize );
 		return memory[ cpu.SP ];
 	}
+
+	// mapper.h
+	unique_ptr<gbMapper> AssignMapper( const uint32_t mapperId );
 };

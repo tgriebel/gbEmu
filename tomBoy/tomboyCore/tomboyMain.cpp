@@ -18,14 +18,19 @@ void LoadGameboyFile( const std::wstring& fileName, unique_ptr<gbCart>& outCart 
 int main()
 {
 	LoadGameboyFile( L"C:\\Users\\thoma\\source\\repos\\gbEmu\\tomBoy\\tomboyCore\\Games\\Alleyway.gb", gbSystem.cart );
-	gbSystem.cpu.PC = 0x0100;
+	gbSystem.cart->mapper = gbSystem.AssignMapper( gbSystem.cart->GetMapperId() );
+	gbSystem.cart->mapper->system = &gbSystem;
+	gbSystem.cart->mapper->OnLoadCpu();
+	gbSystem.cart->mapper->OnLoadPpu();
+
 	gbSystem.cpu.system = &gbSystem;
-	gbSystem.cpu.A = 0x8F;
-	gbSystem.cpu.B = 0xF8;
 
 	gbSystem.cpu.dbgLog.Reset( 10 );
 	gbSystem.cpu.StartTraceLog( 1 );
-	gbSystem.cpu.Step( 1 );
+
+	for ( int i = 0; i < 10; ++i ) {
+		gbSystem.cpu.Step( i + 1 );
+	}
 
 	string logBuffer;
 	gbSystem.cpu.dbgLog.ToString( logBuffer, 0, 1 );

@@ -103,7 +103,7 @@ public:
 		size = 0;
 	}
 
-	uint8_t* GetPrgRomBank( const uint32_t bankNum, const uint32_t bankSize = KB( 16 ) )
+	uint8_t* GetPrgRomBank( const uint32_t bankNum, const uint32_t bankSize = KB( 32 ) )
 	{
 		const size_t addr = ( bankNum * (size_t)bankSize ) % prgSize;
 		assert( addr < size );

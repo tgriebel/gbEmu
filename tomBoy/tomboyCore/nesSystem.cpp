@@ -11,7 +11,6 @@
 #include "NesSystem.h"
 #include "mos6502.h"
 #include "input.h"
-#include "mapper.h"
 #include "timer.h"
 
 
