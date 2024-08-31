@@ -37,14 +37,14 @@ enum class addrMode_t : uint8_t
 	HL,
 	SP,
 	PC,
-	IM_8_A,
-	IM_16_A,
-	C_A,
-	BC_A,
-	DE_A,
-	HL_A,
-	IM_8,
-	IM_16,
+	DIRECT_N8,
+	DIRECT_N16,
+	DIRECT_C,
+	DIRECT_BC,
+	DIRECT_DE,
+	DIRECT_HL,
+	IMMEDIATE_N8,
+	IMMEDIATE_N16,
 };
 
 enum regIndex_t 
@@ -264,7 +264,7 @@ public:
 		DE = 0;
 		HL = 0;
 		SP = 0;
-		PC = 0x0100;
+		PC = 0x0150; // FIXME: set by rom header
 	}
 
 	template <class LHS>
@@ -284,7 +284,7 @@ public:
 		dbgInfo.lhsAddrMode = static_cast<uint8_t>( LHS::addrMode );
 		dbgInfo.lhsAddrType = static_cast<uint8_t>( LHS::type );
 		dbgInfo.lhsAddress = addr;
-		dbgInfo.lhsMemValue = value;
+		dbgInfo.lhsMemValue = static_cast<uint8_t>( value );
 	}
 
 	template <class RHS>
@@ -304,7 +304,7 @@ public:
 		dbgInfo.rhsAddrMode = static_cast<uint8_t>( RHS::addrMode );
 		dbgInfo.rhsAddrType = static_cast<uint8_t>( RHS::type );
 		dbgInfo.rhsAddress = addr;
-		dbgInfo.rhsMemValue = value;
+		dbgInfo.rhsMemValue = static_cast<uint8_t>( value );
 	}
 
 	void		Push( const uint8_t value );
@@ -351,12 +351,12 @@ public:
 	ADDR_MODE_DECL( HL, REGISTER_16 )
 	ADDR_MODE_DECL( SP, REGISTER_16 )
 	ADDR_MODE_DECL( PC, REGISTER_16 )
-	ADDR_MODE_DECL( BC_A, MEMORY )
-	ADDR_MODE_DECL( DE_A, MEMORY )
-	ADDR_MODE_DECL( HL_A, MEMORY )
-	ADDR_MODE_DECL( C_A, MEMORY )
-	ADDR_MODE_DECL( IM_8_A, MEMORY )
-	ADDR_MODE_DECL( IM_16_A, MEMORY )
-	ADDR_MODE_DECL( IM_8, MEMORY )
-	ADDR_MODE_DECL( IM_16, MEMORY )
+	ADDR_MODE_DECL( DIRECT_BC, MEMORY )
+	ADDR_MODE_DECL( DIRECT_DE, MEMORY )
+	ADDR_MODE_DECL( DIRECT_HL, MEMORY )
+	ADDR_MODE_DECL( DIRECT_C, MEMORY )
+	ADDR_MODE_DECL( DIRECT_N8, MEMORY )
+	ADDR_MODE_DECL( DIRECT_N16, MEMORY )
+	ADDR_MODE_DECL( IMMEDIATE_N8, MEMORY )
+	ADDR_MODE_DECL( IMMEDIATE_N16, MEMORY )
 };

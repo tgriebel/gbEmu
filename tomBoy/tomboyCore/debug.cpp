@@ -41,22 +41,22 @@ static std::string GetOpName( const OpDebugInfo& info )
 
 static void PrintAddrName( std::stringstream& debugStream, const char* name, const addrMode_t mode, const uint16_t addr, const uint16_t value, const bool dereference ) {
 	switch ( mode ) {
-		case addrMode_t::IM_8_A:
-		case addrMode_t::IM_16_A:
+		case addrMode_t::DIRECT_N8:
+		case addrMode_t::DIRECT_N16:
 			{
 				debugStream << "(" << hex << value << ")";
 			}
 			break;
-		case addrMode_t::IM_8:
-		case addrMode_t::IM_16:
+		case addrMode_t::IMMEDIATE_N8:
+		case addrMode_t::IMMEDIATE_N16:
 			{
 				debugStream << hex << value;
 			}
 			break;
-		case addrMode_t::C_A:
-		case addrMode_t::BC_A:
-		case addrMode_t::DE_A:
-		case addrMode_t::HL_A:
+		case addrMode_t::DIRECT_C:
+		case addrMode_t::DIRECT_BC:
+		case addrMode_t::DIRECT_DE:
+		case addrMode_t::DIRECT_HL:
 			if ( dereference ) {
 				debugStream << "(" << hex << value << ")";
 			} else {

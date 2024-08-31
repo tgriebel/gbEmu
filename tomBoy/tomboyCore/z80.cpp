@@ -5,7 +5,6 @@ ADDR_MODE_DEF( NONE ) {
 	addr = 0;
 }
 
-
 ADDR_MODE_DEF( A ) {
 	addr = A_IX;
 }
@@ -62,35 +61,35 @@ ADDR_MODE_DEF( PC ) {
 	addr = PC_IX;
 }
 
-ADDR_MODE_DEF( BC_A ) {
+ADDR_MODE_DEF( DIRECT_BC ) {
 	addr = cpu.BC;
 }
 
-ADDR_MODE_DEF( DE_A ) {
+ADDR_MODE_DEF( DIRECT_DE ) {
 	addr = cpu.DE;
 }
 
-ADDR_MODE_DEF( HL_A ) {
+ADDR_MODE_DEF( DIRECT_HL ) {
 	addr = cpu.HL;
 }
 
-ADDR_MODE_DEF( C_A ) {
-	addr = cpu.C;
+ADDR_MODE_DEF( DIRECT_C ) {
+	addr = cpu.C + 0xFF00;
 }
 
-ADDR_MODE_DEF( IM_8_A ) {
+ADDR_MODE_DEF( DIRECT_N8 ) {
+	addr = o.op0 + 0xFF00;
+}
+
+ADDR_MODE_DEF( DIRECT_N16 ) {
+	addr = o.op0 + 0xFF00;
+}
+
+ADDR_MODE_DEF( IMMEDIATE_N8 ) {
 	addr = o.op0;
 }
 
-ADDR_MODE_DEF( IM_16_A ) {
-	addr = o.op0;
-}
-
-ADDR_MODE_DEF( IM_8 ) {
-	addr = o.op0;
-}
-
-ADDR_MODE_DEF( IM_16 ) {
+ADDR_MODE_DEF( IMMEDIATE_N16 ) {
 	addr = o.op;
 }
 

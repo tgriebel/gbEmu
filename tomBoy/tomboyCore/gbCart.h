@@ -42,6 +42,8 @@ public:
 	//virtual void			Clock() {};
 };
 
+
+
 class gbCart
 {
 private:
