@@ -216,6 +216,8 @@ cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t byteCode ) {
 		instrDbg.lhsName = op.lhsName;
 		instrDbg.rhsName = op.rhsName;
 		instrDbg.operands = op.operands;
+		instrDbg.bitCheck = op.bitCheck;
+		instrDbg.check = op.check;
 	}
 #endif
 

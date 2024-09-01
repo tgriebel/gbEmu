@@ -30,6 +30,10 @@ static std::string GetOpName( const OpDebugInfo& info )
 	{
 		name += "NOP";
 	}
+	else if ( ( info.opType == (uint8_t)opType_t::LD_INC ) || ( info.opType == (uint8_t)opType_t::LD_DEC ) )
+	{
+		name += "LD";
+	}
 	else
 	{
 		name += info.mnemonic[ 0 ];
@@ -39,18 +43,48 @@ static std::string GetOpName( const OpDebugInfo& info )
 	return name;
 }
 
+static std::string GetFlagName( const uint8_t flags )
+{
+	std::string bitNames;
+	if( flags & statusBit_t::STATUS_CARRY ) {
+		bitNames += "c";
+	}
+	if ( flags & statusBit_t::STATUS_HALF_CARRY ) {
+		bitNames += "h";
+	}
+	if ( flags & statusBit_t::STATUS_SUBRACTION ) {
+		bitNames += "n";
+	}
+	if ( flags & statusBit_t::STATUS_ZERO ) {
+		bitNames += "z";
+	}
+	return bitNames;
+}
+
 static void PrintAddrName( std::stringstream& debugStream, const char* name, const addrMode_t mode, const uint16_t addr, const uint16_t value, const bool dereference ) {
 	switch ( mode ) {
 		case addrMode_t::DIRECT_N8:
+			{
+				debugStream << "(";
+				PrintHex( debugStream, addr, 2, true );
+				debugStream << ")";
+			}
+			break;
 		case addrMode_t::DIRECT_N16:
 			{
-				debugStream << "($" << hex << addr << ")";
+				debugStream << "(";
+				PrintHex( debugStream, addr, 4, true );
+				debugStream << ")";
 			}
 			break;
 		case addrMode_t::IMMEDIATE_N8:
+			{
+				PrintHex( debugStream, value, 2, true );
+			}
+			break;
 		case addrMode_t::IMMEDIATE_N16:
 			{
-				debugStream << hex << value;
+				PrintHex( debugStream, value, 4, true );
 			}
 			break;
 		case addrMode_t::DIRECT_C:
@@ -58,7 +92,9 @@ static void PrintAddrName( std::stringstream& debugStream, const char* name, con
 		case addrMode_t::DIRECT_DE:
 		case addrMode_t::DIRECT_HL:
 			if ( dereference ) {
-				debugStream << "($" << hex << value << ")";
+				debugStream << "(";
+				PrintHex( debugStream, value, 4, true );
+				debugStream << ")";
 			} else {
 				string baseName = string( name );
 				baseName = baseName.substr( 0, baseName.size() - 2 );
@@ -68,7 +104,7 @@ static void PrintAddrName( std::stringstream& debugStream, const char* name, con
 		case addrMode_t::NONE: break;
 		default:
 			if ( dereference ) {
-				debugStream << hex << value;
+				PrintHex( debugStream, value, 4, true );
 			} else {
 				debugStream << name;
 			}
@@ -76,9 +112,13 @@ static void PrintAddrName( std::stringstream& debugStream, const char* name, con
 	}
 }
 
-void OpDebugInfo::ToString( std::string& buffer, const bool registerDebug, const bool cycleDebug ) const
+void OpDebugInfo::ToString( std::string& buffer, const bool registerDebug, const bool statusDebug, const bool cycleDebug ) const
 {
 	std::stringstream debugStream;
+
+	const bool formatBin = false;
+	const bool deferenceOperands = false;
+	const bool formatAddress = true;
 
 	if( nmi )
 	{
@@ -99,32 +139,46 @@ void OpDebugInfo::ToString( std::string& buffer, const bool registerDebug, const
 
 	if ( operands == 1 )
 	{
-		PrintHex( hexString, disassemblyBytes[ 0 ], 2, false );
-		PrintHex( hexString, disassemblyBytes[ 1 ], 2, false );
+		PrintHex( hexString, disassemblyBytes[ 0 ], 2, formatBin );
+		hexString << " ";
+		PrintHex( hexString, disassemblyBytes[ 1 ], 2, formatBin );
 	}
 	else if ( operands == 2 )
 	{
-		PrintHex( hexString, disassemblyBytes[ 0 ], 2, false );
-		PrintHex( hexString, disassemblyBytes[ 1 ], 2, false );
-		PrintHex( hexString, disassemblyBytes[ 2 ], 2, false );
+		PrintHex( hexString, disassemblyBytes[ 0 ], 2, formatBin );
+		hexString << " ";
+		PrintHex( hexString, disassemblyBytes[ 1 ], 2, formatBin );
+		hexString << " ";
+		PrintHex( hexString, disassemblyBytes[ 2 ], 2, formatBin );
 	}
 	else
 	{
-		PrintHex( hexString, disassemblyBytes[ 0 ], 2, false );
+		PrintHex( hexString, disassemblyBytes[ 0 ], 2, formatBin );
 	}
 
-	PrintHex( debugStream, instrBegin, 4, false );
+	PrintHex( debugStream, instrBegin, 4, formatBin );
 	debugStream << setfill( ' ' ) << "  " << setw( 9 ) << left << hexString.str();
 	debugStream << GetOpName( *this ) << " ";
 	
-	if ( lhsName != "NONE" ) {
-		const addrMode_t mode = static_cast<addrMode_t>( lhsAddrMode );
-		PrintAddrName( debugStream, lhsName, mode, lhsAddress, lhsMemValue, false );
-		debugStream << ", ";
+	if ( opType == (uint8_t)opType_t::JR )
+	{
+		const int8_t offset = u8i8( (uint8_t)rhsMemValue ).i8;
+		debugStream << GetFlagName( bitCheck ) << ", ";
+		PrintHex( debugStream, regInfo.PC + offset + operands, 4, formatAddress );
 	}
-	if ( rhsName != "NONE" ) {
-		const addrMode_t mode = static_cast<addrMode_t>( rhsAddrMode );
-		PrintAddrName( debugStream, rhsName, mode, rhsAddress, rhsMemValue, false );
+	else
+	{
+		if ( lhsName != "NONE" )
+		{
+			const addrMode_t mode = static_cast<addrMode_t>( lhsAddrMode );
+			PrintAddrName( debugStream, lhsName, mode, lhsAddress, lhsMemValue, deferenceOperands );
+			debugStream << ", ";
+		}
+		if ( rhsName != "NONE" )
+		{
+			const addrMode_t mode = static_cast<addrMode_t>( rhsAddrMode );
+			PrintAddrName( debugStream, rhsName, mode, rhsAddress, rhsMemValue, deferenceOperands );
+		}
 	}
 
 	if ( registerDebug )
@@ -153,6 +207,11 @@ void OpDebugInfo::ToString( std::string& buffer, const bool registerDebug, const
 		PrintHex( debugStream, static_cast<int>( regInfo.L ), 2, false );
 		debugStream << uppercase << " SP:";
 		PrintHex( debugStream, static_cast<int>( regInfo.SP ), 2, false );
+	}
+
+	if( statusDebug )
+	{
+		debugStream << " " << GetFlagName( regInfo.psw );
 	}
 
 	if( cycleDebug )
@@ -237,7 +296,7 @@ void wtLog::ToString( std::string& buffer, const uint32_t frameBegin, const uint
 	{
 		for ( const OpDebugInfo& dbgInfo : GetLogFrame( i ) )
 		{
-			dbgInfo.ToString( buffer, true, false );
+			dbgInfo.ToString( buffer, true, true, false );
 			buffer += "\n";
 		}
 	}

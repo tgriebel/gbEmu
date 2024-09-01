@@ -236,7 +236,7 @@ OP_DEF( RST ) {
 OP_DEF( RET ) {
 	if ( ( psw & BIT ) == CHK ) {
 		PC = PopWord();
-		o.opCycles += 3;
+		o.opCycles += 12;
 	}
 }
 
@@ -252,7 +252,7 @@ OP_DEF( JR ) {
 		uint16_t value;
 		Load<RHS>( o, value );
 		PC += u8i8( (uint8_t)value ).i8;
-		o.opCycles += 1;
+		o.opCycles += 4;
 	}
 }
 
@@ -474,11 +474,11 @@ void BuildOpLUT()
 	OP_ADDR( 0xFD, ILL,			NONE,	NONE,	0, 0 )
 
 	// Jump/call instructions
-	OP_JUMP( 0x18, JR,			IMMEDIATE_N8,	2, 12,		STATUS_NONE,	STATUS_NONE )
+	OP_JUMP( 0x18, JR,			IMMEDIATE_N8,	1, 12,		STATUS_NONE,	STATUS_NONE )
 	OP_JUMP( 0x20, JR,			IMMEDIATE_N8,	1, 8,		STATUS_ZERO,	0 )
-	OP_JUMP( 0x28, JR,			IMMEDIATE_N8,	2, 8,		STATUS_ZERO,	STATUS_ZERO )
+	OP_JUMP( 0x28, JR,			IMMEDIATE_N8,	1, 8,		STATUS_ZERO,	STATUS_ZERO )
 	OP_JUMP( 0x30, JR,			IMMEDIATE_N8,	1, 8,		STATUS_CARRY,	0 )
-	OP_JUMP( 0x38, JR,			IMMEDIATE_N8,	2, 8,		STATUS_CARRY,	STATUS_CARRY )
+	OP_JUMP( 0x38, JR,			IMMEDIATE_N8,	1, 8,		STATUS_CARRY,	STATUS_CARRY )
 	OP_JUMP( 0xC2, JP,			IMMEDIATE_N16,	2, 12,		STATUS_ZERO,	0 )
 	OP_JUMP( 0xC3, JP,			IMMEDIATE_N16,	2, 16,		STATUS_NONE,	0 )
 	OP_JUMP( 0xCA, JP,			IMMEDIATE_N16,	2, 12,		STATUS_ZERO,	STATUS_ZERO )

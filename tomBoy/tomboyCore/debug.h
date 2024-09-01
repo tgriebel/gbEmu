@@ -169,6 +169,9 @@ public:
 	uint8_t			op0;
 	uint8_t			op1;
 
+	uint8_t			bitCheck;
+	uint8_t			check;
+
 	bool			isIllegal;
 	bool			irq;
 	bool			nmi;
@@ -209,7 +212,7 @@ public:
 		regInfo			= { 0, 0, 0, 0, 0, 0 };
 	}
 
-	void ToString( std::string& buffer, const bool registerDebug = true, const bool cycleDebug = true ) const;
+	void ToString( std::string& buffer, const bool registerDebug, const bool statusDebug, const bool cycleDebug ) const;
 };
 
 using logFrame_t = std::vector<OpDebugInfo>;

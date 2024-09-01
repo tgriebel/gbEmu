@@ -122,6 +122,8 @@ struct opInfo_t
 	const char* mnemonic;
 	const char* lhsName;
 	const char* rhsName;
+	uint8_t		bitCheck;
+	uint8_t		check;
 	opType_t	type		: 7;
 	addrMode_t	lhsMode		: 5;
 	addrMode_t	rhsMode		: 5;
@@ -178,11 +180,13 @@ union u32i32 {
 															opLUT[num].pcInc		= advance;									\
 															opLUT[num].lhsMode		= addrMode_t::##lhs;						\
 															opLUT[num].rhsMode		= addrMode_t::##rhs;						\
+															opLUT[num].bitCheck		= bit;										\
+															opLUT[num].check		= chk;										\
 															opLUT[num].func			= &CpuZ80::##name<ADDR(lhs),ADDR(rhs), bit, chk >; \
 														}
 
 #define OP_ADDR( num, name, lhs, rhs, ops, cycles )			_OP_ADDR( num, name, lhs, rhs, ops, ops, cycles, 0, 0 )
-#define OP_JUMP( num, name, lhs, ops, cycles, bit, chk )	_OP_ADDR( num, name, lhs, NONE, ops, ops, cycles, bit, chk )
+#define OP_JUMP( num, name, rhs, ops, cycles, bit, chk )	_OP_ADDR( num, name, NONE, rhs, ops, ops, cycles, bit, chk )
 #define OP_BIT( num, name, rhs, bit, cycles )				_OP_ADDR( num + 0xFF, name, rhs, rhs, 0, 0, cycles, bit, 0 )
 
 class CpuZ80
@@ -260,7 +264,7 @@ public:
 	CpuZ80() {
 		BuildOpLUT();
 
-		AF = 0x00B0;
+		AF = 0x01B0;
 		BC = 0x0013;
 		DE = 0x00D8;
 		HL = 0x014D;
