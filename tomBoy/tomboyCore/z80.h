@@ -81,7 +81,8 @@ enum addrType_t
 	UNSPECIFIED	= 0,
 	REGISTER_8	= 1,
 	REGISTER_16	= 2,
-	MEMORY		= 3,
+	IMMEDIATE	= 3,
+	DIRECT		= 4,
 };
 
 struct addrInfo_t
@@ -259,11 +260,11 @@ public:
 	CpuZ80() {
 		BuildOpLUT();
 
-		AF = 0;
-		BC = 0;
-		DE = 0;
-		HL = 0;
-		SP = 0;
+		AF = 0x00B0;
+		BC = 0x0013;
+		DE = 0x00D8;
+		HL = 0x014D;
+		SP = 0xFFFE;
 		PC = 0x0150; // FIXME: set by rom header
 	}
 
@@ -276,7 +277,9 @@ public:
 			*r8[ addr ] = static_cast<uint8_t>( value & 0xFF );
 		} else if ( LHS::type == addrType_t::REGISTER_16 ) {
 			*r16[ addr ] = value;
-		} else if ( LHS::type == addrType_t::MEMORY ) {
+		} else if ( LHS::type == addrType_t::IMMEDIATE ) {
+			assert( 0 );
+		} else if ( LHS::type == addrType_t::DIRECT ) {
 			WriteMemoryBus( addr, 0, static_cast<uint8_t>( value & 0xFF ) );
 		}
 		
@@ -296,7 +299,9 @@ public:
 			value = *r8[ addr ];
 		} else if ( RHS::type == addrType_t::REGISTER_16 ) {
 			value = *r16[ addr ];
-		} else if ( RHS::type == addrType_t::MEMORY ) {
+		} else if ( RHS::type == addrType_t::IMMEDIATE ) {
+			value = addr;
+		} else if ( RHS::type == addrType_t::DIRECT ) {
 			value = ReadMemoryBus( addr );
 		}
 
@@ -351,12 +356,12 @@ public:
 	ADDR_MODE_DECL( HL, REGISTER_16 )
 	ADDR_MODE_DECL( SP, REGISTER_16 )
 	ADDR_MODE_DECL( PC, REGISTER_16 )
-	ADDR_MODE_DECL( DIRECT_BC, MEMORY )
-	ADDR_MODE_DECL( DIRECT_DE, MEMORY )
-	ADDR_MODE_DECL( DIRECT_HL, MEMORY )
-	ADDR_MODE_DECL( DIRECT_C, MEMORY )
-	ADDR_MODE_DECL( DIRECT_N8, MEMORY )
-	ADDR_MODE_DECL( DIRECT_N16, MEMORY )
-	ADDR_MODE_DECL( IMMEDIATE_N8, MEMORY )
-	ADDR_MODE_DECL( IMMEDIATE_N16, MEMORY )
+	ADDR_MODE_DECL( DIRECT_BC, DIRECT )
+	ADDR_MODE_DECL( DIRECT_DE, DIRECT )
+	ADDR_MODE_DECL( DIRECT_HL, DIRECT )
+	ADDR_MODE_DECL( DIRECT_C, DIRECT )
+	ADDR_MODE_DECL( DIRECT_N8, DIRECT )
+	ADDR_MODE_DECL( DIRECT_N16, DIRECT )
+	ADDR_MODE_DECL( IMMEDIATE_N8, IMMEDIATE )
+	ADDR_MODE_DECL( IMMEDIATE_N16, IMMEDIATE )
 };

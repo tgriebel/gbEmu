@@ -378,3 +378,8 @@ FORCE_INLINE bool InRange( const uint16_t addr, const uint16_t loAddr, const uin
 {
 	return ( addr >= loAddr ) && ( addr <= hiAddr );
 }
+
+FORCE_INLINE bool InRange( const uint16_t addr, const uint16_t checkAddr )
+{
+	return ( addr == checkAddr );
+}

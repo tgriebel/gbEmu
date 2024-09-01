@@ -25,15 +25,15 @@ int main()
 
 	gbSystem.cpu.system = &gbSystem;
 
-	gbSystem.cpu.dbgLog.Reset( 10 );
+	gbSystem.cpu.dbgLog.Reset( 100 );
 	gbSystem.cpu.StartTraceLog( 1 );
 
-	for ( int i = 0; i < 10; ++i ) {
+	for ( int i = 0; i < 100; ++i ) {
 		gbSystem.cpu.Step( i + 1 );
 	}
 
 	string logBuffer;
 	gbSystem.cpu.dbgLog.ToString( logBuffer, 0, 1 );
-	std::cout << "Log: " << logBuffer << std::endl;
+	std::cout << "Log:\n" << logBuffer << std::endl;
 	return 0;
 }

@@ -195,8 +195,8 @@ cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t byteCode ) {
 	opState_t opState;
 	opState.opCode = byteCode;
 	opState.opCycles = cpuCycle_t( op.baseCycles );
-	opState.op0 = system->ReadMemory( instrAddr + 1 );
-	opState.op1 = system->ReadMemory( instrAddr + 2 );
+	opState.op0 = op.operands >= 1 ? system->ReadMemory( instrAddr + 1 ) : 0;
+	opState.op1 = op.operands == 2 ? system->ReadMemory( instrAddr + 2 ) : 0;
 
 #if DEBUG_ADDR == 1
 	if ( IsTraceLogOpen() )
@@ -220,6 +220,8 @@ cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t byteCode ) {
 #endif
 
 	( this->*( op.func ) )( opState );
+
+	AdvancePC( op.pcInc );
 
 	return opState.opCycles;
 }
@@ -249,7 +251,6 @@ cpuCycle_t CpuZ80::Exec()
 	const uint16_t instrAddr = PC;
 
 	const uint8_t curbyte = system->ReadMemory( instrAddr );
-
 	AdvancePC( 1 );
 
 	//if ( interruptRequestNMI )

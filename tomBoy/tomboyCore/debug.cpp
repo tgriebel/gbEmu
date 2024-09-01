@@ -44,7 +44,7 @@ static void PrintAddrName( std::stringstream& debugStream, const char* name, con
 		case addrMode_t::DIRECT_N8:
 		case addrMode_t::DIRECT_N16:
 			{
-				debugStream << "(" << hex << value << ")";
+				debugStream << "($" << hex << addr << ")";
 			}
 			break;
 		case addrMode_t::IMMEDIATE_N8:
@@ -58,11 +58,11 @@ static void PrintAddrName( std::stringstream& debugStream, const char* name, con
 		case addrMode_t::DIRECT_DE:
 		case addrMode_t::DIRECT_HL:
 			if ( dereference ) {
-				debugStream << "(" << hex << value << ")";
+				debugStream << "($" << hex << value << ")";
 			} else {
 				string baseName = string( name );
 				baseName = baseName.substr( 0, baseName.size() - 2 );
-				debugStream << "(" << baseName << ")";
+				debugStream << "($" << baseName << ")";
 			}
 			break;
 		case addrMode_t::NONE: break;

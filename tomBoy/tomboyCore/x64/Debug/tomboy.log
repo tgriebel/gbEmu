@@ -1,15 +1,2 @@
-﻿  stdafx.cpp
-  apu.cpp
-  command.cpp
-  debug.cpp
-  gbSystem.cpp
-  mos6502.cpp
-  bitmap.cpp
-  nesSystem.cpp
-  ppu.cpp
-  serializer.cpp
-  systemSerialize.cpp
-  tomboyMain.cpp
-  z80.cpp
-  Generating Code...
+﻿  debug.cpp
   tomboy.vcxproj -> C:\Users\thoma\source\repos\gbEmu\tomBoy\x64\Debug\tomboyCore.exe

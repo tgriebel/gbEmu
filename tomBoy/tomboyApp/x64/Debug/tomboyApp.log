@@ -1,16 +1,2 @@
-﻿  stdafx.cpp
-  audioEngine.cpp
-  imguiDisplay.cpp
-  imgui.cpp
-  imgui_demo.cpp
-  imgui_draw.cpp
-  imgui_impl_dx12.cpp
-  imgui_impl_win32.cpp
-  imgui_widgets.cpp
-  renderer_dx12.cpp
-  test.cpp
-  tomboyApp.cpp
-  tomboyApp_dx12.cpp
-  Generating Code...
-RC : fatal error RC1110: could not open wintendoApp.rc
+﻿RC : fatal error RC1110: could not open wintendoApp.rc
   
