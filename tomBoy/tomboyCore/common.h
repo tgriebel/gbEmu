@@ -7,7 +7,6 @@
 #include <chrono>
 #include "bitmap.h"
 #include "util.h"
-#include "serializer.h"
 #include "assert.h"
 #include "gbTime.h"
 
@@ -319,6 +318,7 @@ public:
 		return bytes;
 	}
 
+	/*
 	void Set( Serializer& s, const masterCycle_t sysCycle )
 	{
 		Reset();
@@ -351,6 +351,7 @@ public:
 		s.SetPosition( 0 );
 		s.SetMode( mode );
 	}
+	*/
 
 	void Reset()
 	{

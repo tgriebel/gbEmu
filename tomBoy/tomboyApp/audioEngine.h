@@ -10,6 +10,7 @@
 #include <comdef.h>
 #include "tomboyApp.h"
 
+/*
 enum SoundState
 {
 	SOUND_STATE_EMPTY = -2,
@@ -109,3 +110,4 @@ public:
 extern VoiceCallback voiceCallback;
 
 void LogApu( wtFrameResult& frameResult );
+*/

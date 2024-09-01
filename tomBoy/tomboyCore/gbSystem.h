@@ -5,6 +5,7 @@
 #include "common.h"
 #include "gbCart.h"
 #include "z80.h"
+#include "interface.h"
 
 class GameboySystem
 {

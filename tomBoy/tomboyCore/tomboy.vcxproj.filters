@@ -27,13 +27,7 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NesSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ppu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mos6502.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bitmap.h">
@@ -45,16 +39,10 @@
     <ClInclude Include="input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mos6502_ops.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="apu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="timer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="serializer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="debug.h">
@@ -96,27 +84,21 @@
     <ClInclude Include="mapper.cpp">
       <Filter>mappers</Filter>
     </ClInclude>
+    <ClInclude Include="interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="bitmap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ppu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mos6502.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="nesSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="apu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="serializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="systemSerialize.cpp">

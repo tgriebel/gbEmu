@@ -1,6 +1,7 @@
 
 #include "audioEngine.h"
 
+/*
 VoiceCallback voiceCallback;
 
 void wtAudioEngine::Init()
@@ -227,3 +228,4 @@ void LogApu( wtFrameResult& frameResult )
 
 	sndLog.close();
 }
+*/

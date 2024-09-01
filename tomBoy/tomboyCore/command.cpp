@@ -1,7 +1,7 @@
 #include "command.h"
-#include "NesSystem.h"
-
-void wtSystem::ProcessCommands()
+#include "gbSystem.h"
+/*
+void GameboySystem::ProcessCommands()
 {
 	const size_t cmdCount = commands.size();
 	for ( size_t i = 0; i < cmdCount; ++i )
@@ -79,3 +79,4 @@ void wtSystem::SubmitCommand( const sysCmd_t& cmd )
 	// Should be ok to insert async since it just appends to the end
 	commands.push_back( cmd );
 }
+*/
