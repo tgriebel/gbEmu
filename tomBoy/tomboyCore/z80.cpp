@@ -127,26 +127,12 @@ uint16_t CpuZ80::PopWord()
 	return Combine( loByte, hiByte );
 }
 
-void CpuZ80::SetAluFlags( const uint16_t value ) {
-	psw = CheckZero( value );
-}
-
 bool CpuZ80::CheckSign( const uint16_t checkValue ) {
 	return ( checkValue & 0x0080 );
 }
 
-bool CpuZ80::CheckCarry( const uint16_t checkValue ) {
-	return ( checkValue > 0x00ff );
-}
-
 bool CpuZ80::CheckZero( const uint16_t checkValue ) {
 	return ( checkValue == 0 );
-}
-
-bool CpuZ80::CheckOverflow( const uint16_t src, const uint16_t temp, const uint8_t finalValue )
-{
-	const uint8_t signedBound = 0x80;
-	return CheckSign( finalValue ^ src ) && CheckSign( temp ^ src ) && !CheckCarry( temp );
 }
 
 void CpuZ80::AdvancePC( const uint16_t places ) {
@@ -190,7 +176,11 @@ void CpuZ80::StopTraceLog()
 }
 
 cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t byteCode ) {
-	const opInfo_t& op = opLUT[ byteCode ];
+	uint16_t adjustedOpcode = byteCode;
+	if( byteCode == 0xCB ) {
+		adjustedOpcode = system->ReadMemory( instrAddr + 1 ) + 0xFF;
+	}
+	const opInfo_t& op = opLUT[ adjustedOpcode ];
 
 	opState_t opState;
 	opState.opCode = byteCode;

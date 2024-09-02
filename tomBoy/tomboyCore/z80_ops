@@ -46,48 +46,76 @@ OP_DEF( ADD ) {
 	uint16_t value;
 	Load<RHS>( o, value );
 
-	A = A + value;
-	SetAluFlags( A ); // TODO
+	const uint16_t result = A + value;
+	A = (uint8_t)result;
+	
+	z = CheckZero( result ) ? 1 : 0;
+	n = 0;
+	h = ( result > 0x000F );
+	c = ( result > 0x00FF );
 }
 
 OP_DEF( ADD_HL ) {
 	uint16_t value;
 	Load<RHS>( o, value );
+	
+	const uint32_t result = HL + value;
+	HL = (uint16_t)result;
 
-	HL = HL + value;
-	SetAluFlags( HL ); // TODO
+	n = 0;
+	h = ( result > 0x0FFF );
+	c = ( result > 0xFFFF );
 }
 
 OP_DEF( ADD_SP ) {
 	uint16_t value;
 	Load<RHS>( o, value );
 
-	SP = SP + u8i8( (uint8_t)value ).i8;
-	SetAluFlags( SP ); // TODO
+	const uint16_t result = SP + u8i8( (uint8_t)value ).i8;
+	SP = result;
+	
+	n = 0;
+	h = ( result > 0x000F );
+	c = ( result > 0x00FF );
 }
 
 OP_DEF( ADC ) {
 	uint16_t value;
 	Load<RHS>( o, value );
 
-	A = A + value + cy;
-	SetAluFlags( A ); // TODO
+	const uint16_t result = A + value + c;
+	A = (uint8_t)result;
+
+	z = CheckZero( result ) ? 1 : 0;
+	n = 0;
+	h = ( result > 0x000F );
+	c = ( result > 0x00FF );
 }
 
 OP_DEF( SUB ) {
 	uint16_t value;
 	Load<RHS>( o, value );
 
-	A = A - value;
-	SetAluFlags( A ); // TODO
+	const uint16_t result = A - value;
+	c = ( value > A );
+	A = (uint8_t)result;
+
+	z = CheckZero( result ) ? 1 : 0;
+	n = 1;
+	h = ( result > 0x000F );
 }
 
 OP_DEF( SBC ) {
 	uint16_t value;
 	Load<RHS>( o, value );
 
-	A = A - value - cy;
-	SetAluFlags( A ); // TODO
+	const uint16_t result = A - value - c;
+	c = ( value + c ) > A;
+	A = (uint8_t)result;
+
+	z = CheckZero( result ) ? 1 : 0;
+	n = 1;
+	h = ( result > 0x000F );
 }
 
 OP_DEF( AND ) {
@@ -96,10 +124,10 @@ OP_DEF( AND ) {
 
 	A = A & value;
 
-	z = CheckZero( A );
+	z = CheckZero( A ) ? 1 : 0;
 	n = 0;
-	hc = 1;
-	cy = 0;
+	h = 1;
+	c = 0;
 }
 
 OP_DEF( XOR ) {
@@ -107,7 +135,7 @@ OP_DEF( XOR ) {
 	Load<RHS>( o, value );
 
 	A = A ^ value;
-	psw = CheckZero( A );
+	z = CheckZero( A ) ? 1 : 0;
 }
 
 OP_DEF( OR ) {
@@ -115,17 +143,17 @@ OP_DEF( OR ) {
 	Load<RHS>( o, value );
 
 	A = A | value;
-	psw = CheckZero( A );
+	z = CheckZero( A ) ? 1 : 0;
 }
 
 OP_DEF( CP ) {
 	uint16_t value;
 	Load<RHS>( o, value );
 
-	z = CheckZero( A - value );
+	z = CheckZero( A - value ) ? 1 : 0;
 	n = 1;
-	//h = 0; // TODO
-	cy = ( value > A ) ? 1 : 0;
+	h = ( value > 0x000F );
+	c = ( value > A ) ? 1 : 0;
 }
 
 OP_DEF( INC_R8 ) {
@@ -134,9 +162,9 @@ OP_DEF( INC_R8 ) {
 	++value;
 	Store<LHS>( o, value );
 
-	z = CheckZero( value );
+	z = CheckZero( value ) ? 1 : 0;
 	n = 0;
-	hc = CheckCarry( value );
+	h = ( value > 0x000F );
 }
 
 OP_DEF( INC_R16 ) {
@@ -152,9 +180,9 @@ OP_DEF( DEC_R8 ) {
 	--value;
 	Store<LHS>( o, value );
 
-	z = CheckZero( value );
+	z = CheckZero( value ) ? 1 : 0;
 	n = 1;
-	hc = 0; // TODO
+	h = ( value > 0x000F );
 }
 
 OP_DEF( DEC_R16 ) {
@@ -176,8 +204,8 @@ OP_DEF( RLCA ) {
 
 	z = 0;
 	n = 0;
-	hc = 0;
-	cy = bit7;
+	h = 0;
+	c = bit7;
 }
 
 OP_DEF( RRCA ) {
@@ -192,8 +220,8 @@ OP_DEF( RRCA ) {
 
 	z = 0;
 	n = 0;
-	hc = 0;
-	cy = bit0;
+	h = 0;
+	c = bit0;
 }
 
 OP_DEF( RRA ) {
@@ -202,14 +230,14 @@ OP_DEF( RRA ) {
 
 	const uint8_t bit0 = value & 0x01;
 	value >>= 1;
-	value = ( value & 0x7F ) | ( cy << 7 );
+	value = ( value & 0x7F ) | ( c << 7 );
 
 	A = static_cast<uint8_t>( value );
 
 	z = 0;
 	n = 0;
-	hc = 0;
-	cy = bit0;
+	h = 0;
+	c = bit0;
 }
 
 OP_DEF( RLA ) {
@@ -218,14 +246,14 @@ OP_DEF( RLA ) {
 
 	const uint8_t bit7 = value & 0x80;
 	value <<= 1;
-	value = ( value & 0x7F ) | cy;
+	value = ( value & 0x7F ) | c;
 
 	A = static_cast<uint8_t>( value );
 
 	z = 0;
 	n = 0;
-	hc = 0;
-	cy = bit7;
+	h = 0;
+	c = bit7;
 }
 
 OP_DEF( RST ) {
@@ -268,14 +296,14 @@ OP_DEF( DAA ) {
 
 OP_DEF( SCF ) {
 	n = 0;
-	hc = 0;
-	cy = 1;
+	h = 0;
+	c = 1;
 }
 
 OP_DEF( CPL ) {
 	A = ~A;
 	n = 1;
-	hc = 1;
+	h = 1;
 }
 
 OP_DEF( DI ) {
@@ -287,7 +315,7 @@ OP_DEF( EI ) {
 }
 
 OP_DEF( CCF ) {
-	cy = ~cy;
+	c = ~c;
 }
 
 OP_DEF( POP ) {
@@ -316,7 +344,7 @@ OP_DEF( BIT ) {
 
 	z = ~( ( value >> BIT ) & 0x01 );
 	n = 0;
-	hc = 1;
+	h = 1;
 }
 
 OP_DEF( RL ) {
@@ -325,14 +353,14 @@ OP_DEF( RL ) {
 
 	const uint8_t bit7 = value & 0x80;
 	value <<= 1;
-	value = ( value & 0xFE ) | cy;
+	value = ( value & 0xFE ) | c;
 
 	Store<LHS>( o, value );
 
-	z = CheckZero( value );
+	z = CheckZero( value ) ? 1 : 0;
 	n = 0;
-	hc = 0;
-	cy = bit7;
+	h = 0;
+	c = bit7;
 }
 
 OP_DEF( RLC ) {
@@ -345,10 +373,10 @@ OP_DEF( RLC ) {
 
 	Store<LHS>( o, value );
 
-	z = CheckZero( value );
+	z = CheckZero( value ) ? 1 : 0;
 	n = 0;
-	hc = 0;
-	cy = bit7;
+	h = 0;
+	c = bit7;
 }
 
 OP_DEF( RR ) {
@@ -357,14 +385,14 @@ OP_DEF( RR ) {
 
 	const uint8_t bit0 = value & 0x01;
 	value >>= 1;
-	value = ( value & 0x7F ) | ( cy << 7 );
+	value = ( value & 0x7F ) | ( c << 7 );
 
 	Store<LHS>( o, value );
 
-	z = CheckZero( value );
+	z = CheckZero( value ) ? 1 : 0;
 	n = 0;
-	hc = 0;
-	cy = bit0;
+	h = 0;
+	c = bit0;
 }
 
 OP_DEF( RRC ) {
@@ -377,10 +405,10 @@ OP_DEF( RRC ) {
 
 	Store<LHS>( o, value );
 
-	z = CheckZero( value );
+	z = CheckZero( value ) ? 1 : 0;
 	n = 0;
-	hc = 0;
-	cy = bit0;
+	h = 0;
+	c = bit0;
 }
 
 OP_DEF( SLA ) {
@@ -390,10 +418,10 @@ OP_DEF( SLA ) {
 	value = ( value << 1 ) & 0xFE;
 	Store<LHS>( o, value );
 
-	z = CheckZero( value );
+	z = CheckZero( value ) ? 1 : 0;
 	n = 0;
-	hc = 0;
-	cy = bit7;
+	h = 0;
+	c = bit7;
 }
 
 OP_DEF( SRA ) {
@@ -407,10 +435,10 @@ OP_DEF( SRA ) {
 	value = ( value & 0x7F ) | bit7;
 	Store<LHS>( o, value );
 
-	z = CheckZero( value );
+	z = CheckZero( value ) ? 1 : 0;
 	n = 0;
-	hc = 0;
-	cy = bit0;
+	h = 0;
+	c = bit0;
 }
 
 OP_DEF( SWAP ) {
@@ -419,7 +447,7 @@ OP_DEF( SWAP ) {
 	value = ( ( value << 4 ) & 0xF0 ) | ( ( value >> 4 ) & 0x0F );
 	Store<LHS>( o, value );
 
-	psw = CheckZero( value );
+	z = CheckZero( value ) ? 1 : 0;
 }
 
 OP_DEF( SRL ) {
@@ -430,10 +458,10 @@ OP_DEF( SRL ) {
 	value = ( value >> 1 ) & 0x7F;
 	Store<LHS>( o, value );
 
-	z = CheckZero( value );
+	z = CheckZero( value ) ? 1 : 0;
 	n = 0;
-	hc = 0;
-	cy = bit0;
+	h = 0;
+	c = bit0;
 }
 
 OP_DEF( RES ) {
@@ -452,6 +480,14 @@ OP_DEF( SET ) {
 
 void BuildOpLUT()
 {
+	//////////////////////////////////////////////////////////////
+	//											                //
+	// Standard Instruction Set                                 //
+	// <opcode> <function> <lhs> <rhs> <ops> <cycles>           //
+	// <jump> <function> <address> <ops> <cycles> <bit> <check> //
+	//											                //
+	//////////////////////////////////////////////////////////////
+
 	// Misc/control instructions
 	OP_ADDR( 0x00, NOP,			NONE,	NONE,	0, 4 )
 	OP_ADDR( 0x10, STOP,		NONE,	NONE,	0, 4 )
@@ -724,83 +760,88 @@ void BuildOpLUT()
 	OP_ADDR( 0x17, RLA,			A,				A,				0, 4 )
 	OP_ADDR( 0x1F, RRA,			A,				A,				0, 4 )
 
-	// Bit manipulations
-	OP_BIT( 0x00, RLC,			B,			1, 8 )
-	OP_BIT( 0x01, RLC,			C,			1, 8 )
-	OP_BIT( 0x02, RLC,			D,			1, 8 )
-	OP_BIT( 0x03, RLC,			E,			1, 8 )
-	OP_BIT( 0x04, RLC,			H,			1, 8 )
-	OP_BIT( 0x05, RLC,			L,			1, 8 )
-	OP_BIT( 0x06, RLC,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0x07, RLC,			A,			1, 8 )
-	OP_BIT( 0x08, RRC,			B,			1, 8 )
-	OP_BIT( 0x09, RRC,			C,			1, 8 )
-	OP_BIT( 0x0A, RRC,			D,			1, 8 )
-	OP_BIT( 0x0B, RRC,			E,			1, 8 )
-	OP_BIT( 0x0C, RRC,			H,			1, 8 )
-	OP_BIT( 0x0D, RRC,			L,			1, 8 )
-	OP_BIT( 0x0E, RRC,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0x0F, RRC,			A,			1, 8 )
+	/////////////////////////////////////////////////
+	//											   //
+	// 0xCB prefix - Bit Manipulations             //
+	// <opcode> <function> <memory> <bit> <cycles> //
+	//											   //
+	/////////////////////////////////////////////////
+	OP_BIT( 0x00, RLC,			B,			0, 8 )
+	OP_BIT( 0x01, RLC,			C,			0, 8 )
+	OP_BIT( 0x02, RLC,			D,			0, 8 )
+	OP_BIT( 0x03, RLC,			E,			0, 8 )
+	OP_BIT( 0x04, RLC,			H,			0, 8 )
+	OP_BIT( 0x05, RLC,			L,			0, 8 )
+	OP_BIT( 0x06, RLC,			DIRECT_HL,	0, 16 )
+	OP_BIT( 0x07, RLC,			A,			0, 8 )
+	OP_BIT( 0x08, RRC,			B,			0, 8 )
+	OP_BIT( 0x09, RRC,			C,			0, 8 )
+	OP_BIT( 0x0A, RRC,			D,			0, 8 )
+	OP_BIT( 0x0B, RRC,			E,			0, 8 )
+	OP_BIT( 0x0C, RRC,			H,			0, 8 )
+	OP_BIT( 0x0D, RRC,			L,			0, 8 )
+	OP_BIT( 0x0E, RRC,			DIRECT_HL,	0, 16 )
+	OP_BIT( 0x0F, RRC,			A,			0, 8 )
 
-	OP_BIT( 0x10, RL,			B,			1, 8 )
-	OP_BIT( 0x11, RL,			C,			1, 8 )
-	OP_BIT( 0x12, RL,			D,			1, 8 )
-	OP_BIT( 0x13, RL,			E,			1, 8 )
-	OP_BIT( 0x14, RL,			H,			1, 8 )
-	OP_BIT( 0x15, RL,			L,			1, 8 )
-	OP_BIT( 0x16, RL,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0x17, RL,			A,			1, 8 )
-	OP_BIT( 0x18, RR,			B,			1, 8 )
-	OP_BIT( 0x19, RR,			C,			1, 8 )
-	OP_BIT( 0x1A, RR,			D,			1, 8 )
-	OP_BIT( 0x1B, RR,			E,			1, 8 )
-	OP_BIT( 0x1C, RR,			H,			1, 8 )
-	OP_BIT( 0x1D, RR,			L,			1, 8 )
-	OP_BIT( 0x1E, RR,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0x1F, RR,			A,			1, 8 )
+	OP_BIT( 0x10, RL,			B,			0, 8 )
+	OP_BIT( 0x11, RL,			C,			0, 8 )
+	OP_BIT( 0x12, RL,			D,			0, 8 )
+	OP_BIT( 0x13, RL,			E,			0, 8 )
+	OP_BIT( 0x14, RL,			H,			0, 8 )
+	OP_BIT( 0x15, RL,			L,			0, 8 )
+	OP_BIT( 0x16, RL,			DIRECT_HL,	0, 16 )
+	OP_BIT( 0x17, RL,			A,			0, 8 )
+	OP_BIT( 0x18, RR,			B,			0, 8 )
+	OP_BIT( 0x19, RR,			C,			0, 8 )
+	OP_BIT( 0x1A, RR,			D,			0, 8 )
+	OP_BIT( 0x1B, RR,			E,			0, 8 )
+	OP_BIT( 0x1C, RR,			H,			0, 8 )
+	OP_BIT( 0x1D, RR,			L,			0, 8 )
+	OP_BIT( 0x1E, RR,			DIRECT_HL,	0, 16 )
+	OP_BIT( 0x1F, RR,			A,			0, 8 )
 
-	OP_BIT( 0x20, SLA,			B,			1, 8 )
-	OP_BIT( 0x21, SLA,			C,			1, 8 )
-	OP_BIT( 0x22, SLA,			D,			1, 8 )
-	OP_BIT( 0x23, SLA,			E,			1, 8 )
-	OP_BIT( 0x24, SLA,			H,			1, 8 )
-	OP_BIT( 0x25, SLA,			L,			1, 8 )
-	OP_BIT( 0x26, SLA,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0x27, SLA,			A,			1, 8 )
-	OP_BIT( 0x28, SRA,			B,			1, 8 )
-	OP_BIT( 0x29, SRA,			C,			1, 8 )
-	OP_BIT( 0x2A, SRA,			D,			1, 8 )
-	OP_BIT( 0x2B, SRA,			E,			1, 8 )
-	OP_BIT( 0x2C, SRA,			H,			1, 8 )
-	OP_BIT( 0x2D, SRA,			L,			1, 8 )
-	OP_BIT( 0x2E, SRA,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0x2F, SRA,			A,			1, 8 )
+	OP_BIT( 0x20, SLA,			B,			0, 8 )
+	OP_BIT( 0x21, SLA,			C,			0, 8 )
+	OP_BIT( 0x22, SLA,			D,			0, 8 )
+	OP_BIT( 0x23, SLA,			E,			0, 8 )
+	OP_BIT( 0x24, SLA,			H,			0, 8 )
+	OP_BIT( 0x25, SLA,			L,			0, 8 )
+	OP_BIT( 0x26, SLA,			DIRECT_HL,	0, 16 )
+	OP_BIT( 0x27, SLA,			A,			0, 8 )
+	OP_BIT( 0x28, SRA,			B,			0, 8 )
+	OP_BIT( 0x29, SRA,			C,			0, 8 )
+	OP_BIT( 0x2A, SRA,			D,			0, 8 )
+	OP_BIT( 0x2B, SRA,			E,			0, 8 )
+	OP_BIT( 0x2C, SRA,			H,			0, 8 )
+	OP_BIT( 0x2D, SRA,			L,			0, 8 )
+	OP_BIT( 0x2E, SRA,			DIRECT_HL,	0, 16 )
+	OP_BIT( 0x2F, SRA,			A,			0, 8 )
 
-	OP_BIT( 0x30, SWAP,			B,			1, 8 )
-	OP_BIT( 0x31, SWAP,			C,			1, 8 )
-	OP_BIT( 0x32, SWAP,			D,			1, 8 )
-	OP_BIT( 0x33, SWAP,			E,			1, 8 )
-	OP_BIT( 0x34, SWAP,			H,			1, 8 )
-	OP_BIT( 0x35, SWAP,			L,			1, 8 )
-	OP_BIT( 0x36, SWAP,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0x37, SWAP,			A,			1, 8 )
-	OP_BIT( 0x38, SRL,			B,			1, 8 )
-	OP_BIT( 0x39, SRL,			C,			1, 8 )
-	OP_BIT( 0x3A, SRL,			D,			1, 8 )
-	OP_BIT( 0x3B, SRL,			E,			1, 8 )
-	OP_BIT( 0x3C, SRL,			H,			1, 8 )
-	OP_BIT( 0x3D, SRL,			L,			1, 8 )
-	OP_BIT( 0x3E, SRL,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0x3F, SRL,			A,			1, 8 )
+	OP_BIT( 0x30, SWAP,			B,			0, 8 )
+	OP_BIT( 0x31, SWAP,			C,			0, 8 )
+	OP_BIT( 0x32, SWAP,			D,			0, 8 )
+	OP_BIT( 0x33, SWAP,			E,			0, 8 )
+	OP_BIT( 0x34, SWAP,			H,			0, 8 )
+	OP_BIT( 0x35, SWAP,			L,			0, 8 )
+	OP_BIT( 0x36, SWAP,			DIRECT_HL,	0, 16 )
+	OP_BIT( 0x37, SWAP,			A,			0, 8 )
+	OP_BIT( 0x38, SRL,			B,			0, 8 )
+	OP_BIT( 0x39, SRL,			C,			0, 8 )
+	OP_BIT( 0x3A, SRL,			D,			0, 8 )
+	OP_BIT( 0x3B, SRL,			E,			0, 8 )
+	OP_BIT( 0x3C, SRL,			H,			0, 8 )
+	OP_BIT( 0x3D, SRL,			L,			0, 8 )
+	OP_BIT( 0x3E, SRL,			DIRECT_HL,	0, 16 )
+	OP_BIT( 0x3F, SRL,			A,			0, 8 )
 
-	OP_BIT( 0x40, BIT,			B,			1, 8 )
-	OP_BIT( 0x41, BIT,			C,			1, 8 )
-	OP_BIT( 0x42, BIT,			D,			1, 8 )
-	OP_BIT( 0x43, BIT,			E,			1, 8 )
-	OP_BIT( 0x44, BIT,			H,			1, 8 )
-	OP_BIT( 0x45, BIT,			L,			1, 8 )
-	OP_BIT( 0x46, BIT,			DIRECT_HL,	1, 12 )
-	OP_BIT( 0x47, BIT,			A,			1, 8 )
+	OP_BIT( 0x40, BIT,			B,			0, 8 )
+	OP_BIT( 0x41, BIT,			C,			0, 8 )
+	OP_BIT( 0x42, BIT,			D,			0, 8 )
+	OP_BIT( 0x43, BIT,			E,			0, 8 )
+	OP_BIT( 0x44, BIT,			H,			0, 8 )
+	OP_BIT( 0x45, BIT,			L,			0, 8 )
+	OP_BIT( 0x46, BIT,			DIRECT_HL,	0, 12 )
+	OP_BIT( 0x47, BIT,			A,			0, 8 )
 	OP_BIT( 0x48, BIT,			B,			1, 8 )
 	OP_BIT( 0x49, BIT,			C,			1, 8 )
 	OP_BIT( 0x4A, BIT,			D,			1, 8 )
@@ -810,65 +851,65 @@ void BuildOpLUT()
 	OP_BIT( 0x4E, BIT,			DIRECT_HL,	1, 12 )
 	OP_BIT( 0x4F, BIT,			A,			1, 8 )
 
-	OP_BIT( 0x50, BIT,			B,			1, 8 )
-	OP_BIT( 0x51, BIT,			C,			1, 8 )
-	OP_BIT( 0x52, BIT,			D,			1, 8 )
-	OP_BIT( 0x53, BIT,			E,			1, 8 )
-	OP_BIT( 0x54, BIT,			H,			1, 8 )
-	OP_BIT( 0x55, BIT,			L,			1, 8 )
-	OP_BIT( 0x56, BIT,			DIRECT_HL,	1, 12 )
-	OP_BIT( 0x57, BIT,			A,			1, 8 )
-	OP_BIT( 0x58, BIT,			B,			1, 8 )
-	OP_BIT( 0x59, BIT,			C,			1, 8 )
-	OP_BIT( 0x5A, BIT,			D,			1, 8 )
-	OP_BIT( 0x5B, BIT,			E,			1, 8 )
-	OP_BIT( 0x5C, BIT,			H,			1, 8 )
-	OP_BIT( 0x5D, BIT,			L,			1, 8 )
-	OP_BIT( 0x5E, BIT,			DIRECT_HL,	1, 12 )
-	OP_BIT( 0x5F, BIT,			A,			1, 8 )
+	OP_BIT( 0x50, BIT,			B,			2, 8 )
+	OP_BIT( 0x51, BIT,			C,			2, 8 )
+	OP_BIT( 0x52, BIT,			D,			2, 8 )
+	OP_BIT( 0x53, BIT,			E,			2, 8 )
+	OP_BIT( 0x54, BIT,			H,			2, 8 )
+	OP_BIT( 0x55, BIT,			L,			2, 8 )
+	OP_BIT( 0x56, BIT,			DIRECT_HL,	2, 12 )
+	OP_BIT( 0x57, BIT,			A,			2, 8 )
+	OP_BIT( 0x58, BIT,			B,			3, 8 )
+	OP_BIT( 0x59, BIT,			C,			3, 8 )
+	OP_BIT( 0x5A, BIT,			D,			3, 8 )
+	OP_BIT( 0x5B, BIT,			E,			3, 8 )
+	OP_BIT( 0x5C, BIT,			H,			3, 8 )
+	OP_BIT( 0x5D, BIT,			L,			3, 8 )
+	OP_BIT( 0x5E, BIT,			DIRECT_HL,	3, 12 )
+	OP_BIT( 0x5F, BIT,			A,			3, 8 )
 
-	OP_BIT( 0x60, BIT,			B,			1, 8 )
-	OP_BIT( 0x61, BIT,			C,			1, 8 )
-	OP_BIT( 0x62, BIT,			D,			1, 8 )
-	OP_BIT( 0x63, BIT,			E,			1, 8 )
-	OP_BIT( 0x64, BIT,			H,			1, 8 )
-	OP_BIT( 0x65, BIT,			L,			1, 8 )
-	OP_BIT( 0x66, BIT,			DIRECT_HL,	1, 12 )
-	OP_BIT( 0x67, BIT,			A,			1, 8 )
-	OP_BIT( 0x68, BIT,			B,			1, 8 )
-	OP_BIT( 0x69, BIT,			C,			1, 8 )
-	OP_BIT( 0x6A, BIT,			D,			1, 8 )
-	OP_BIT( 0x6B, BIT,			E,			1, 8 )
-	OP_BIT( 0x6C, BIT,			H,			1, 8 )
-	OP_BIT( 0x6D, BIT,			L,			1, 8 )
-	OP_BIT( 0x6E, BIT,			DIRECT_HL,	1, 12 )
-	OP_BIT( 0x6F, BIT,			A,			1, 8 )
+	OP_BIT( 0x60, BIT,			B,			4, 8 )
+	OP_BIT( 0x61, BIT,			C,			4, 8 )
+	OP_BIT( 0x62, BIT,			D,			4, 8 )
+	OP_BIT( 0x63, BIT,			E,			4, 8 )
+	OP_BIT( 0x64, BIT,			H,			4, 8 )
+	OP_BIT( 0x65, BIT,			L,			4, 8 )
+	OP_BIT( 0x66, BIT,			DIRECT_HL,	4, 12 )
+	OP_BIT( 0x67, BIT,			A,			4, 8 )
+	OP_BIT( 0x68, BIT,			B,			5, 8 )
+	OP_BIT( 0x69, BIT,			C,			5, 8 )
+	OP_BIT( 0x6A, BIT,			D,			5, 8 )
+	OP_BIT( 0x6B, BIT,			E,			5, 8 )
+	OP_BIT( 0x6C, BIT,			H,			5, 8 )
+	OP_BIT( 0x6D, BIT,			L,			5, 8 )
+	OP_BIT( 0x6E, BIT,			DIRECT_HL,	5, 12 )
+	OP_BIT( 0x6F, BIT,			A,			5, 8 )
 
-	OP_BIT( 0x70, BIT,			B,			1, 8 )
-	OP_BIT( 0x71, BIT,			C,			1, 8 )
-	OP_BIT( 0x72, BIT,			D,			1, 8 )
-	OP_BIT( 0x73, BIT,			E,			1, 8 )
-	OP_BIT( 0x74, BIT,			H,			1, 8 )
-	OP_BIT( 0x75, BIT,			L,			1, 8 )
-	OP_BIT( 0x76, BIT,			DIRECT_HL,	1, 12 )
-	OP_BIT( 0x77, BIT,			A,			1, 8 )
-	OP_BIT( 0x78, BIT,			B,			1, 8 )
-	OP_BIT( 0x79, BIT,			C,			1, 8 )
-	OP_BIT( 0x7A, BIT,			D,			1, 8 )
-	OP_BIT( 0x7B, BIT,			E,			1, 8 )
-	OP_BIT( 0x7C, BIT,			H,			1, 8 )
-	OP_BIT( 0x7D, BIT,			L,			1, 8 )
-	OP_BIT( 0x7E, BIT,			DIRECT_HL,	1, 12 )
-	OP_BIT( 0x7F, BIT,			A,			1, 8 )
+	OP_BIT( 0x70, BIT,			B,			6, 8 )
+	OP_BIT( 0x71, BIT,			C,			6, 8 )
+	OP_BIT( 0x72, BIT,			D,			6, 8 )
+	OP_BIT( 0x73, BIT,			E,			6, 8 )
+	OP_BIT( 0x74, BIT,			H,			6, 8 )
+	OP_BIT( 0x75, BIT,			L,			6, 8 )
+	OP_BIT( 0x76, BIT,			DIRECT_HL,	6, 12 )
+	OP_BIT( 0x77, BIT,			A,			6, 8 )
+	OP_BIT( 0x78, BIT,			B,			7, 8 )
+	OP_BIT( 0x79, BIT,			C,			7, 8 )
+	OP_BIT( 0x7A, BIT,			D,			7, 8 )
+	OP_BIT( 0x7B, BIT,			E,			7, 8 )
+	OP_BIT( 0x7C, BIT,			H,			7, 8 )
+	OP_BIT( 0x7D, BIT,			L,			7, 8 )
+	OP_BIT( 0x7E, BIT,			DIRECT_HL,	7, 12 )
+	OP_BIT( 0x7F, BIT,			A,			7, 8 )
 
-	OP_BIT( 0x80, RES,			B,			1, 8 )
-	OP_BIT( 0x81, RES,			C,			1, 8 )
-	OP_BIT( 0x82, RES,			D,			1, 8 )
-	OP_BIT( 0x83, RES,			E,			1, 8 )
-	OP_BIT( 0x84, RES,			H,			1, 8 )
-	OP_BIT( 0x85, RES,			L,			1, 8 )
-	OP_BIT( 0x86, RES,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0x87, RES,			A,			1, 8 )
+	OP_BIT( 0x80, RES,			B,			0, 8 )
+	OP_BIT( 0x81, RES,			C,			0, 8 )
+	OP_BIT( 0x82, RES,			D,			0, 8 )
+	OP_BIT( 0x83, RES,			E,			0, 8 )
+	OP_BIT( 0x84, RES,			H,			0, 8 )
+	OP_BIT( 0x85, RES,			L,			0, 8 )
+	OP_BIT( 0x86, RES,			DIRECT_HL,	0, 16 )
+	OP_BIT( 0x87, RES,			A,			0, 8 )
 	OP_BIT( 0x88, RES,			B,			1, 8 )
 	OP_BIT( 0x89, RES,			C,			1, 8 )
 	OP_BIT( 0x8A, RES,			D,			1, 8 )
@@ -878,65 +919,65 @@ void BuildOpLUT()
 	OP_BIT( 0x8E, RES,			DIRECT_HL,	1, 16 )
 	OP_BIT( 0x8F, RES,			A,			1, 8 )
 
-	OP_BIT( 0x90, RES,			B,			1, 8 )
-	OP_BIT( 0x91, RES,			C,			1, 8 )
-	OP_BIT( 0x92, RES,			D,			1, 8 )
-	OP_BIT( 0x93, RES,			E,			1, 8 )
-	OP_BIT( 0x94, RES,			H,			1, 8 )
-	OP_BIT( 0x95, RES,			L,			1, 8 )
-	OP_BIT( 0x96, RES,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0x97, RES,			A,			1, 8 )
-	OP_BIT( 0x98, RES,			B,			1, 8 )
-	OP_BIT( 0x99, RES,			C,			1, 8 )
-	OP_BIT( 0x9A, RES,			D,			1, 8 )
-	OP_BIT( 0x9B, RES,			E,			1, 8 )
-	OP_BIT( 0x9C, RES,			H,			1, 8 )
-	OP_BIT( 0x9D, RES,			L,			1, 8 )
-	OP_BIT( 0x9E, RES,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0x9F, RES,			A,			1, 8 )
+	OP_BIT( 0x90, RES,			B,			2, 8 )
+	OP_BIT( 0x91, RES,			C,			2, 8 )
+	OP_BIT( 0x92, RES,			D,			2, 8 )
+	OP_BIT( 0x93, RES,			E,			2, 8 )
+	OP_BIT( 0x94, RES,			H,			2, 8 )
+	OP_BIT( 0x95, RES,			L,			2, 8 )
+	OP_BIT( 0x96, RES,			DIRECT_HL,	2, 16 )
+	OP_BIT( 0x97, RES,			A,			2, 8 )
+	OP_BIT( 0x98, RES,			B,			3, 8 )
+	OP_BIT( 0x99, RES,			C,			3, 8 )
+	OP_BIT( 0x9A, RES,			D,			3, 8 )
+	OP_BIT( 0x9B, RES,			E,			3, 8 )
+	OP_BIT( 0x9C, RES,			H,			3, 8 )
+	OP_BIT( 0x9D, RES,			L,			3, 8 )
+	OP_BIT( 0x9E, RES,			DIRECT_HL,	3, 16 )
+	OP_BIT( 0x9F, RES,			A,			3, 8 )
 
-	OP_BIT( 0xA0, RES,			B,			1, 8 )
-	OP_BIT( 0xA1, RES,			C,			1, 8 )
-	OP_BIT( 0xA2, RES,			D,			1, 8 )
-	OP_BIT( 0xA3, RES,			E,			1, 8 )
-	OP_BIT( 0xA4, RES,			H,			1, 8 )
-	OP_BIT( 0xA5, RES,			L,			1, 8 )
-	OP_BIT( 0xA6, RES,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0xA7, RES,			A,			1, 8 )
-	OP_BIT( 0xA8, RES,			B,			1, 8 )
-	OP_BIT( 0xA9, RES,			C,			1, 8 )
-	OP_BIT( 0xAA, RES,			D,			1, 8 )
-	OP_BIT( 0xAB, RES,			E,			1, 8 )
-	OP_BIT( 0xAC, RES,			H,			1, 8 )
-	OP_BIT( 0xAD, RES,			L,			1, 8 )
-	OP_BIT( 0xAE, RES,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0xAF, RES,			A,			1, 8 )
+	OP_BIT( 0xA0, RES,			B,			4, 8 )
+	OP_BIT( 0xA1, RES,			C,			4, 8 )
+	OP_BIT( 0xA2, RES,			D,			4, 8 )
+	OP_BIT( 0xA3, RES,			E,			4, 8 )
+	OP_BIT( 0xA4, RES,			H,			4, 8 )
+	OP_BIT( 0xA5, RES,			L,			4, 8 )
+	OP_BIT( 0xA6, RES,			DIRECT_HL,	4, 16 )
+	OP_BIT( 0xA7, RES,			A,			4, 8 )
+	OP_BIT( 0xA8, RES,			B,			5, 8 )
+	OP_BIT( 0xA9, RES,			C,			5, 8 )
+	OP_BIT( 0xAA, RES,			D,			5, 8 )
+	OP_BIT( 0xAB, RES,			E,			5, 8 )
+	OP_BIT( 0xAC, RES,			H,			5, 8 )
+	OP_BIT( 0xAD, RES,			L,			5, 8 )
+	OP_BIT( 0xAE, RES,			DIRECT_HL,	5, 16 )
+	OP_BIT( 0xAF, RES,			A,			5, 8 )
 
-	OP_BIT( 0xB0, RES,			B,			1, 8 )
-	OP_BIT( 0xB1, RES,			C,			1, 8 )
-	OP_BIT( 0xB2, RES,			D,			1, 8 )
-	OP_BIT( 0xB3, RES,			E,			1, 8 )
-	OP_BIT( 0xB4, RES,			H,			1, 8 )
-	OP_BIT( 0xB5, RES,			L,			1, 8 )
-	OP_BIT( 0xB6, RES,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0xB7, RES,			A,			1, 8 )
-	OP_BIT( 0xB8, RES,			B,			1, 8 )
-	OP_BIT( 0xB9, RES,			C,			1, 8 )
-	OP_BIT( 0xBA, RES,			D,			1, 8 )
-	OP_BIT( 0xBB, RES,			E,			1, 8 )
-	OP_BIT( 0xBC, RES,			H,			1, 8 )
-	OP_BIT( 0xBD, RES,			L,			1, 8 )
-	OP_BIT( 0xBE, RES,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0xBF, RES,			A,			1, 8 )
+	OP_BIT( 0xB0, RES,			B,			6, 8 )
+	OP_BIT( 0xB1, RES,			C,			6, 8 )
+	OP_BIT( 0xB2, RES,			D,			6, 8 )
+	OP_BIT( 0xB3, RES,			E,			6, 8 )
+	OP_BIT( 0xB4, RES,			H,			6, 8 )
+	OP_BIT( 0xB5, RES,			L,			6, 8 )
+	OP_BIT( 0xB6, RES,			DIRECT_HL,	6, 16 )
+	OP_BIT( 0xB7, RES,			A,			6, 8 )
+	OP_BIT( 0xB8, RES,			B,			7, 8 )
+	OP_BIT( 0xB9, RES,			C,			7, 8 )
+	OP_BIT( 0xBA, RES,			D,			7, 8 )
+	OP_BIT( 0xBB, RES,			E,			7, 8 )
+	OP_BIT( 0xBC, RES,			H,			7, 8 )
+	OP_BIT( 0xBD, RES,			L,			7, 8 )
+	OP_BIT( 0xBE, RES,			DIRECT_HL,	7, 16 )
+	OP_BIT( 0xBF, RES,			A,			7, 8 )
 
-	OP_BIT( 0xC0, SET,			B,			1, 8 )
-	OP_BIT( 0xC1, SET,			C,			1, 8 )
-	OP_BIT( 0xC2, SET,			D,			1, 8 )
-	OP_BIT( 0xC3, SET,			E,			1, 8 )
-	OP_BIT( 0xC4, SET,			H,			1, 8 )
-	OP_BIT( 0xC5, SET,			L,			1, 8 )
-	OP_BIT( 0xC6, SET,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0xC7, SET,			A,			1, 8 )
+	OP_BIT( 0xC0, SET,			B,			0, 8 )
+	OP_BIT( 0xC1, SET,			C,			0, 8 )
+	OP_BIT( 0xC2, SET,			D,			0, 8 )
+	OP_BIT( 0xC3, SET,			E,			0, 8 )
+	OP_BIT( 0xC4, SET,			H,			0, 8 )
+	OP_BIT( 0xC5, SET,			L,			0, 8 )
+	OP_BIT( 0xC6, SET,			DIRECT_HL,	0, 16 )
+	OP_BIT( 0xC7, SET,			A,			0, 8 )
 	OP_BIT( 0xC8, SET,			B,			1, 8 )
 	OP_BIT( 0xC9, SET,			C,			1, 8 )
 	OP_BIT( 0xCA, SET,			D,			1, 8 )
@@ -946,54 +987,54 @@ void BuildOpLUT()
 	OP_BIT( 0xCE, SET,			DIRECT_HL,	1, 16 )
 	OP_BIT( 0xCF, SET,			A,			1, 8 )
 	
-	OP_BIT( 0xD0, SET,			B,			1, 8 )
-	OP_BIT( 0xD1, SET,			C,			1, 8 )
-	OP_BIT( 0xD2, SET,			D,			1, 8 )
-	OP_BIT( 0xD3, SET,			E,			1, 8 )
-	OP_BIT( 0xD4, SET,			H,			1, 8 )
-	OP_BIT( 0xD5, SET,			L,			1, 8 )
-	OP_BIT( 0xD6, SET,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0xD7, SET,			A,			1, 8 )
-	OP_BIT( 0xD8, SET,			B,			1, 8 )
-	OP_BIT( 0xD9, SET,			C,			1, 8 )
-	OP_BIT( 0xDA, SET,			D,			1, 8 )
-	OP_BIT( 0xDB, SET,			E,			1, 8 )
-	OP_BIT( 0xDC, SET,			H,			1, 8 )
-	OP_BIT( 0xDD, SET,			L,			1, 8 )
-	OP_BIT( 0xDE, SET,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0xDF, SET,			A,			1, 8 )
+	OP_BIT( 0xD0, SET,			B,			2, 8 )
+	OP_BIT( 0xD1, SET,			C,			2, 8 )
+	OP_BIT( 0xD2, SET,			D,			2, 8 )
+	OP_BIT( 0xD3, SET,			E,			2, 8 )
+	OP_BIT( 0xD4, SET,			H,			2, 8 )
+	OP_BIT( 0xD5, SET,			L,			2, 8 )
+	OP_BIT( 0xD6, SET,			DIRECT_HL,	2, 16 )
+	OP_BIT( 0xD7, SET,			A,			2, 8 )
+	OP_BIT( 0xD8, SET,			B,			3, 8 )
+	OP_BIT( 0xD9, SET,			C,			3, 8 )
+	OP_BIT( 0xDA, SET,			D,			3, 8 )
+	OP_BIT( 0xDB, SET,			E,			3, 8 )
+	OP_BIT( 0xDC, SET,			H,			3, 8 )
+	OP_BIT( 0xDD, SET,			L,			3, 8 )
+	OP_BIT( 0xDE, SET,			DIRECT_HL,	3, 16 )
+	OP_BIT( 0xDF, SET,			A,			3, 8 )
 
-	OP_BIT( 0xE0, SET,			B,			1, 8 )
-	OP_BIT( 0xE1, SET,			C,			1, 8 )
-	OP_BIT( 0xE2, SET,			D,			1, 8 )
-	OP_BIT( 0xE3, SET,			E,			1, 8 )
-	OP_BIT( 0xE4, SET,			H,			1, 8 )
-	OP_BIT( 0xE5, SET,			L,			1, 8 )
-	OP_BIT( 0xE6, SET,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0xE7, SET,			A,			1, 8 )
-	OP_BIT( 0xE8, SET,			B,			1, 8 )
-	OP_BIT( 0xE9, SET,			C,			1, 8 )
-	OP_BIT( 0xEA, SET,			D,			1, 8 )
-	OP_BIT( 0xEB, SET,			E,			1, 8 )
-	OP_BIT( 0xEC, SET,			H,			1, 8 )
-	OP_BIT( 0xED, SET,			L,			1, 8 )
-	OP_BIT( 0xEE, SET,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0xEF, SET,			A,			1, 8 )
+	OP_BIT( 0xE0, SET,			B,			4, 8 )
+	OP_BIT( 0xE1, SET,			C,			4, 8 )
+	OP_BIT( 0xE2, SET,			D,			4, 8 )
+	OP_BIT( 0xE3, SET,			E,			4, 8 )
+	OP_BIT( 0xE4, SET,			H,			4, 8 )
+	OP_BIT( 0xE5, SET,			L,			4, 8 )
+	OP_BIT( 0xE6, SET,			DIRECT_HL,	4, 16 )
+	OP_BIT( 0xE7, SET,			A,			4, 8 )
+	OP_BIT( 0xE8, SET,			B,			5, 8 )
+	OP_BIT( 0xE9, SET,			C,			5, 8 )
+	OP_BIT( 0xEA, SET,			D,			5, 8 )
+	OP_BIT( 0xEB, SET,			E,			5, 8 )
+	OP_BIT( 0xEC, SET,			H,			5, 8 )
+	OP_BIT( 0xED, SET,			L,			5, 8 )
+	OP_BIT( 0xEE, SET,			DIRECT_HL,	5, 16 )
+	OP_BIT( 0xEF, SET,			A,			5, 8 )
 
-	OP_BIT( 0xF0, SET,			B,			1, 8 )
-	OP_BIT( 0xF1, SET,			C,			1, 8 )
-	OP_BIT( 0xF2, SET,			D,			1, 8 )
-	OP_BIT( 0xF3, SET,			E,			1, 8 )
-	OP_BIT( 0xF4, SET,			H,			1, 8 )
-	OP_BIT( 0xF5, SET,			L,			1, 8 )
-	OP_BIT( 0xF6, SET,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0xF7, SET,			A,			1, 8 )
-	OP_BIT( 0xF8, SET,			B,			1, 8 )
-	OP_BIT( 0xF9, SET,			C,			1, 8 )
-	OP_BIT( 0xFA, SET,			D,			1, 8 )
-	OP_BIT( 0xFB, SET,			E,			1, 8 )
-	OP_BIT( 0xFC, SET,			H,			1, 8 )
-	OP_BIT( 0xFD, SET,			L,			1, 8 )
-	OP_BIT( 0xFE, SET,			DIRECT_HL,	1, 16 )
-	OP_BIT( 0xFF, SET,			A,			1, 8 )
+	OP_BIT( 0xF0, SET,			B,			6, 8 )
+	OP_BIT( 0xF1, SET,			C,			6, 8 )
+	OP_BIT( 0xF2, SET,			D,			6, 8 )
+	OP_BIT( 0xF3, SET,			E,			6, 8 )
+	OP_BIT( 0xF4, SET,			H,			6, 8 )
+	OP_BIT( 0xF5, SET,			L,			6, 8 )
+	OP_BIT( 0xF6, SET,			DIRECT_HL,	6, 16 )
+	OP_BIT( 0xF7, SET,			A,			6, 8 )
+	OP_BIT( 0xF8, SET,			B,			7, 8 )
+	OP_BIT( 0xF9, SET,			C,			7, 8 )
+	OP_BIT( 0xFA, SET,			D,			7, 8 )
+	OP_BIT( 0xFB, SET,			E,			7, 8 )
+	OP_BIT( 0xFC, SET,			H,			7, 8 )
+	OP_BIT( 0xFD, SET,			L,			7, 8 )
+	OP_BIT( 0xFE, SET,			DIRECT_HL,	7, 16 )
+	OP_BIT( 0xFF, SET,			A,			7, 8 )
 }

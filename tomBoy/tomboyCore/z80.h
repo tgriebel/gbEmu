@@ -18,6 +18,7 @@ enum class opType_t : uint8_t
 	JP, JR, CALL, RST, RET, RETI,
 	PUSH, POP,
 	DI, EI, SCF, CCF, CP,
+	COUNT
 };
 
 enum class addrMode_t : uint8_t
@@ -186,8 +187,8 @@ union u32i32 {
 														}
 
 #define OP_ADDR( num, name, lhs, rhs, ops, cycles )			_OP_ADDR( num, name, lhs, rhs, ops, ops, cycles, 0, 0 )
-#define OP_JUMP( num, name, rhs, ops, cycles, bit, chk )	_OP_ADDR( num, name, NONE, rhs, ops, ops, cycles, bit, chk )
-#define OP_BIT( num, name, rhs, bit, cycles )				_OP_ADDR( num + 0xFF, name, rhs, rhs, 0, 0, cycles, bit, 0 )
+#define OP_JUMP( num, name, rhs, ops, cycles, bit, chk )	_OP_ADDR( num, name, NONE, rhs, ops, 0, cycles, bit, chk )
+#define OP_BIT( num, name, rhs, bit, cycles )				_OP_ADDR( num + 0xFF, name, rhs, rhs, 0, 2, cycles, bit, 0 )
 
 class CpuZ80
 {
@@ -198,9 +199,9 @@ public:
 		struct {
 			uint8_t unused : 4;
 			uint8_t z	: 1; // Zero
-			uint8_t n	: 1; // Substration
-			uint8_t hc	: 1; // Half carry
-			uint8_t cy	: 1; // Carry
+			uint8_t n	: 1; // Negative
+			uint8_t h	: 1; // Half-carry
+			uint8_t c	: 1; // Carry
 		};
 		struct {
 			uint8_t FLow	: 4; // F lower
@@ -269,7 +270,7 @@ public:
 		DE = 0x00D8;
 		HL = 0x014D;
 		SP = 0xFFFE;
-		PC = 0x0150; // FIXME: set by rom header
+		PC = 0x0100;
 	}
 
 	template <class LHS>
@@ -326,11 +327,8 @@ public:
 	void		StartTraceLog( const uint32_t frameCount );
 	void		StopTraceLog();
 
-	void		SetAluFlags( const uint16_t value );
 	bool		CheckSign( const uint16_t checkValue );
-	bool		CheckCarry( const uint16_t checkValue );
 	bool		CheckZero( const uint16_t checkValue );
-	bool		CheckOverflow( const uint16_t src, const uint16_t temp, const uint8_t finalValue );
 
 	// FIXME: These just wrap main system functions that need to be used in headers
 	uint8_t		ReadMemoryBus( const uint16_t address );
