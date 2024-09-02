@@ -26,19 +26,20 @@ static std::string GetOpName( const OpDebugInfo& info )
 		name += " ";
 	}
 
-	if( ( info.opType == (uint8_t)opType_t::NOP ) || ( info.opType == (uint8_t)opType_t::ILL ) )
+
+
+	if( info.opType == (uint8_t)opType_t::ILL )
 	{
-		name += "NOP";
-	}
-	else if ( ( info.opType == (uint8_t)opType_t::LD_INC ) || ( info.opType == (uint8_t)opType_t::LD_DEC ) )
-	{
-		name += "LD";
+		name += "<Illegal>";
 	}
 	else
 	{
-		name += info.mnemonic[ 0 ];
-		name += info.mnemonic[ 1 ];
-		name += info.mnemonic[ 2 ];
+		std::string mnemonic = info.mnemonic;
+		const size_t delim = mnemonic.find( '_' );
+		if( delim != string::npos ) {
+			mnemonic = mnemonic.substr( 0, delim );
+		}
+		name += mnemonic;
 	}
 	return name;
 }
@@ -79,12 +80,12 @@ static void PrintAddrName( std::stringstream& debugStream, const char* name, con
 			break;
 		case addrMode_t::IMMEDIATE_N8:
 			{
-				PrintHex( debugStream, value, 2, true );
+				PrintHex( debugStream, addr, 2, true );
 			}
 			break;
 		case addrMode_t::IMMEDIATE_N16:
 			{
-				PrintHex( debugStream, value, 4, true );
+				PrintHex( debugStream, addr, 4, true );
 			}
 			break;
 		case addrMode_t::DIRECT_C:
@@ -92,13 +93,11 @@ static void PrintAddrName( std::stringstream& debugStream, const char* name, con
 		case addrMode_t::DIRECT_DE:
 		case addrMode_t::DIRECT_HL:
 			if ( dereference ) {
-				debugStream << "(";
 				PrintHex( debugStream, value, 4, true );
-				debugStream << ")";
 			} else {
-				string baseName = string( name );
-				baseName = baseName.substr( 0, baseName.size() - 2 );
-				debugStream << "($" << baseName << ")";
+				debugStream << "(";
+				PrintHex( debugStream, addr, 4, true );
+				debugStream << ")";
 			}
 			break;
 		case addrMode_t::NONE: break;
@@ -168,7 +167,12 @@ void OpDebugInfo::ToString( std::string& buffer, const bool registerDebug, const
 	}
 	else
 	{
-		if ( lhsName != "NONE" )
+		const bool incrementOp =( opType == (uint8_t)opType_t::INC_R8 ) || 
+								( opType == (uint8_t)opType_t::INC_R16 ) ||
+								( opType == (uint8_t)opType_t::DEC_R8 ) ||
+								( opType == (uint8_t)opType_t::DEC_R16 );
+
+		if ( lhsName != "NONE" && !incrementOp )
 		{
 			const addrMode_t mode = static_cast<addrMode_t>( lhsAddrMode );
 			PrintAddrName( debugStream, lhsName, mode, lhsAddress, lhsMemValue, deferenceOperands );
