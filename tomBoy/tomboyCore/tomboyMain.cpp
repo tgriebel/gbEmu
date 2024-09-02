@@ -17,7 +17,8 @@ void LoadGameboyFile( const std::wstring& fileName, unique_ptr<gbCart>& outCart 
 
 int main()
 {
-	LoadGameboyFile( L"C:\\Users\\thoma\\source\\repos\\gbEmu\\tomBoy\\tomboyCore\\Games\\Alleyway.gb", gbSystem.cart );
+	//LoadGameboyFile( L"Games/Alleyway.gb", gbSystem.cart );
+	LoadGameboyFile( L"Tests/01-special.gb", gbSystem.cart );
 	gbSystem.cart->mapper = gbSystem.AssignMapper( gbSystem.cart->GetMapperId() );
 	gbSystem.cart->mapper->system = &gbSystem;
 	gbSystem.cart->mapper->OnLoadCpu();
@@ -28,7 +29,7 @@ int main()
 	gbSystem.cpu.dbgLog.Reset( 100 );
 	gbSystem.cpu.StartTraceLog( 1 );
 
-	for ( int i = 0; i < 100; ++i ) {
+	for ( int i = 0; i < 1000; ++i ) {
 		gbSystem.cpu.Step( i + 1 );
 	}
 

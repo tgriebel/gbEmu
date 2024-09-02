@@ -1,43 +1,4 @@
 ﻿  audioEngine.cpp
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(321,22): error C2061: syntax error: identifier 'Serializer'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(341,26): error C2061: syntax error: identifier 'Serializer'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(324,15): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(326,18): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(326,1): error C2660: 'memcpy': function does not take 2 arguments
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\vcruntime_string.h(43,15): message : see declaration of 'memcpy'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(328,3): error C2653: 'serializerHeader_t': is not a class or namespace name
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(328,23): error C2065: 'section_t': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(328,34): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(329,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(329,37): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(330,27): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(331,23): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(333,3): error C2653: 'serializerHeader_t': is not a class or namespace name
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(333,23): error C2065: 'section_t': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(333,34): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(334,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(334,35): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(335,25): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(336,21): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(338,11): error C2065: 'sysCycle': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(343,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(344,7): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,25): error C2146: syntax error: missing ';' before identifier 'mode'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,25): error C2065: 'mode': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,32): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,14): error C2825: 'serializeMode_t': must be a class or namespace when followed by '::'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,31): error C2510: 'serializeMode_t': left of '::' must be a class/struct/union
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,1): error C2065: 'STORE': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(349,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(350,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(351,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(351,14): error C2065: 'mode': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(67,21): error C2059: syntax error: 'string'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(68,21): error C2059: syntax error: 'string'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(312,24): error C2061: syntax error: identifier 'Serializer'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(313,28): error C2061: syntax error: identifier 'Serializer'
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C3646: 'frameResult': unknown override specifier
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C2143: syntax error: missing ',' before '['
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,48): error C2238: unexpected token(s) preceding ';'
@@ -50,45 +11,6 @@ C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,23): error C2
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,61): error C2061: syntax error: identifier 'wtSampleQueue'
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(212,9): error C2065: 'quque': undeclared identifier
   imguiDisplay.cpp
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(321,22): error C2061: syntax error: identifier 'Serializer'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(341,26): error C2061: syntax error: identifier 'Serializer'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(324,15): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(326,18): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(326,1): error C2660: 'memcpy': function does not take 2 arguments
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\vcruntime_string.h(43,15): message : see declaration of 'memcpy'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(328,3): error C2653: 'serializerHeader_t': is not a class or namespace name
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(328,23): error C2065: 'section_t': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(328,34): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(329,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(329,37): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(330,27): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(331,23): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(333,3): error C2653: 'serializerHeader_t': is not a class or namespace name
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(333,23): error C2065: 'section_t': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(333,34): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(334,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(334,35): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(335,25): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(336,21): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(338,11): error C2065: 'sysCycle': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(343,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(344,7): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,25): error C2146: syntax error: missing ';' before identifier 'mode'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,25): error C2065: 'mode': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,32): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,14): error C2825: 'serializeMode_t': must be a class or namespace when followed by '::'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,31): error C2510: 'serializeMode_t': left of '::' must be a class/struct/union
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,1): error C2065: 'STORE': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(349,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(350,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(351,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(351,14): error C2065: 'mode': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(67,21): error C2059: syntax error: 'string'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(68,21): error C2059: syntax error: 'string'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(312,24): error C2061: syntax error: identifier 'Serializer'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(313,28): error C2061: syntax error: identifier 'Serializer'
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C3646: 'frameResult': unknown override specifier
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C2143: syntax error: missing ',' before '['
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,48): error C2238: unexpected token(s) preceding ';'
@@ -166,47 +88,57 @@ C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(155,68): err
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(156,43): error C2065: 'fr': undeclared identifier
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(160,45): error C2065: 'fr': undeclared identifier
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(161,52): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(161,54): fatal error C1003: error count exceeds 100; stopping compilation
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(162,50): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(163,47): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(164,48): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(164,81): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(167,45): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(168,10): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(172,47): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(183,46): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(183,94): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(192,15): error C2027: use of undefined type 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(200,15): error C2027: use of undefined type 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(208,15): error C2027: use of undefined type 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(210,6): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(220,15): error C2027: use of undefined type 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(222,6): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(230,30): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(232,15): error C2027: use of undefined type 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(242,15): error C2027: use of undefined type 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(249,30): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(249,69): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(251,15): error C2027: use of undefined type 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(258,32): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(260,15): error C2027: use of undefined type 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(263,10): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(265,53): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(265,33): error C2789: 'displayFrame': an object of const-qualified type must be initialized
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(265): message : see declaration of 'displayFrame'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(266,52): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(266,30): error C2789: 'maxFrames': an object of const-qualified type must be initialized
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(266): message : see declaration of 'maxFrames'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(268,52): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(268,67): error C2660: 'ImGui::SliderInt': function does not take 3 arguments
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(487,29): message : see declaration of 'ImGui::SliderInt'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(270,25): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(278,16): error C2027: use of undefined type 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(286,30): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(286,61): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(298,43): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(307,43): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(334,26): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(334,28): fatal error C1003: error count exceeds 100; stopping compilation
   renderer_dx12.cpp
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(321,22): error C2061: syntax error: identifier 'Serializer'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(341,26): error C2061: syntax error: identifier 'Serializer'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(324,15): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(326,18): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(326,1): error C2660: 'memcpy': function does not take 2 arguments
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\vcruntime_string.h(43,15): message : see declaration of 'memcpy'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(328,3): error C2653: 'serializerHeader_t': is not a class or namespace name
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(328,23): error C2065: 'section_t': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(328,34): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(329,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(329,37): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(330,27): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(331,23): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(333,3): error C2653: 'serializerHeader_t': is not a class or namespace name
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(333,23): error C2065: 'section_t': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(333,34): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(334,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(334,35): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(335,25): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(336,21): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(338,11): error C2065: 'sysCycle': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(343,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(344,7): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,25): error C2146: syntax error: missing ';' before identifier 'mode'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,25): error C2065: 'mode': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,32): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,14): error C2825: 'serializeMode_t': must be a class or namespace when followed by '::'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,31): error C2510: 'serializeMode_t': left of '::' must be a class/struct/union
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,1): error C2065: 'STORE': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(349,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(350,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(351,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(351,14): error C2065: 'mode': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(67,21): error C2059: syntax error: 'string'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(68,21): error C2059: syntax error: 'string'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(312,24): error C2061: syntax error: identifier 'Serializer'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(313,28): error C2061: syntax error: identifier 'Serializer'
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C3646: 'frameResult': unknown override specifier
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C2143: syntax error: missing ',' before '['
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,48): error C2238: unexpected token(s) preceding ';'
@@ -269,45 +201,6 @@ C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(592,30): er
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(593,30): error C2065: 'fr': undeclared identifier
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(594,30): error C2065: 'fr': undeclared identifier
   test.cpp
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(321,22): error C2061: syntax error: identifier 'Serializer'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(341,26): error C2061: syntax error: identifier 'Serializer'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(324,15): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(326,18): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(326,1): error C2660: 'memcpy': function does not take 2 arguments
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\vcruntime_string.h(43,15): message : see declaration of 'memcpy'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(328,3): error C2653: 'serializerHeader_t': is not a class or namespace name
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(328,23): error C2065: 'section_t': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(328,34): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(329,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(329,37): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(330,27): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(331,23): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(333,3): error C2653: 'serializerHeader_t': is not a class or namespace name
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(333,23): error C2065: 'section_t': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(333,34): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(334,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(334,35): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(335,25): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(336,21): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(338,11): error C2065: 'sysCycle': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(343,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(344,7): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,25): error C2146: syntax error: missing ';' before identifier 'mode'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,25): error C2065: 'mode': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,32): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,14): error C2825: 'serializeMode_t': must be a class or namespace when followed by '::'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,31): error C2510: 'serializeMode_t': left of '::' must be a class/struct/union
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,1): error C2065: 'STORE': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(349,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(350,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(351,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(351,14): error C2065: 'mode': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(67,21): error C2059: syntax error: 'string'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(68,21): error C2059: syntax error: 'string'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(312,24): error C2061: syntax error: identifier 'Serializer'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(313,28): error C2061: syntax error: identifier 'Serializer'
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C3646: 'frameResult': unknown override specifier
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C2143: syntax error: missing ',' before '['
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,48): error C2238: unexpected token(s) preceding ';'
@@ -340,45 +233,6 @@ C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\test.cpp(20,25): error C2065:
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\test.cpp(21,2): error C2065: 'testFr': undeclared identifier
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\test.cpp(21,39): error C2065: 'testFr': undeclared identifier
   tomboyApp.cpp
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(321,22): error C2061: syntax error: identifier 'Serializer'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(341,26): error C2061: syntax error: identifier 'Serializer'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(324,15): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(326,18): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(326,1): error C2660: 'memcpy': function does not take 2 arguments
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\vcruntime_string.h(43,15): message : see declaration of 'memcpy'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(328,3): error C2653: 'serializerHeader_t': is not a class or namespace name
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(328,23): error C2065: 'section_t': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(328,34): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(329,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(329,37): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(330,27): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(331,23): error C2065: 'memSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(333,3): error C2653: 'serializerHeader_t': is not a class or namespace name
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(333,23): error C2065: 'section_t': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(333,34): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(334,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(334,35): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(335,25): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(336,21): error C2065: 'vramSection': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(338,11): error C2065: 'sysCycle': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(343,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(344,7): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,1): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,25): error C2146: syntax error: missing ';' before identifier 'mode'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,25): error C2065: 'mode': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(347,32): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,14): error C2825: 'serializeMode_t': must be a class or namespace when followed by '::'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,31): error C2510: 'serializeMode_t': left of '::' must be a class/struct/union
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(348,1): error C2065: 'STORE': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(349,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(350,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(351,3): error C2065: 's': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\common.h(351,14): error C2065: 'mode': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(67,21): error C2059: syntax error: 'string'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(68,21): error C2059: syntax error: 'string'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(312,24): error C2061: syntax error: identifier 'Serializer'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(313,28): error C2061: syntax error: identifier 'Serializer'
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C3646: 'frameResult': unknown override specifier
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C2143: syntax error: missing ',' before '['
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,48): error C2238: unexpected token(s) preceding ';'
@@ -466,5 +320,22 @@ C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(247,42): error 
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(251,9): error C2065: 'fr': undeclared identifier
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(253,13): error C2027: use of undefined type 'wtSystem'
 C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(253,13): fatal error C1003: error count exceeds 100; stopping compilation
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(258,14): error C2027: use of undefined type 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(283,22): error C2440: '=': cannot convert from 'int *' to 'wtAudioEngine *'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(283,16): message : Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(284,21): error C2440: '=': cannot convert from 'int *' to 'GameboySystem *'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(284,17): message : Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(341,31): error C2039: 'GetInput': is not a member of 'GameboySystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\gbSystem.h(10): message : see declaration of 'GameboySystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(425,17): error C2039: 'SubmitCommand': is not a member of 'GameboySystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\gbSystem.h(10): message : see declaration of 'GameboySystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(432,17): error C2039: 'SubmitCommand': is not a member of 'GameboySystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\gbSystem.h(10): message : see declaration of 'GameboySystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(473,16): error C2039: 'GetInput': is not a member of 'GameboySystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\gbSystem.h(10): message : see declaration of 'GameboySystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(501,15): error C2039: 'GetInput': is not a member of 'GameboySystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\gbSystem.h(10): message : see declaration of 'GameboySystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(512,15): error C2039: 'GetInput': is not a member of 'GameboySystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\gbSystem.h(10): message : see declaration of 'GameboySystem'
   Generating Code...

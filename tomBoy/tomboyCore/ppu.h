@@ -1,5 +1,6 @@
 #pragma once
 #include "cart.h"
+#include "gbSystem.h"
 
 union Pixel;
 struct RGBA;
@@ -352,9 +353,9 @@ public:
 
 	void			Begin();
 	void			End();
-	void			RegisterSystem( wtSystem* sys );
+	void			RegisterSystem( GameboySystem* sys );
 
-	void			Serialize( Serializer& serializer );
+	//void			Serialize( Serializer& serializer );
 
 private:
 	static uint8_t	GetChrRomPalette( const uint8_t plane0, const uint8_t plane1, const uint8_t col );
