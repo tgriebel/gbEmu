@@ -154,8 +154,16 @@ bool CpuZ80::CheckSign( const uint16_t checkValue ) {
 	return ( checkValue & 0x0080 );
 }
 
-bool CpuZ80::CheckZero( const uint16_t checkValue ) {
-	return ( checkValue == 0 );
+uint8_t CpuZ80::CheckZero( const uint16_t checkValue ) {
+	return ( ( checkValue & 0xFF ) == 0 ) ? 0x01 : 0x00;
+}
+
+uint8_t CpuZ80::CheckHalfCarry( const uint16_t checkValue ) {
+	return ( ( checkValue & 0xFF ) > 0x000F ) ? 0x01 : 0x00;
+}
+
+uint8_t CpuZ80::CheckCarry( const uint16_t checkValue ) {
+	return ( checkValue > 0x00FF ) ? 0x01 : 0x00;
 }
 
 void CpuZ80::AdvancePC( const uint16_t places ) {
@@ -224,8 +232,9 @@ cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t byteCode ) {
 		instrDbg.instrBegin = instrAddr;
 		instrDbg.cpuCycles = cycle.count();
 		instrDbg.instrCycles = opState.opCycles.count();
-		instrDbg.op0 = opState.op0;
-		instrDbg.op1 = opState.op1;
+		instrDbg.nextByte0 = system->ReadMemory( instrAddr + 1 );
+		instrDbg.nextByte1 = system->ReadMemory( instrAddr + 2 );
+		instrDbg.nextByte2 = system->ReadMemory( instrAddr + 3 );
 		instrDbg.mnemonic = op.mnemonic;
 		instrDbg.lhsName = op.lhsName;
 		instrDbg.rhsName = op.rhsName;

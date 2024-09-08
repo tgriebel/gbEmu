@@ -265,10 +265,10 @@ public:
 	CpuZ80() {
 		BuildOpLUT();
 
-		AF = 0x1180;
+		AF = 0x01B0;
 		BC = 0x0013;
 		DE = 0x00D8;
-		HL = 0x000D;
+		HL = 0x014D;
 		SP = 0xFFFE;
 		PC = 0x0100;
 	}
@@ -328,7 +328,9 @@ public:
 	void		StopTraceLog();
 
 	bool		CheckSign( const uint16_t checkValue );
-	bool		CheckZero( const uint16_t checkValue );
+	uint8_t		CheckZero( const uint16_t checkValue );
+	uint8_t		CheckCarry( const uint16_t checkValue );
+	uint8_t		CheckHalfCarry( const uint16_t checkValue );
 
 	// FIXME: These just wrap main system functions that need to be used in headers
 	uint8_t		ReadMemoryBus( const uint16_t address );

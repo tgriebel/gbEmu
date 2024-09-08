@@ -138,6 +138,11 @@ struct regDebugInfo_t
 
 class OpDebugInfo
 {
+private:
+	std::string DisassemblyToString( const bool formatAddress, const bool dereferenceOperands ) const;
+	std::string ByteCodeToString( const uint32_t numBytes, const bool formatBin ) const;
+	std::string RegistersToString() const;
+
 public:
 
 	regDebugInfo_t	regInfo;
@@ -166,8 +171,9 @@ public:
 	uint16_t		rhsAddress;
 
 	uint8_t			operands;
-	uint8_t			op0;
-	uint8_t			op1;
+	uint8_t			nextByte0;
+	uint8_t			nextByte1;
+	uint8_t			nextByte2;
 
 	uint8_t			bitCheck;
 	uint8_t			check;
@@ -197,8 +203,9 @@ public:
 		ppuCycles		= 0;
 		instrCycles		= 0;
 
-		op0				= 0;
-		op1				= 0;
+		nextByte0		= 0;
+		nextByte1		= 0;
+		nextByte2		= 0;
 
 		isIllegal		= false;
 		irq				= false;

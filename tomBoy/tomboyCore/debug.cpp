@@ -103,12 +103,81 @@ static void PrintAddrName( std::stringstream& debugStream, const char* name, con
 	}
 }
 
+std::string OpDebugInfo::ByteCodeToString( const uint32_t numBytes, const bool formatBin ) const
+{
+	int disassemblyBytes[ 6 ] = { byteCode, nextByte0, nextByte1, nextByte2, 0, 0 };
+	stringstream hexString;
+
+	for ( uint32_t i = 0; i < numBytes; ++i ) {
+		PrintHex( hexString, disassemblyBytes[ i ], 2, formatBin );
+		hexString << ( ( ( i + 1 ) >= numBytes ) ? "" : " " );
+	}
+	return hexString.str();
+}
+
+std::string OpDebugInfo::DisassemblyToString( const bool formatAddress, const bool dereferenceOperands ) const
+{
+	std::stringstream asmStream;
+	if ( opType == (uint8_t)opType_t::JR )
+	{
+		const int8_t offset = u8i8( (uint8_t)rhsMemValue ).i8;
+		asmStream << GetFlagName( bitCheck, false ) << ", ";
+		PrintHex( asmStream, regInfo.PC + offset + operands, 4, formatAddress );
+	}
+	else
+	{
+		const bool incrementOp = ( opType == (uint8_t)opType_t::INC_R8 ) ||
+			( opType == (uint8_t)opType_t::INC_R16 ) ||
+			( opType == (uint8_t)opType_t::DEC_R8 ) ||
+			( opType == (uint8_t)opType_t::DEC_R16 );
+
+		if ( lhsName != "NONE" && !incrementOp )
+		{
+			const addrMode_t mode = static_cast<addrMode_t>( lhsAddrMode );
+			PrintAddrName( asmStream, lhsName, mode, lhsAddress, lhsMemValue, dereferenceOperands );
+			asmStream << ", ";
+		}
+		if ( rhsName != "NONE" )
+		{
+			const addrMode_t mode = static_cast<addrMode_t>( rhsAddrMode );
+			PrintAddrName( asmStream, rhsName, mode, rhsAddress, rhsMemValue, dereferenceOperands );
+		}
+	}
+	return GetOpName( *this ) + " " + asmStream.str();
+}
+
+
+std::string OpDebugInfo::RegistersToString() const
+{
+	std::stringstream regStream;
+	regStream << uppercase << "A: ";
+	PrintHex( regStream, static_cast<int>( regInfo.A ), 2, false );
+	regStream << uppercase << " F: ";
+	PrintHex( regStream, static_cast<int>( regInfo.F ), 2, false );
+	regStream << uppercase << " B: ";
+	PrintHex( regStream, static_cast<int>( regInfo.B ), 2, false );
+	regStream << uppercase << " C: ";
+	PrintHex( regStream, static_cast<int>( regInfo.C ), 2, false );
+	regStream << uppercase << " D: ";
+	PrintHex( regStream, static_cast<int>( regInfo.D ), 2, false );
+	regStream << uppercase << " E: ";
+	PrintHex( regStream, static_cast<int>( regInfo.E ), 2, false );
+	regStream << uppercase << " H: ";
+	PrintHex( regStream, static_cast<int>( regInfo.H ), 2, false );
+	regStream << uppercase << " L: ";
+	PrintHex( regStream, static_cast<int>( regInfo.L ), 2, false );
+	regStream << uppercase << " SP: ";
+	PrintHex( regStream, static_cast<int>( regInfo.SP ), 2, false );
+
+	return regStream.str();
+}
+
 void OpDebugInfo::ToString( std::string& buffer, const bool registerDebug, const bool statusDebug, const bool cycleDebug ) const
 {
 	std::stringstream debugStream;
 
 	const bool formatBin = false;
-	const bool deferenceOperands = false;
+	const bool dereferenceOperands = false;
 	const bool formatAddress = true;
 
 	if( nmi )
@@ -125,100 +194,54 @@ void OpDebugInfo::ToString( std::string& buffer, const bool registerDebug, const
 		return;
 	}
 
-	int disassemblyBytes[6] = { byteCode, op0, op1,'\0' };
-	stringstream hexString;
+	const bool refLogFormat = true;
+ 	if( refLogFormat )
+	{
+		buffer += RegistersToString();
 
-	if ( operands == 1 )
-	{
-		PrintHex( hexString, disassemblyBytes[ 0 ], 2, formatBin );
-		hexString << " ";
-		PrintHex( hexString, disassemblyBytes[ 1 ], 2, formatBin );
-	}
-	else if ( operands == 2 )
-	{
-		PrintHex( hexString, disassemblyBytes[ 0 ], 2, formatBin );
-		hexString << " ";
-		PrintHex( hexString, disassemblyBytes[ 1 ], 2, formatBin );
-		hexString << " ";
-		PrintHex( hexString, disassemblyBytes[ 2 ], 2, formatBin );
+		std::stringstream instString;
+		PrintHex( instString, instrBegin, 4, formatBin );
+
+		buffer += " PC: 00:" + instString.str();
+		buffer += " (";
+		buffer += ByteCodeToString( 4, formatBin );
+		buffer += ")";
 	}
 	else
 	{
-		PrintHex( hexString, disassemblyBytes[ 0 ], 2, formatBin );
-	}
+		const int numPrintBytes = operands + 1;
 
-	PrintHex( debugStream, instrBegin, 4, formatBin );
-	debugStream << setfill( ' ' ) << "  " << setw( 9 ) << left << hexString.str();
-	debugStream << GetOpName( *this ) << " ";
+		std::string byteString = ByteCodeToString( numPrintBytes, formatBin );
+		std::string disasmString = DisassemblyToString( formatAddress, dereferenceOperands );
+		
+		PrintHex( debugStream, instrBegin, 4, formatBin );
+		debugStream << setfill( ' ' ) << "  " << setw( 9 ) << left << byteString << " " << disasmString;
 	
-	if ( opType == (uint8_t)opType_t::JR )
-	{
-		const int8_t offset = u8i8( (uint8_t)rhsMemValue ).i8;
-		debugStream << GetFlagName( bitCheck, false ) << ", ";
-		PrintHex( debugStream, regInfo.PC + offset + operands, 4, formatAddress );
-	}
-	else
-	{
-		const bool incrementOp =( opType == (uint8_t)opType_t::INC_R8 ) || 
-								( opType == (uint8_t)opType_t::INC_R16 ) ||
-								( opType == (uint8_t)opType_t::DEC_R8 ) ||
-								( opType == (uint8_t)opType_t::DEC_R16 );
-
-		if ( lhsName != "NONE" && !incrementOp )
+		if ( registerDebug )
 		{
-			const addrMode_t mode = static_cast<addrMode_t>( lhsAddrMode );
-			PrintAddrName( debugStream, lhsName, mode, lhsAddress, lhsMemValue, deferenceOperands );
-			debugStream << ", ";
+			debugStream.seekg( 0, ios::end );
+			const size_t alignment = 50;
+			const size_t width = ( alignment - debugStream.tellg() );
+			assert( width > 0 );
+			debugStream.seekg( 0, ios::beg );
+			debugStream << setfill( ' ' ) << setw( width ) << right;
+
+			debugStream << RegistersToString();
 		}
-		if ( rhsName != "NONE" )
+
+		if( statusDebug )
 		{
-			const addrMode_t mode = static_cast<addrMode_t>( rhsAddrMode );
-			PrintAddrName( debugStream, rhsName, mode, rhsAddress, rhsMemValue, deferenceOperands );
+			debugStream << " PSW: " << GetFlagName( regInfo.psw, true );
 		}
+
+		if( cycleDebug )
+		{
+			//debugStream << uppercase << " PPU:" << setfill( ' ' ) << setw( 3 ) <<  dec << right << curScanline;
+			//debugStream << uppercase << "," << setfill( ' ' ) << setw( 3 ) << dec << ppuCycles;
+			debugStream << uppercase << " CYC:" << dec << cpuCycles << "\0";
+		}
+		buffer += debugStream.str();
 	}
-
-	if ( registerDebug )
-	{
-		debugStream.seekg( 0, ios::end );
-		const size_t alignment = 50;
-		const size_t width = ( alignment - debugStream.tellg() );
-		assert( width > 0 );
-		debugStream.seekg( 0, ios::beg );
-
-		debugStream << setfill( ' ' ) << setw( width ) << right;
-		debugStream << uppercase << "A:";
-		PrintHex( debugStream, static_cast<int>( regInfo.A ), 2, false );
-		debugStream << uppercase << " F:";
-		PrintHex( debugStream, static_cast<int>( regInfo.F ), 2, false );
-		debugStream << uppercase << " B:";
-		PrintHex( debugStream, static_cast<int>( regInfo.B ), 2, false );
-		debugStream << uppercase << " C:";
-		PrintHex( debugStream, static_cast<int>( regInfo.C ), 2, false );
-		debugStream << uppercase << " D:";
-		PrintHex( debugStream, static_cast<int>( regInfo.D ), 2, false );
-		debugStream << uppercase << " E:";
-		PrintHex( debugStream, static_cast<int>( regInfo.E ), 2, false );
-		debugStream << uppercase << " H:";
-		PrintHex( debugStream, static_cast<int>( regInfo.H ), 2, false );
-		debugStream << uppercase << " L:";
-		PrintHex( debugStream, static_cast<int>( regInfo.L ), 2, false );
-		debugStream << uppercase << " SP:";
-		PrintHex( debugStream, static_cast<int>( regInfo.SP ), 2, false );
-	}
-
-	if( statusDebug )
-	{
-		debugStream << " PSW: " << GetFlagName( regInfo.psw, true );
-	}
-
-	if( cycleDebug )
-	{
-		//debugStream << uppercase << " PPU:" << setfill( ' ' ) << setw( 3 ) <<  dec << right << curScanline;
-		//debugStream << uppercase << "," << setfill( ' ' ) << setw( 3 ) << dec << ppuCycles;
-		debugStream << uppercase << " CYC:" << dec << cpuCycles << "\0";
-	}
-
-	buffer += debugStream.str();
 }
 
 
