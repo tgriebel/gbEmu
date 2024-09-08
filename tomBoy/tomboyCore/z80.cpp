@@ -1,95 +1,118 @@
 #include "z80.h"
 #include "gbSystem.h"
 
-ADDR_MODE_DEF( NONE ) {
+ADDR_MODE_DEF( NONE )
+{
 	addr = 0;
 }
 
-ADDR_MODE_DEF( A ) {
+ADDR_MODE_DEF( A )
+{
 	addr = A_IX;
 }
 
-ADDR_MODE_DEF( F ) {
+ADDR_MODE_DEF( F )
+{
 	addr = F_IX;
 }
 
-ADDR_MODE_DEF( B ) {
+ADDR_MODE_DEF( B )
+{
 	addr = B_IX;
 }
 
-ADDR_MODE_DEF( C ) {
+ADDR_MODE_DEF( C )
+{
 	addr = C_IX;
 }
 
-ADDR_MODE_DEF( E ) {
+ADDR_MODE_DEF( E )
+{
 	addr = E_IX;
 }
 
-ADDR_MODE_DEF( D ) {
+ADDR_MODE_DEF( D )
+{
 	addr = D_IX;
 }
 
-ADDR_MODE_DEF( L ) {
+ADDR_MODE_DEF( L )
+{
 	addr = L_IX;
 }
 
-ADDR_MODE_DEF( H ) {
+ADDR_MODE_DEF( H )
+{
 	addr = H_IX;
 }
 
-ADDR_MODE_DEF( AF ) {
+ADDR_MODE_DEF( AF )
+{
 	addr = AF_IX;
 }
 
-ADDR_MODE_DEF( BC ) {
+ADDR_MODE_DEF( BC )
+{
 	addr = BC_IX;
 }
 
-ADDR_MODE_DEF( DE ) {
+ADDR_MODE_DEF( DE )
+{
 	addr = DE_IX;
 }
 
-ADDR_MODE_DEF( HL ) {
+ADDR_MODE_DEF( HL )
+{
 	addr = HL_IX;
 }
 
-ADDR_MODE_DEF( SP ) {
+ADDR_MODE_DEF( SP )
+{
 	addr = SP_IX;
 }
 
-ADDR_MODE_DEF( PC ) {
+ADDR_MODE_DEF( PC )
+{
 	addr = PC_IX;
 }
 
-ADDR_MODE_DEF( DIRECT_BC ) {
+ADDR_MODE_DEF( DIRECT_BC )
+{
 	addr = cpu.BC;
 }
 
-ADDR_MODE_DEF( DIRECT_DE ) {
+ADDR_MODE_DEF( DIRECT_DE )
+{
 	addr = cpu.DE;
 }
 
-ADDR_MODE_DEF( DIRECT_HL ) {
+ADDR_MODE_DEF( DIRECT_HL )
+{
 	addr = cpu.HL;
 }
 
-ADDR_MODE_DEF( DIRECT_C ) {
+ADDR_MODE_DEF( DIRECT_C )
+{
 	addr = cpu.C + 0xFF00;
 }
 
-ADDR_MODE_DEF( DIRECT_N8 ) {
+ADDR_MODE_DEF( DIRECT_N8 )
+{
 	addr = o.op0 + 0xFF00;
 }
 
-ADDR_MODE_DEF( DIRECT_N16 ) {
-	addr = o.op0 + 0xFF00;
+ADDR_MODE_DEF( DIRECT_N16 )
+{
+	addr = Combine( o.op0, o.op1 );
 }
 
-ADDR_MODE_DEF( IMMEDIATE_N8 ) {
+ADDR_MODE_DEF( IMMEDIATE_N8 )
+{
 	addr = o.op0;
 }
 
-ADDR_MODE_DEF( IMMEDIATE_N16 ) {
+ADDR_MODE_DEF( IMMEDIATE_N16 )
+{
 	addr = o.op;
 }
 
@@ -181,6 +204,7 @@ cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t byteCode ) {
 		adjustedOpcode = system->ReadMemory( instrAddr + 1 ) + 0xFF;
 	}
 	const opInfo_t& op = opLUT[ adjustedOpcode ];
+	assert( op.baseCycles > 0 );
 
 	opState_t opState;
 	opState.opCode = byteCode;

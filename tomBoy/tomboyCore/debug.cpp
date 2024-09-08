@@ -53,7 +53,7 @@ static std::string GetFlagName( const uint8_t flags )
 	if ( flags & statusBit_t::STATUS_HALF_CARRY ) {
 		bitNames += "h";
 	}
-	if ( flags & statusBit_t::STATUS_SUBRACTION ) {
+	if ( flags & statusBit_t::STATUS_NEGATIVE ) {
 		bitNames += "n";
 	}
 	if ( flags & statusBit_t::STATUS_ZERO ) {

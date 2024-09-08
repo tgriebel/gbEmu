@@ -86,7 +86,7 @@ OP_DEF( ADC ) {
 	const uint16_t result = A + value + c;
 	A = (uint8_t)result;
 
-	z = CheckZero( result ) ? 1 : 0;
+	z = CheckZero( result & 0xFF ) ? 1 : 0;
 	n = 0;
 	h = ( result > 0x000F );
 	c = ( result > 0x00FF );
@@ -100,7 +100,7 @@ OP_DEF( SUB ) {
 	c = ( value > A );
 	A = (uint8_t)result;
 
-	z = CheckZero( result ) ? 1 : 0;
+	z = CheckZero( result & 0xFF ) ? 1 : 0;
 	n = 1;
 	h = ( result > 0x000F );
 }
@@ -113,7 +113,7 @@ OP_DEF( SBC ) {
 	c = ( value + c ) > A;
 	A = (uint8_t)result;
 
-	z = CheckZero( result ) ? 1 : 0;
+	z = CheckZero( result & 0xFF ) ? 1 : 0;
 	n = 1;
 	h = ( result > 0x000F );
 }
@@ -150,7 +150,7 @@ OP_DEF( CP ) {
 	uint16_t value;
 	Load<RHS>( o, value );
 
-	z = CheckZero( A - value ) ? 1 : 0;
+	z = CheckZero( A - ( value & 0xFF ) ) ? 1 : 0;
 	n = 1;
 	h = ( value > 0x000F );
 	c = ( value > A ) ? 1 : 0;
@@ -162,7 +162,7 @@ OP_DEF( INC_R8 ) {
 	++value;
 	Store<LHS>( o, value );
 
-	z = CheckZero( value ) ? 1 : 0;
+	z = CheckZero( value & 0xFF ) ? 1 : 0;
 	n = 0;
 	h = ( value > 0x000F );
 }
@@ -180,7 +180,7 @@ OP_DEF( DEC_R8 ) {
 	--value;
 	Store<LHS>( o, value );
 
-	z = CheckZero( value ) ? 1 : 0;
+	z = CheckZero( value & 0xFF ) ? 1 : 0;
 	n = 1;
 	h = ( value > 0x000F );
 }
@@ -258,7 +258,7 @@ OP_DEF( RLA ) {
 
 OP_DEF( RST ) {
 	PushWord( PC );
-	PC = GetRestartAddress( 0x00, BIT );
+	PC = Combine( BIT, 0x00 );
 }
 
 OP_DEF( RET ) {
@@ -279,8 +279,10 @@ OP_DEF( JR ) {
 	if ( ( psw & BIT ) == CHK ) {
 		uint16_t value;
 		Load<RHS>( o, value );
-		PC += u8i8( (uint8_t)value ).i8;
+		PC += u8i8( (uint8_t)value ).i8 + 1;
 		o.opCycles += 4;
+	} else {
+		PC += 1;
 	}
 }
 
@@ -509,37 +511,45 @@ void BuildOpLUT()
 	OP_ADDR( 0xFC, ILL,			NONE,	NONE,	0, 0 )
 	OP_ADDR( 0xFD, ILL,			NONE,	NONE,	0, 0 )
 
+	#define ___C (STATUS_CARRY)
+	#define Z___ (STATUS_ZERO)
+	#define ____ (0x00)
+
 	// Jump/call instructions
-	OP_JUMP( 0x18, JR,			IMMEDIATE_N8,	1, 12,		STATUS_NONE,	STATUS_NONE )
-	OP_JUMP( 0x20, JR,			IMMEDIATE_N8,	1, 8,		STATUS_ZERO,	0 )
-	OP_JUMP( 0x28, JR,			IMMEDIATE_N8,	1, 8,		STATUS_ZERO,	STATUS_ZERO )
-	OP_JUMP( 0x30, JR,			IMMEDIATE_N8,	1, 8,		STATUS_CARRY,	0 )
-	OP_JUMP( 0x38, JR,			IMMEDIATE_N8,	1, 8,		STATUS_CARRY,	STATUS_CARRY )
-	OP_JUMP( 0xC2, JP,			IMMEDIATE_N16,	2, 12,		STATUS_ZERO,	0 )
-	OP_JUMP( 0xC3, JP,			IMMEDIATE_N16,	2, 16,		STATUS_NONE,	0 )
-	OP_JUMP( 0xCA, JP,			IMMEDIATE_N16,	2, 12,		STATUS_ZERO,	STATUS_ZERO )
-	OP_JUMP( 0xD2, JP,			IMMEDIATE_N16,	2, 12,		STATUS_CARRY,	0 )
-	OP_JUMP( 0xDA, JP,			IMMEDIATE_N16,	2, 12,		STATUS_CARRY,	STATUS_CARRY )
-	OP_JUMP( 0xE9, JP,			HL,				0, 4,		STATUS_NONE,	0 )
-	OP_JUMP( 0xC4, CALL,		IMMEDIATE_N16,	2, 12,		STATUS_ZERO,	0 )
-	OP_JUMP( 0xCC, CALL,		IMMEDIATE_N16,	2, 12,		STATUS_ZERO,	STATUS_ZERO )
-	OP_JUMP( 0xCD, CALL,		IMMEDIATE_N16,	2, 24,		STATUS_NONE,	0 )
-	OP_JUMP( 0xD4, CALL,		IMMEDIATE_N16,	2, 12,		STATUS_CARRY,	0 )
-	OP_JUMP( 0xDC, CALL,		IMMEDIATE_N16,	2, 12,		STATUS_CARRY,	STATUS_CARRY )
-	OP_JUMP( 0xC0, RET,			NONE,			0, 8,		STATUS_ZERO,	0 )
-	OP_JUMP( 0xC8, RET,			NONE,			0, 8,		STATUS_ZERO,	STATUS_ZERO )
-	OP_JUMP( 0xC9, RET,			NONE,			0, 16,		STATUS_NONE,	0 )
-	OP_JUMP( 0xD0, RET,			NONE,			0, 8,		STATUS_CARRY,	0 )
-	OP_JUMP( 0xD8, RET,			NONE,			0, 8,		STATUS_CARRY,	STATUS_CARRY )
-	OP_JUMP( 0xD9, RETI,		NONE,			0, 16,		STATUS_NONE,	0 )
-	OP_JUMP( 0xC7, RST,			NONE,			0, 16,		0x00,			0 )
-	OP_JUMP( 0xCF, RST,			NONE,			0, 16,		0x08,			0 )
-	OP_JUMP( 0xD7, RST,			NONE,			0, 16,		0x10,			0 )
-	OP_JUMP( 0xDF, RST,			NONE,			0, 16,		0x18,			0 )
-	OP_JUMP( 0xE7, RST,			NONE,			0, 16,		0x20,			0 )
-	OP_JUMP( 0xEF, RST,			NONE,			0, 16,		0x28,			0 )
-	OP_JUMP( 0xF7, RST,			NONE,			0, 16,		0x30,			0 )
-	OP_JUMP( 0xFF, RST,			NONE,			0, 16,		0x38,			0 )
+	OP_JUMP( 0x18, JR,			IMMEDIATE_N8,	1, 12,	____, ____ )
+	OP_JUMP( 0x20, JR,			IMMEDIATE_N8,	1, 8,	Z___, ____ )
+	OP_JUMP( 0x28, JR,			IMMEDIATE_N8,	1, 8,	Z___, Z___ )
+	OP_JUMP( 0x30, JR,			IMMEDIATE_N8,	1, 8,	___C, ____ )
+	OP_JUMP( 0x38, JR,			IMMEDIATE_N8,	1, 8,	___C, ___C )
+	OP_JUMP( 0xC2, JP,			IMMEDIATE_N16,	2, 12,	Z___, ____ )
+	OP_JUMP( 0xC3, JP,			IMMEDIATE_N16,	2, 16,	____, ____ )
+	OP_JUMP( 0xCA, JP,			IMMEDIATE_N16,	2, 12,	Z___, Z___ )
+	OP_JUMP( 0xD2, JP,			IMMEDIATE_N16,	2, 12,	___C, ____ )
+	OP_JUMP( 0xDA, JP,			IMMEDIATE_N16,	2, 12,	___C, ___C )
+	OP_JUMP( 0xE9, JP,			HL,				0, 4,	____, ____ )
+	OP_JUMP( 0xC4, CALL,		IMMEDIATE_N16,	2, 12,	Z___, ____ )
+	OP_JUMP( 0xCC, CALL,		IMMEDIATE_N16,	2, 12,	Z___, Z___ )
+	OP_JUMP( 0xCD, CALL,		IMMEDIATE_N16,	2, 24,	____, ____ )
+	OP_JUMP( 0xD4, CALL,		IMMEDIATE_N16,	2, 12,	___C, ____ )
+	OP_JUMP( 0xDC, CALL,		IMMEDIATE_N16,	2, 12,	___C, ___C )
+	OP_JUMP( 0xC0, RET,			NONE,			0, 8,	Z___, ____ )
+	OP_JUMP( 0xC8, RET,			NONE,			0, 8,	Z___, Z___ )
+	OP_JUMP( 0xC9, RET,			NONE,			0, 16,	____, ____ )
+	OP_JUMP( 0xD0, RET,			NONE,			0, 8,	___C, ____ )
+	OP_JUMP( 0xD8, RET,			NONE,			0, 8,	___C, ___C )
+	OP_JUMP( 0xD9, RETI,		NONE,			0, 16,	____, ___C )
+	OP_JUMP( 0xC7, RST,			NONE,			0, 16,	0x00, 0 )
+	OP_JUMP( 0xCF, RST,			NONE,			0, 16,	0x08, 0 )
+	OP_JUMP( 0xD7, RST,			NONE,			0, 16,	0x10, 0 )
+	OP_JUMP( 0xDF, RST,			NONE,			0, 16,	0x18, 0 )
+	OP_JUMP( 0xE7, RST,			NONE,			0, 16,	0x20, 0 )
+	OP_JUMP( 0xEF, RST,			NONE,			0, 16,	0x28, 0 )
+	OP_JUMP( 0xF7, RST,			NONE,			0, 16,	0x30, 0 )
+	OP_JUMP( 0xFF, RST,			NONE,			0, 16,	0x38, 0 )
+
+	#undef ___C
+	#undef Z___
+	#undef ____
 	
 	// 8bit load/store/move instructions
 	OP_ADDR( 0x02, LD,			DIRECT_BC,		A,				0, 8 )
@@ -550,13 +560,13 @@ void BuildOpLUT()
 	OP_ADDR( 0x16, LD,			D,				IMMEDIATE_N8,	1, 8 )
 	OP_ADDR( 0x1A, LD,			A,				DIRECT_DE,		0, 8 )
 	OP_ADDR( 0x1E, LD,			E,				IMMEDIATE_N8,	1, 8 )
-	OP_ADDR( 0x22, LD_INC,		HL,				A,				0, 8 )
+	OP_ADDR( 0x22, LD_INC,		DIRECT_HL,		A,				0, 8 )
 	OP_ADDR( 0x26, LD,			H,				IMMEDIATE_N8,	1, 8 )
-	OP_ADDR( 0x2A, LD_INC,		A,				HL,				0, 8 )
+	OP_ADDR( 0x2A, LD_INC,		A,				DIRECT_HL,		0, 8 )
 	OP_ADDR( 0x2E, LD,			L,				IMMEDIATE_N8,	1, 8 )
-	OP_ADDR( 0x32, LD_DEC,		HL,				A,				0, 8 )
+	OP_ADDR( 0x32, LD_DEC,		DIRECT_HL,		A,				0, 8 )
 	OP_ADDR( 0x36, LD,			DIRECT_HL,		IMMEDIATE_N8,	1, 12 )
-	OP_ADDR( 0x3A, LD_DEC,		A,				HL,				0, 8 )
+	OP_ADDR( 0x3A, LD_DEC,		A,				DIRECT_HL,		0, 8 )
 	OP_ADDR( 0x3E, LD,			A,				IMMEDIATE_N8,	1, 8 )
 	OP_ADDR( 0x40, LD,			B,				B,				0, 4 )
 	OP_ADDR( 0x41, LD,			B,				C,				0, 4 )
@@ -633,7 +643,7 @@ void BuildOpLUT()
 	OP_ADDR( 0x08, LD,			IMMEDIATE_N16,	SP,				2, 20 )
 	OP_ADDR( 0x11, LD,			DE,				IMMEDIATE_N16,	2, 12 )
 	OP_ADDR( 0x21, LD,			HL,				IMMEDIATE_N16,	2, 12 )
-	OP_ADDR( 0x31, LD,			HL,				IMMEDIATE_N16,	2, 12 )
+	OP_ADDR( 0x31, LD,			SP,				IMMEDIATE_N16,	2, 12 )
 	OP_ADDR( 0xC1, POP,			BC,				NONE,			0, 12 )
 	OP_ADDR( 0xC5, PUSH,		NONE,			BC,				0, 16 )
 	OP_ADDR( 0xD1, POP,			DE,				SP,				0, 12 )

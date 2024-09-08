@@ -71,10 +71,10 @@ enum statusBit_t
 {
 	STATUS_NONE			= 0x00,
 	STATUS_ALL			= 0x0F,
-	STATUS_ZERO			= ( 1 << 0 ),
-	STATUS_SUBRACTION	= ( 1 << 1 ),
-	STATUS_HALF_CARRY	= ( 1 << 2 ),
-	STATUS_CARRY		= ( 1 << 3 ),
+	STATUS_CARRY		= ( 1 << 0 ),
+	STATUS_HALF_CARRY	= ( 1 << 1 ),
+	STATUS_NEGATIVE		= ( 1 << 2 ),
+	STATUS_ZERO			= ( 1 << 3 ),
 };
 
 enum addrType_t
@@ -129,7 +129,7 @@ struct opInfo_t
 	addrMode_t	lhsMode		: 5;
 	addrMode_t	rhsMode		: 5;
 	uint8_t		operands	: 2;
-	uint8_t		baseCycles	: 4;
+	uint8_t		baseCycles	: 5;
 	uint8_t		pcInc		: 2;
 };
 
@@ -197,11 +197,11 @@ public:
 
 	union {
 		struct {
-			uint8_t unused : 4;
-			uint8_t z	: 1; // Zero
-			uint8_t n	: 1; // Negative
-			uint8_t h	: 1; // Half-carry
-			uint8_t c	: 1; // Carry
+			uint8_t unused	: 4;		
+			uint8_t c		: 1; // Carry
+			uint8_t h		: 1; // Half-carry		
+			uint8_t n		: 1; // Negative
+			uint8_t z		: 1; // Zero
 		};
 		struct {
 			uint8_t FLow	: 4; // F lower
@@ -265,10 +265,10 @@ public:
 	CpuZ80() {
 		BuildOpLUT();
 
-		AF = 0x01B0;
+		AF = 0x1180;
 		BC = 0x0013;
 		DE = 0x00D8;
-		HL = 0x014D;
+		HL = 0x000D;
 		SP = 0xFFFE;
 		PC = 0x0100;
 	}
