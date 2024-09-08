@@ -93,12 +93,12 @@ public:
 
 	}
 
-	bool IsRomBank( const uint16_t address )
+	static inline bool IsRomBank( const uint16_t address )
 	{
 		return ( address <= RomBankEnd ) || InRange( address, ExtRamBank, ExtRamBankEnd );
 	}
 
-	uint16_t MirrorAddress( const uint16_t address ) const
+	static inline uint16_t MirrorAddress( const uint16_t address )
 	{
 		if ( InRange( address, EchoRegion, EchoRegionEnd ) )
 		{
@@ -107,127 +107,19 @@ public:
 		return address;
 	}
 
-	uint8_t ReadMemory( const uint16_t address )
-	{
-		const uint16_t mAddr = MirrorAddress( address );
+	uint8_t ReadMemory( const uint16_t address );
 
-		if ( IsRomBank( mAddr ) )
-		{
-			return cart->mapper->ReadRom( address );
-		}
-		else if ( InRange( mAddr, VRamBank, VRamBankEnd ) )
-		{
-			return vram[ mAddr - VRamBank ];
-		}
-		else if ( InRange( mAddr, WorkRamBank0, WorkRamBankEnd0 ) )
-		{
-			return wram[ 0 ][ mAddr - WorkRamBank0 ];
-		}
-		else if ( InRange( mAddr, WorkRamBank1, WorkRamBankEnd1 ) )
-		{
-			return wram[ 1 ][ mAddr - WorkRamBank1 ];
-		}
-		else if ( InRange( mAddr, OamMemory, OamMemoryEnd ) )
-		{
-			return oam[ mAddr - OamMemory ];
-		}
-		else if ( InRange( mAddr, IllegalRegion, IllegalRegionEnd ) )
-		{
-		}
-		else if ( InRange( mAddr, Hram, HramEnd ) )
-		{
-			return hram[ mAddr - HRamStart ];
-		}
-		else if ( InRange( mAddr, Interrupt ) ) {
-		}
-		else if ( InRange( mAddr, Mmio, MmioEnd ) )
-		{
-			if ( InRange( mAddr, Joypad ) ) {
-			}
-			else if ( InRange( mAddr, Serial0, Serial1 ) ) {
-			}
-			else if ( InRange( mAddr, TimerandDivStart, TimerandDivEnd ) ) {
-			}
-			else if ( InRange( mAddr, AudioStart, AudioEnd ) ) {
-			}
-			else if ( InRange( mAddr, WaveStart, WaveEnd ) ) {
-			}
-			else if ( InRange( mAddr, PaletteStart, PaletteEnd ) ) {
-			}
-			else if ( InRange( mAddr, VramDmaStart, VramDmaEnd ) ) {
-			}
-			else if ( InRange( mAddr, LcdStart, LcdEnd ) ) {
-			}
-		}
-		else
-		{
-			return memory[ address ];
-		}
-		return 0;
-	}
-
-	void WriteMemory( const uint16_t address, const uint16_t offset, const uint8_t value )
-	{
-		const uint16_t mAddr = MirrorAddress( address + offset );
-
-		if( IsRomBank( mAddr ) )
-		{
-			cart->mapper->Write( mAddr, value );
-		}
-		else if( InRange( mAddr, VRamBank, VRamBankEnd ) )
-		{
-			vram[ mAddr - VRamBank ] = value;
-		}
-		else if ( InRange( mAddr, WorkRamBank0, WorkRamBankEnd0 ) )
-		{
-			wram[ 0 ][ mAddr - WorkRamBank0 ] = value;
-		}
-		else if ( InRange( address, WorkRamBank1, WorkRamBankEnd1 ) )
-		{
-			wram[ 1 ][ mAddr - WorkRamBank1 ] = value;
-		}
-		else if ( InRange( mAddr, OamMemory, OamMemoryEnd ) )
-		{
-			oam[ mAddr - OamMemory ] = value;
-		}
-		else if ( InRange( mAddr, IllegalRegion, IllegalRegionEnd ) )
-		{
-		}
-		else if ( InRange( mAddr, Hram, HramEnd ) )
-		{
-			hram[ mAddr - HRamStart ] = value;
-		}
-		else if ( InRange( mAddr, Interrupt ) ) {
-		}
-		else if( InRange( mAddr, Mmio, MmioEnd ) )
-		{
-			if ( InRange( mAddr, Joypad ) ) {
-			}
-			else if ( InRange( mAddr, Serial0, Serial1 ) ) {
-			}
-			else if ( InRange( mAddr, TimerandDivStart, TimerandDivEnd ) ) {
-			}
-			else if ( InRange( mAddr, AudioStart, AudioEnd ) ) {
-			}
-			else if ( InRange( mAddr, WaveStart, WaveEnd ) ) {
-			}
-			else if ( InRange( mAddr, PaletteStart, PaletteEnd ) ) {
-			}
-			else if ( InRange( mAddr, VramDmaStart, VramDmaEnd ) ) {
-			}
-			else if ( InRange( mAddr, LcdStart, LcdEnd ) ) {
-			}
-		}
-		else
-		{
-			memory[ mAddr ] = value;
-		}
-	}
+	void WriteMemory( const uint16_t address, const uint16_t offset, const uint8_t value );
 
 	uint8_t& GetStack()
 	{
-		assert( cpu.SP < PhysicalMemorySize );
-		return memory[ cpu.SP ];
+		if( InRange( cpu.SP, WorkRamBank0, WorkRamBankEnd0 ) ) {
+			wram[ 0 ][ cpu.SP ];
+		} else if ( InRange( cpu.SP, WorkRamBank1, WorkRamBankEnd1 ) ) {
+			return wram[ 1 ][ cpu.SP ];
+		}
+		assert( 0 ); // Probably a bug, but possible error in game ROM
+		return wram[ 0 ][ 0 ];
 	}
 
 	// mapper.h

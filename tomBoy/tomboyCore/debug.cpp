@@ -44,21 +44,13 @@ static std::string GetOpName( const OpDebugInfo& info )
 	return name;
 }
 
-static std::string GetFlagName( const uint8_t flags )
+static std::string GetFlagName( const uint8_t flags, const bool fill )
 {
 	std::string bitNames;
-	if( flags & statusBit_t::STATUS_CARRY ) {
-		bitNames += "c";
-	}
-	if ( flags & statusBit_t::STATUS_HALF_CARRY ) {
-		bitNames += "h";
-	}
-	if ( flags & statusBit_t::STATUS_NEGATIVE ) {
-		bitNames += "n";
-	}
-	if ( flags & statusBit_t::STATUS_ZERO ) {
-		bitNames += "z";
-	}
+	bitNames += ( flags & statusBit_t::STATUS_ZERO )		? "z" : fill ? "_" : "";
+	bitNames += ( flags & statusBit_t::STATUS_NEGATIVE )	? "n" : fill ? "_" : "";
+	bitNames += ( flags & statusBit_t::STATUS_HALF_CARRY )	? "h" : fill ? "_" : "";
+	bitNames += ( flags & statusBit_t::STATUS_CARRY )		? "c" : fill ? "_" : "";
 	return bitNames;
 }
 
@@ -162,7 +154,7 @@ void OpDebugInfo::ToString( std::string& buffer, const bool registerDebug, const
 	if ( opType == (uint8_t)opType_t::JR )
 	{
 		const int8_t offset = u8i8( (uint8_t)rhsMemValue ).i8;
-		debugStream << GetFlagName( bitCheck ) << ", ";
+		debugStream << GetFlagName( bitCheck, false ) << ", ";
 		PrintHex( debugStream, regInfo.PC + offset + operands, 4, formatAddress );
 	}
 	else
@@ -190,6 +182,7 @@ void OpDebugInfo::ToString( std::string& buffer, const bool registerDebug, const
 		debugStream.seekg( 0, ios::end );
 		const size_t alignment = 50;
 		const size_t width = ( alignment - debugStream.tellg() );
+		assert( width > 0 );
 		debugStream.seekg( 0, ios::beg );
 
 		debugStream << setfill( ' ' ) << setw( width ) << right;
@@ -215,13 +208,13 @@ void OpDebugInfo::ToString( std::string& buffer, const bool registerDebug, const
 
 	if( statusDebug )
 	{
-		debugStream << " " << GetFlagName( regInfo.psw );
+		debugStream << " PSW: " << GetFlagName( regInfo.psw, true );
 	}
 
 	if( cycleDebug )
 	{
-		debugStream << uppercase << " PPU:" << setfill( ' ' ) << setw( 3 ) <<  dec << right << curScanline;
-		debugStream << uppercase << "," << setfill( ' ' ) << setw( 3 ) << dec << ppuCycles;
+		//debugStream << uppercase << " PPU:" << setfill( ' ' ) << setw( 3 ) <<  dec << right << curScanline;
+		//debugStream << uppercase << "," << setfill( ' ' ) << setw( 3 ) << dec << ppuCycles;
 		debugStream << uppercase << " CYC:" << dec << cpuCycles << "\0";
 	}
 
@@ -300,7 +293,7 @@ void wtLog::ToString( std::string& buffer, const uint32_t frameBegin, const uint
 	{
 		for ( const OpDebugInfo& dbgInfo : GetLogFrame( i ) )
 		{
-			dbgInfo.ToString( buffer, true, true, false );
+			dbgInfo.ToString( buffer, true, true, true );
 			buffer += "\n";
 		}
 	}

@@ -49,3 +49,126 @@ unique_ptr<gbMapper> GameboySystem::AssignMapper( const uint32_t mapperId )
 
 	delete[] romData;
 }
+
+
+uint8_t GameboySystem::ReadMemory( const uint16_t address )
+{
+	const uint16_t mAddr = MirrorAddress( address );
+
+	if ( IsRomBank( mAddr ) )
+	{
+		return cart->mapper->ReadRom( address );
+	}
+	else if ( InRange( mAddr, VRamBank, VRamBankEnd ) )
+	{
+		return vram[ mAddr - VRamBank ];
+	}
+	else if ( InRange( mAddr, WorkRamBank0, WorkRamBankEnd0 ) )
+	{
+		return wram[ 0 ][ mAddr - WorkRamBank0 ];
+	}
+	else if ( InRange( mAddr, WorkRamBank1, WorkRamBankEnd1 ) )
+	{
+		return wram[ 1 ][ mAddr - WorkRamBank1 ];
+	}
+	else if ( InRange( mAddr, OamMemory, OamMemoryEnd ) )
+	{
+		return oam[ mAddr - OamMemory ];
+	}
+	else if ( InRange( mAddr, IllegalRegion, IllegalRegionEnd ) )
+	{
+	}
+	else if ( InRange( mAddr, Hram, HramEnd ) )
+	{
+		return hram[ mAddr - HRamStart ];
+	}
+	else if ( InRange( mAddr, Interrupt ) ) {
+	}
+	else if ( InRange( mAddr, Mmio, MmioEnd ) )
+	{
+		if ( InRange( mAddr, Joypad ) ) {
+		}
+		else if ( InRange( mAddr, Serial0, Serial1 ) ) {
+		}
+		else if ( InRange( mAddr, TimerandDivStart, TimerandDivEnd ) ) {
+		}
+		else if ( InRange( mAddr, AudioStart, AudioEnd ) ) {
+		}
+		else if ( InRange( mAddr, WaveStart, WaveEnd ) ) {
+		}
+		else if ( InRange( mAddr, PaletteStart, PaletteEnd ) ) {
+		}
+		else if ( InRange( mAddr, VramDmaStart, VramDmaEnd ) ) {
+		}
+		else if ( InRange( mAddr, LcdStart, LcdEnd ) ) {
+			static uint8_t ly = 0;
+			ly++; // FIXME: stub
+			return 0x90;
+		}
+	}
+	else
+	{
+		return memory[ address ];
+	}
+	return 0;
+}
+
+
+void GameboySystem::WriteMemory( const uint16_t address, const uint16_t offset, const uint8_t value )
+{
+	const uint16_t mAddr = MirrorAddress( address + offset );
+
+	if ( IsRomBank( mAddr ) )
+	{
+		cart->mapper->Write( mAddr, value );
+	}
+	else if ( InRange( mAddr, VRamBank, VRamBankEnd ) )
+	{ 
+		vram[ mAddr - VRamBank ] = value;
+	//	cout << hex << mAddr << ": " << hex << uint32_t( value ) << endl;
+	}
+	else if ( InRange( mAddr, WorkRamBank0, WorkRamBankEnd0 ) )
+	{
+		wram[ 0 ][ mAddr - WorkRamBank0 ] = value;
+	}
+	else if ( InRange( address, WorkRamBank1, WorkRamBankEnd1 ) )
+	{
+		wram[ 1 ][ mAddr - WorkRamBank1 ] = value;
+	}
+	else if ( InRange( mAddr, OamMemory, OamMemoryEnd ) )
+	{
+		oam[ mAddr - OamMemory ] = value;
+	}
+	else if ( InRange( mAddr, IllegalRegion, IllegalRegionEnd ) )
+	{
+	}
+	else if ( InRange( mAddr, Hram, HramEnd ) )
+	{
+		hram[ mAddr - HRamStart ] = value;
+	}
+	else if ( InRange( mAddr, Interrupt ) ) {
+	}
+	else if ( InRange( mAddr, Mmio, MmioEnd ) )
+	{
+		if ( InRange( mAddr, Joypad ) ) {
+		}
+		else if ( InRange( mAddr, Serial0, Serial1 ) ) {
+		}
+		else if ( InRange( mAddr, TimerandDivStart, TimerandDivEnd ) ) {
+		}
+		else if ( InRange( mAddr, AudioStart, AudioEnd ) ) {
+		}
+		else if ( InRange( mAddr, WaveStart, WaveEnd ) ) {
+		}
+		else if ( InRange( mAddr, PaletteStart, PaletteEnd ) ) {
+		}
+		else if ( InRange( mAddr, VramDmaStart, VramDmaEnd ) ) {
+		}
+		else if ( InRange( mAddr, LcdStart, LcdEnd ) ) {
+		}
+	}
+	else
+	{
+		memory[ mAddr ] = value;
+	}
+}

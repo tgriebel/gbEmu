@@ -2,8 +2,8 @@
 
 #include <chrono>
 
-const uint64_t MasterClockHz		= 21477272;
-const uint64_t CpuClockDivide		= 12;
+const uint64_t MasterClockHz		= 4194304;
+const uint64_t CpuClockDivide		= 1;
 const uint64_t ApuClockDivide		= 24;
 const uint64_t ApuSequenceDivide	= 89490;
 const uint64_t PpuClockDivide		= 4;
