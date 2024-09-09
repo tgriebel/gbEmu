@@ -206,16 +206,15 @@ void CpuZ80::StopTraceLog()
 	//	logFrameCount = logFrameTotal;
 }
 
-cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t byteCode ) {
-	uint16_t adjustedOpcode = byteCode;
-	if( byteCode == 0xCB ) {
-		adjustedOpcode = system->ReadMemory( instrAddr + 1 ) + 0xFF;
-	}
-	const opInfo_t& op = opLUT[ adjustedOpcode ];
+cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t opCode, const bool bitOp ) {
+	const uint16_t opcodeIndex = bitOp ? ( opCode + 0xFF ) : opCode;
+	const opInfo_t& op = opLUT[ opcodeIndex ];
 	assert( op.baseCycles > 0 );
 
+	assert( ( bitOp && op.operands == 0 ) || !bitOp );
+
 	opState_t opState;
-	opState.opCode = byteCode;
+	opState.opCode = opCode;
 	opState.opCycles = cpuCycle_t( op.baseCycles );
 	opState.op0 = op.operands >= 1 ? system->ReadMemory( instrAddr + 1 ) : 0;
 	opState.op1 = op.operands == 2 ? system->ReadMemory( instrAddr + 2 ) : 0;
@@ -227,6 +226,7 @@ cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t byteCode ) {
 		instrDbg.loadCnt = 0;
 		instrDbg.storeCnt = 0;
 		instrDbg.byteCode = opState.opCode;
+		instrDbg.bitOp = bitOp;
 		instrDbg.opType = static_cast<uint8_t>( op.type );
 		instrDbg.regInfo = { A, F, B, C, D, E, H, L, psw, SP, PC };
 		instrDbg.instrBegin = instrAddr;
@@ -274,8 +274,15 @@ cpuCycle_t CpuZ80::Exec()
 	//}
 
 	const uint16_t instrAddr = PC;
+	uint8_t curbyte = system->ReadMemory( PC );
 
-	const uint8_t curbyte = system->ReadMemory( instrAddr );
+	bool bitOp = false;
+	if( curbyte == 0xCB )
+	{
+		AdvancePC( 1 );
+		bitOp = true;
+		curbyte = system->ReadMemory( PC );
+	}
 	AdvancePC( 1 );
 
 	//if ( interruptRequestNMI )
@@ -303,7 +310,7 @@ cpuCycle_t CpuZ80::Exec()
 	//	return opCycle;
 	//}
 
-	return OpExec( instrAddr, curbyte );
+	return OpExec( instrAddr, curbyte, bitOp );
 }
 
 bool CpuZ80::Step( const cpuCycle_t& nextCycle )

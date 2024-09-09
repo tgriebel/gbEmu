@@ -188,7 +188,7 @@ union u32i32 {
 
 #define OP_ADDR( num, name, lhs, rhs, ops, cycles )			_OP_ADDR( num, name, lhs, rhs, ops, ops, cycles, 0, 0 )
 #define OP_JUMP( num, name, rhs, ops, cycles, bit, chk )	_OP_ADDR( num, name, NONE, rhs, ops, 0, cycles, bit, chk )
-#define OP_BIT( num, name, rhs, bit, cycles )				_OP_ADDR( num + 0xFF, name, rhs, rhs, 0, 2, cycles, bit, 0 )
+#define OP_BIT( num, name, rhs, bit, cycles )				_OP_ADDR( num + 0xFF, name, rhs, rhs, 0, 0, cycles, bit, 0 )
 
 class CpuZ80
 {
@@ -339,7 +339,7 @@ public:
 
 	uint8_t		ReadOperand( const uint16_t offset ) const;
 	void		AdvancePC( const uint16_t places );
-	cpuCycle_t	OpExec( const uint16_t instrAddr, const uint8_t byteCode );
+	cpuCycle_t	OpExec( const uint16_t instrAddr, const uint8_t byteCode, const bool bitOp );
 	cpuCycle_t	Exec();
 	bool		Step( const cpuCycle_t& nextCycle );
 

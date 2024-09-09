@@ -105,7 +105,7 @@ static void PrintAddrName( std::stringstream& debugStream, const char* name, con
 
 std::string OpDebugInfo::ByteCodeToString( const uint32_t numBytes, const bool formatBin ) const
 {
-	int disassemblyBytes[ 6 ] = { byteCode, nextByte0, nextByte1, nextByte2, 0, 0 };
+	int disassemblyBytes[ 6 ] = { bitOp ? 0xCB : byteCode, nextByte0, nextByte1, nextByte2, 0, 0 };
 	stringstream hexString;
 
 	for ( uint32_t i = 0; i < numBytes; ++i ) {

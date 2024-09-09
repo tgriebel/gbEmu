@@ -47,7 +47,7 @@ OP_DEF( ADD ) {
 	Load<RHS>( o, value );
 
 	const uint16_t result = A + value;
-	h = ( A <= 0x000F ) && ( result > 0x000F );
+	h = ( ( A ^ value ^ result ) >> 4 ) & 0x01;
 
 	A = static_cast<uint8_t>( result );
 	
@@ -61,7 +61,7 @@ OP_DEF( ADD_HL ) {
 	Load<RHS>( o, value );
 	
 	const uint32_t result = HL + value;
-	h = ( HL <= 0x0FFF ) && ( result > 0x0FFF );
+	h = ( ( HL ^ value ^ result ) >> 12 ) & 0x01;
 
 	HL = static_cast<uint16_t>( result );
 
@@ -73,8 +73,9 @@ OP_DEF( ADD_SP ) {
 	uint16_t value;
 	Load<RHS>( o, value );
 
-	const uint16_t result = SP + u8i8( (uint8_t)value ).i8;
-	h = ( SP <= 0x000F ) && ( result > 0x000F );
+	const int8_t r8 = u8i8( (uint8_t)value ).i8;
+	const uint16_t result = SP + r8;
+	h = ( ( SP ^ r8 ^ result ) >> 4 ) & 0x01;
 
 	SP = result;
 	
@@ -87,7 +88,7 @@ OP_DEF( ADC ) {
 	Load<RHS>( o, value );
 
 	const uint16_t result = A + value + c;
-	h = ( A <= 0x000F ) && ( result > 0x000F );
+	h = ( ( A ^ value ^ result ) >> 4 ) & 0x01;
 
 	A = (uint8_t)result;
 
@@ -101,7 +102,7 @@ OP_DEF( SUB ) {
 	Load<RHS>( o, value );
 
 	const uint16_t result = A - value;
-	h = ( A <= 0x000F ) && ( result > 0x000F );
+	h = ( ( A ^ value ^ result ) >> 4 ) & 0x01;
 
 	c = ( value > A );
 	A = (uint8_t)result;
@@ -115,7 +116,7 @@ OP_DEF( SBC ) {
 	Load<RHS>( o, value );
 
 	const uint16_t result = A - value - c;
-	h = ( A <= 0x000F ) && ( result > 0x000F );
+	h = ( ( A ^ value ^ result ) >> 4 ) & 0x01;
 
 	c = ( value + c ) > A;
 	A = (uint8_t)result;
@@ -141,6 +142,8 @@ OP_DEF( XOR ) {
 	Load<RHS>( o, value );
 
 	A = A ^ value;
+
+	psw = 0;
 	z = CheckZero( A );
 }
 
@@ -149,6 +152,8 @@ OP_DEF( OR ) {
 	Load<RHS>( o, value );
 
 	A = A | value;
+
+	psw = 0;
 	z = CheckZero( A );
 }
 
@@ -156,9 +161,10 @@ OP_DEF( CP ) {
 	uint16_t value;
 	Load<RHS>( o, value );
 
-	z = CheckZero( A - ( value & 0xFF ) ) ? 1 : 0;
+	uint16_t result = A - ( value & 0xFF );
+	z = CheckZero( result );
 	n = 1;
-	h = ( value > 0x000F ); // FIXME: borrow from bit 4
+	h = ( ( A ^ value ^ result ) >> 4 ) & 0x01;
 	c = ( value > A ) ? 1 : 0;
 }
 
@@ -166,7 +172,7 @@ OP_DEF( INC_R8 ) {
 	uint16_t value;
 	Load<RHS>( o, value );
 
-	h = ( value & 0x000F ) == 0x000F;
+	h = ( ( value ^ ( value + 1 ) ) >> 4 ) & 0x01;
 	value += 1;
 
 	Store<LHS>( o, value );
@@ -186,7 +192,7 @@ OP_DEF( DEC_R8 ) {
 	uint16_t value;
 	Load<RHS>( o, value );
 
-	h = ( value & 0x0010 ) == 0x0010;
+	h = ( ( value ^ ( value - 1 ) ) >> 4 ) & 0x01;
 	value -= 1;
 
 	Store<LHS>( o, value );
@@ -297,9 +303,14 @@ OP_DEF( JR ) {
 }
 
 OP_DEF( JP ) {
-	uint16_t value;
-	Load<RHS>( o, value );
-	PC = value;
+	if ( ( psw & BIT ) == CHK ) {
+		uint16_t value;
+		Load<RHS>( o, value );
+		PC = value;
+		o.opCycles += 4;
+	} else {
+		PC += 2;
+	}
 }
 
 OP_DEF( DAA ) {
@@ -347,6 +358,10 @@ OP_DEF( CALL ) {
 
 		PushWord( PC + 2 );
 		PC = value;
+
+		o.opCycles += 12;
+	} else {
+		PC += 2;
 	}
 }
 
@@ -539,7 +554,7 @@ void BuildOpLUT()
 	OP_JUMP( 0xE9, JP,			HL,				0, 4,	____, ____ )
 	OP_JUMP( 0xC4, CALL,		IMMEDIATE_N16,	2, 12,	Z___, ____ )
 	OP_JUMP( 0xCC, CALL,		IMMEDIATE_N16,	2, 12,	Z___, Z___ )
-	OP_JUMP( 0xCD, CALL,		IMMEDIATE_N16,	2, 24,	____, ____ )
+	OP_JUMP( 0xCD, CALL,		IMMEDIATE_N16,	2, 12,	____, ____ )
 	OP_JUMP( 0xD4, CALL,		IMMEDIATE_N16,	2, 12,	___C, ____ )
 	OP_JUMP( 0xDC, CALL,		IMMEDIATE_N16,	2, 12,	___C, ___C )
 	OP_JUMP( 0xC0, RET,			NONE,			0, 8,	Z___, ____ )
@@ -750,7 +765,7 @@ void BuildOpLUT()
 	OP_ADDR( 0xBD, CP,			NONE,			L,				0, 4 )
 	OP_ADDR( 0xBE, CP,			NONE,			DIRECT_HL,		0, 8 )
 	OP_ADDR( 0xBF, CP,			NONE,			A,				0, 4 )
-	OP_ADDR( 0xC6, AND,			NONE,			IMMEDIATE_N8,	1, 8 )
+	OP_ADDR( 0xC6, ADD,			NONE,			IMMEDIATE_N8,	1, 8 )
 	OP_ADDR( 0xCE, ADC,			NONE,			IMMEDIATE_N8,	1, 8 )
 	OP_ADDR( 0xD6, SUB,			NONE,			IMMEDIATE_N8,	1, 8 )
 	OP_ADDR( 0xDE, SBC,			NONE,			IMMEDIATE_N8,	1, 8 )

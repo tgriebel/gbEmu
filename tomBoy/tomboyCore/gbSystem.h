@@ -118,7 +118,7 @@ public:
 		} else if ( InRange( cpu.SP, WorkRamBank1, WorkRamBankEnd1 ) ) {
 			return wram[ 1 ][ cpu.SP ];
 		}
-		assert( 0 ); // Probably a bug, but possible error in game ROM
+		//assert( 0 ); // Probably a bug, but possible error in game ROM
 		return wram[ 0 ][ 0 ];
 	}
 

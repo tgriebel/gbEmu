@@ -63,12 +63,12 @@ int main()
 	int currentFrame = 0;
 	cpuCycle_t nextCycle = cpuCycle_t( 0 );
 
-#define TILEMAP_DEBUG 0
+#define TILEMAP_DEBUG 1
 #define BG_DEBUG 0
 #define BG_TILE_DEBUG 0
 #define LOG_DEBUG 1
 
-	while( currentFrame < 1 )
+	while( currentFrame < 100 )
 	{
 		const cpuCycle_t cyclesPerFrame = MasterToCpuCycle( NanoToCycle( 1 * FrameLatencyNs.count() ) );	
 		nextCycle += cyclesPerFrame;
@@ -142,7 +142,7 @@ int main()
 	{
 		string logBuffer;
 		gbSystem.cpu.dbgLog.ToString( logBuffer, 0, currentFrame );
-		std::cout << "Log:\n" << logBuffer << std::endl;
+		//std::cout << "Log:\n" << logBuffer << std::endl;
 
 		std::ofstream logFile;
 		logFile.open( "tomboy.log" );

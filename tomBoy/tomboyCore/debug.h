@@ -182,6 +182,7 @@ public:
 	bool			irq;
 	bool			nmi;
 	bool			oam;
+	bool			bitOp;
 	
 	OpDebugInfo()
 	{
