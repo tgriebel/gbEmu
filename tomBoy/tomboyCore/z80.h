@@ -16,7 +16,7 @@ enum class opType_t : uint8_t
 	OR, XOR, AND, BIT, RES, SET, SWAP,
 	RLC, RRC, RR, RL, SLA, SRA, SRL, RLA, RRA, RLCA, RRCA,
 	JP, JR, CALL, RST, RET, RETI,
-	PUSH, POP,
+	PUSH, POP, POP_AF,
 	DI, EI, SCF, CCF, CP,
 	COUNT
 };

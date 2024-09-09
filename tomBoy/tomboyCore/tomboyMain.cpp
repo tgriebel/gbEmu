@@ -44,12 +44,89 @@ void DrawTile( Bitmap& tileMap, const uint32_t xOffset, const uint32_t yOffset, 
 	}
 }
 
+void Debug( const uint32_t currentFrame )
+{
+#define TILEMAP_DEBUG 1
+#define BG_DEBUG 0
+#define BG_TILE_DEBUG 1
+
+#if TILEMAP_DEBUG
+	{
+		Bitmap tileMap( 128, 64, 0x00000000 );
+
+		for ( uint32_t bank = 0; bank < 2; ++bank )
+		{
+			for ( uint32_t tileId = 0; tileId < 128; ++tileId )
+			{
+				const uint32_t pixelOffsetX = ( tileId % 16 ) * 8;
+				const uint32_t pixelOffsetY = ( tileId / 16 ) * 8;
+
+				DrawTile( tileMap, pixelOffsetX, pixelOffsetY, bank, tileId );
+			}
+
+			stringstream ss;
+			ss << "frame_" << currentFrame << "_tilemap_" << bank << ".bmp";
+			tileMap.Write( "gfx_output\\" + ss.str() );
+		}
+	}
+#endif
+
+#if BG_TILE_DEBUG
+	{
+		Bitmap bgMap( 256, 256, 0x00000000 );
+
+		for ( uint32_t tileY = 0; tileY < 32; ++tileY ) {
+			for ( uint32_t tileX = 0; tileX < 32; ++tileX ) {
+				const uint32_t pixelOffsetX = tileX * 8;
+				const uint32_t pixelOffsetY = tileY * 8;
+
+				const uint32_t tileId = gbSystem.vram[ 0x1800 + tileY * 32 + tileX ];
+				DrawTile( bgMap, pixelOffsetX, pixelOffsetY, 0, tileId );
+			}
+		}
+
+		stringstream ss;
+		ss << "frame_" << currentFrame << "_bgmap" << ".bmp";
+		bgMap.Write( "gfx_output\\" + ss.str() );
+	}
+#endif
+
+#if BG_DEBUG
+	{
+		system( "cls" );
+
+		cout << "\n\n";
+
+		for ( int y = 0; y < 32; ++y ) {
+			for ( int x = 0; x < 32; ++x ) {
+				cout << setw( 2 ) << setfill( '0' ) << hex << uint32_t( gbSystem.vram[ 0x1800 + y * 32 + x ] ) << " ";
+			}
+			cout << "\n";
+		}
+		cout << endl;
+	}
+#endif
+}
+
 int main()
 {
-	//LoadGameboyFile( L"Games/Alleyway.gb", gbSystem.cart );
-	//LoadGameboyFile( L"Games/Dr. Mario.gb", gbSystem.cart );
-	LoadGameboyFile( L"Tests/01-special.gb", gbSystem.cart );
-	//LoadGameboyFile( L"Tests/06-ld r,r.gb", gbSystem.cart );
+	int test = 3;
+	switch( test )
+	{	
+		case 0:		LoadGameboyFile( L"Games/Alleyway.gb",				gbSystem.cart ); break;
+		case 1:		LoadGameboyFile( L"Tests/01-special.gb",			gbSystem.cart ); break;
+		case 2:		LoadGameboyFile( L"Tests/02-interrupts.gb",			gbSystem.cart ); break;
+		case 3:		LoadGameboyFile( L"Tests/03-op sp,hl.gb",			gbSystem.cart ); break;
+		case 4:		LoadGameboyFile( L"Tests/04-op r,imm.gb",			gbSystem.cart ); break;
+		case 5:		LoadGameboyFile( L"Tests/05-op rp.gb.gb",			gbSystem.cart ); break;
+		case 6:		LoadGameboyFile( L"Tests/06-ld r,r.gb",				gbSystem.cart ); break;
+		case 7:		LoadGameboyFile( L"Tests/07-jr,jp,call,ret,rst.gb",	gbSystem.cart ); break;
+		case 8:		LoadGameboyFile( L"Tests/08-misc instrs.gb",		gbSystem.cart ); break;
+		case 9:		LoadGameboyFile( L"Tests/09-op r,r.gb",				gbSystem.cart ); break;
+		case 10:	LoadGameboyFile( L"Tests/10-bit ops.gb",			gbSystem.cart ); break;
+		case 11:	LoadGameboyFile( L"Tests/11-op a,(hl).gb",			gbSystem.cart ); break;
+	}
+
 	gbSystem.cart->mapper = gbSystem.AssignMapper( gbSystem.cart->GetMapperId() );
 	gbSystem.cart->mapper->system = &gbSystem;
 	gbSystem.cart->mapper->OnLoadCpu();
@@ -63,12 +140,9 @@ int main()
 	int currentFrame = 0;
 	cpuCycle_t nextCycle = cpuCycle_t( 0 );
 
-#define TILEMAP_DEBUG 1
-#define BG_DEBUG 0
-#define BG_TILE_DEBUG 0
-#define LOG_DEBUG 1
+#define LOG_DEBUG 0
 
-	while( currentFrame < 100 )
+	while( currentFrame < 200 )
 	{
 		const cpuCycle_t cyclesPerFrame = MasterToCpuCycle( NanoToCycle( 1 * FrameLatencyNs.count() ) );	
 		nextCycle += cyclesPerFrame;
@@ -79,64 +153,10 @@ int main()
 			gbSystem.cpu.dbgLog.NewFrame();
 		}
 
-#if TILEMAP_DEBUG
-		{
-			Bitmap tileMap( 128, 64, 0x00000000 );
-
-			for ( uint32_t bank = 0; bank < 2; ++bank )
-			{
-				for ( uint32_t tileId = 0; tileId < 128; ++tileId )
-				{
-					const uint32_t pixelOffsetX = ( tileId % 16 ) * 8;
-					const uint32_t pixelOffsetY = ( tileId / 16 ) * 8;
-
-					DrawTile( tileMap, pixelOffsetX, pixelOffsetY, bank, tileId );
-				}
-
-				stringstream ss;
-				ss << "frame_" << currentFrame << "_tilemap_" << bank << ".bmp";
-				tileMap.Write( "gfx_output\\" + ss.str() );
-			}
-		}
-#endif
-
-#if BG_TILE_DEBUG
-		{
-			Bitmap bgMap( 256, 256, 0x00000000 );
-
-			for ( uint32_t tileY = 0; tileY < 32; ++tileY ) {
-				for ( uint32_t tileX = 0; tileX < 32; ++tileX ) {
-					const uint32_t pixelOffsetX = tileX * 8;
-					const uint32_t pixelOffsetY = tileY * 8;
-
-					const uint32_t tileId = gbSystem.vram[ 0x1800 + tileY * 32 + tileX ];
-					DrawTile( bgMap, pixelOffsetX, pixelOffsetY, 0, tileId );
-				}
-			}
-
-			stringstream ss;
-			ss << "frame_" << currentFrame << "_bgmap" << ".bmp";
-			bgMap.Write( "gfx_output\\" + ss.str() );
-		}
-#endif
-
-#if BG_DEBUG
-		{
-			system( "cls" );
-
-			cout << "\n\n";
-
-			for( int y = 0; y < 32; ++y ) { 
-				for ( int x = 0; x < 32; ++x ) {
-					cout << setw( 2 ) << setfill( '0' ) << hex << uint32_t( gbSystem.vram[ 0x1800 + y * 32 + x ] ) << " ";
-				}
-				cout << "\n";
-			}
-			cout << endl;
-		}
-#endif
 		++currentFrame;
 	}
+
+	Debug( currentFrame );
 
 #if LOG_DEBUG
 	{

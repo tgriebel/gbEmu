@@ -314,7 +314,27 @@ OP_DEF( JP ) {
 }
 
 OP_DEF( DAA ) {
-	assert( 0 );
+	// Gameboy version of BCD adjust
+	if ( n == 0 ) {
+		if ( ( c == 1 ) || ( A > 0x99 ) ) { 
+			A += 0x60;
+			c = 1;
+		}
+		if ( ( h == 1 ) || ( ( A & 0x0F ) > 0x09 ) ) {
+			A += 0x6;
+		}
+	}
+	else {
+		if ( c == 1 ) {
+			A -= 0x60;
+		}
+		if ( h == 1 ) {
+			A -= 0x6;
+		}
+	}
+
+	z = CheckZero( A );
+	h = 0;
 }
 
 OP_DEF( SCF ) {
@@ -342,7 +362,19 @@ OP_DEF( CCF ) {
 }
 
 OP_DEF( POP ) {
-	Store<LHS>( o, PopWord() );
+const uint16_t d16 = PopWord();
+	Store<LHS>( o, d16 );
+}
+
+OP_DEF( POP_AF ) {
+	const uint16_t d16 = PopWord();
+	AF = d16 & 0xFFF0;
+
+	//psw = ( d16 & 0xF0 );
+	//z = ( d16 & 0x80 );
+	//n = ( d16 & 0x40 );
+	//h = ( d16 & 0x20 );
+	//c = ( d16 & 0x10 );
 }
 
 OP_DEF( PUSH ) {
@@ -675,7 +707,7 @@ void BuildOpLUT()
 	OP_ADDR( 0xD5, PUSH,		NONE,			DE,				0, 16 )
 	OP_ADDR( 0xE1, POP,			HL,				NONE,			0, 12 )
 	OP_ADDR( 0xE5, PUSH,		NONE,			HL,				0, 16 )
-	OP_ADDR( 0xF1, POP,			AF,				NONE,			0, 12 )
+	OP_ADDR( 0xF1, POP_AF,		AF,				NONE,			0, 12 )
 	OP_ADDR( 0xF5, PUSH,		NONE,			AF,				0, 16 )
 	OP_ADDR( 0xF8, LDI,			NONE,			NONE,			1, 12 )
 	OP_ADDR( 0xF9, LD,			SP,				HL,				0, 12 )
