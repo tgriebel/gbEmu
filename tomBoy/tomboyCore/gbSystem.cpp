@@ -1,12 +1,14 @@
 #include "gbSystem.h"
 #include "mappers/NoMBC.h"
+#include "mappers/MBC1.h"
 
 unique_ptr<gbMapper> GameboySystem::AssignMapper( const uint32_t mapperId )
 {
 	switch ( mapperId )
 	{
-	default:
-	case 0: return make_unique<NoMBC>( mapperId );	break;
+		default:
+		case 0: return make_unique<NoMBC>( mapperId );	break;
+		case 1: return make_unique<MBC1>( mapperId );	break;
 	}
 }
 
@@ -120,7 +122,7 @@ void GameboySystem::WriteMemory( const uint16_t address, const uint16_t offset, 
 
 	if ( IsRomBank( mAddr ) )
 	{
-		cart->mapper->Write( mAddr, value );
+		cart->mapper->WriteRam( mAddr, value );
 	}
 	else if ( InRange( mAddr, VRamBank, VRamBankEnd ) )
 	{ 

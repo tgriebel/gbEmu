@@ -110,21 +110,21 @@ void Debug( const uint32_t currentFrame )
 
 int main()
 {
-	int test = 3;
+	int test = 0;
 	switch( test )
 	{	
 		case 0:		LoadGameboyFile( L"Games/Alleyway.gb",				gbSystem.cart ); break;
-		case 1:		LoadGameboyFile( L"Tests/01-special.gb",			gbSystem.cart ); break;
-		case 2:		LoadGameboyFile( L"Tests/02-interrupts.gb",			gbSystem.cart ); break;
-		case 3:		LoadGameboyFile( L"Tests/03-op sp,hl.gb",			gbSystem.cart ); break;
-		case 4:		LoadGameboyFile( L"Tests/04-op r,imm.gb",			gbSystem.cart ); break;
-		case 5:		LoadGameboyFile( L"Tests/05-op rp.gb.gb",			gbSystem.cart ); break;
-		case 6:		LoadGameboyFile( L"Tests/06-ld r,r.gb",				gbSystem.cart ); break;
-		case 7:		LoadGameboyFile( L"Tests/07-jr,jp,call,ret,rst.gb",	gbSystem.cart ); break;
-		case 8:		LoadGameboyFile( L"Tests/08-misc instrs.gb",		gbSystem.cart ); break;
-		case 9:		LoadGameboyFile( L"Tests/09-op r,r.gb",				gbSystem.cart ); break;
-		case 10:	LoadGameboyFile( L"Tests/10-bit ops.gb",			gbSystem.cart ); break;
-		case 11:	LoadGameboyFile( L"Tests/11-op a,(hl).gb",			gbSystem.cart ); break;
+		case 1:		LoadGameboyFile( L"Tests/01-special.gb",			gbSystem.cart ); break;	// Passed 9/10/24
+		case 2:		LoadGameboyFile( L"Tests/02-interrupts.gb",			gbSystem.cart ); break; // Not implemented yet
+		case 3:		LoadGameboyFile( L"Tests/03-op sp,hl.gb",			gbSystem.cart ); break; // Failed 9/10/24
+		case 4:		LoadGameboyFile( L"Tests/04-op r,imm.gb",			gbSystem.cart ); break;	// Passed 9/10/24
+		case 5:		LoadGameboyFile( L"Tests/05-op rp.gb",				gbSystem.cart ); break;	// Passed 9/10/24
+		case 6:		LoadGameboyFile( L"Tests/06-ld r,r.gb",				gbSystem.cart ); break;	// Passed 9/10/24
+		case 7:		LoadGameboyFile( L"Tests/07-jr,jp,call,ret,rst.gb",	gbSystem.cart ); break; // Failed 9/10/24
+		case 8:		LoadGameboyFile( L"Tests/08-misc instrs.gb",		gbSystem.cart ); break; // Failed 9/10/24
+		case 9:		LoadGameboyFile( L"Tests/09-op r,r.gb",				gbSystem.cart ); break; // Failed 9/10/24
+		case 10:	LoadGameboyFile( L"Tests/10-bit ops.gb",			gbSystem.cart ); break; // Failed 9/10/24
+		case 11:	LoadGameboyFile( L"Tests/11-op a,(hl).gb",			gbSystem.cart ); break; // Failed 9/10/24
 	}
 
 	gbSystem.cart->mapper = gbSystem.AssignMapper( gbSystem.cart->GetMapperId() );
@@ -142,7 +142,7 @@ int main()
 
 #define LOG_DEBUG 0
 
-	while( currentFrame < 200 )
+	while( currentFrame < 250 )
 	{
 		const cpuCycle_t cyclesPerFrame = MasterToCpuCycle( NanoToCycle( 1 * FrameLatencyNs.count() ) );	
 		nextCycle += cyclesPerFrame;

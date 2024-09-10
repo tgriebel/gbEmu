@@ -35,11 +35,11 @@ OP_DEF( LDI ) {
 }
 
 OP_DEF( HALT ) {
-
+	assert( 0 ); // TODO
 }
 
 OP_DEF( STOP ) {
-
+	assert( 0 ); // TODO
 }
 
 OP_DEF( ADD ) {
@@ -697,7 +697,7 @@ void BuildOpLUT()
 
 	// 16bit load/store/move instructions
 	OP_ADDR( 0x01, LD,			BC,				IMMEDIATE_N16,	2, 12 )
-	OP_ADDR( 0x08, LD,			IMMEDIATE_N16,	SP,				2, 20 )
+	OP_ADDR( 0x08, LD,			DIRECT_N16,		SP,				2, 20 )
 	OP_ADDR( 0x11, LD,			DE,				IMMEDIATE_N16,	2, 12 )
 	OP_ADDR( 0x21, LD,			HL,				IMMEDIATE_N16,	2, 12 )
 	OP_ADDR( 0x31, LD,			SP,				IMMEDIATE_N16,	2, 12 )

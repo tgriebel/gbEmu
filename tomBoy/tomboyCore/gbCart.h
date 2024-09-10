@@ -33,9 +33,7 @@ public:
 	virtual uint8_t			OnLoadCpu() { return 0; };
 	virtual uint8_t			OnLoadPpu() { return 0; };
 	virtual uint8_t			ReadRom( const uint16_t addr ) const = 0;
-	virtual uint8_t			ReadChrRom( const uint16_t addr ) const { return 0; };
-	virtual uint8_t			WriteChrRam( const uint16_t addr, const uint8_t value ) { return 0; };
-	virtual uint8_t			Write( const uint16_t addr, const uint8_t value ) { return 0; };
+	virtual void			WriteRam( const uint16_t addr, const uint8_t value ) {};
 	virtual bool			InWriteWindow( const uint16_t addr, const uint16_t offset ) const { return false; };
 
 	//virtual void			Serialize( Serializer& serializer ) {};
@@ -80,19 +78,14 @@ public:
 		size = 0;
 	}
 
-	uint8_t* GetPrgRomBank( const uint32_t bankNum, const uint32_t bankSize = KB( 32 ) )
+	uint8_t* GetPrgRomBank( const uint32_t bankNum, const uint32_t bankSize = KB( 16 ) )
 	{
-		const size_t addr = ( bankNum * (size_t)bankSize ) % KB( 32 );
+		const size_t addr = ( bankNum * (size_t)bankSize );
 		assert( addr < size );
 		return &rom[ addr ];
 	}
 
-	uint8_t GetPrgBankCount() const
-	{
-		return 1; // FIXME
-	}
-
 	uint32_t GetMapperId() const {
-		return 0; // TODO
+		return h.type;
 	}
 };
