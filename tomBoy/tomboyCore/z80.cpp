@@ -208,7 +208,7 @@ void CpuZ80::StopTraceLog()
 }
 
 cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t opCode, const bool bitOp ) {
-	const uint16_t opcodeIndex = bitOp ? ( opCode + 0xFF ) : opCode;
+	const uint16_t opcodeIndex = bitOp ? ( opCode + 0x100 ) : opCode;
 	const opInfo_t& op = opLUT[ opcodeIndex ];
 	assert( op.baseCycles > 0 );
 
@@ -276,6 +276,7 @@ cpuCycle_t CpuZ80::Exec()
 
 	const uint16_t instrAddr = PC;
 	uint8_t curbyte = system->ReadMemory( PC );
+
 
 	bool bitOp = false;
 	if( curbyte == 0xCB )
