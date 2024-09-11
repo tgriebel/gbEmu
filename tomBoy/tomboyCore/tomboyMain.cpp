@@ -110,7 +110,7 @@ void Debug( const uint32_t currentFrame )
 
 int main()
 {
-	int test = 0;
+	int test = 3;
 	switch( test )
 	{	
 		case 0:		LoadGameboyFile( L"Games/Alleyway.gb",				gbSystem.cart ); break;
@@ -140,9 +140,9 @@ int main()
 	int currentFrame = 0;
 	cpuCycle_t nextCycle = cpuCycle_t( 0 );
 
-#define LOG_DEBUG 0
+#define LOG_DEBUG 1
 
-	while( currentFrame < 250 )
+	while( currentFrame < 50 )
 	{
 		const cpuCycle_t cyclesPerFrame = MasterToCpuCycle( NanoToCycle( 1 * FrameLatencyNs.count() ) );	
 		nextCycle += cyclesPerFrame;
@@ -160,13 +160,15 @@ int main()
 
 #if LOG_DEBUG
 	{
-		string logBuffer;
-		gbSystem.cpu.dbgLog.ToString( logBuffer, 0, currentFrame );
-		//std::cout << "Log:\n" << logBuffer << std::endl;
-
 		std::ofstream logFile;
 		logFile.open( "tomboy.log" );
-		logFile << logBuffer << endl;
+
+		for ( uint32_t i = 0; i < gbSystem.cpu.dbgLog.GetRecordCount(); ++i ) {
+			string logBuffer;
+			gbSystem.cpu.dbgLog.ToString( logBuffer, i, i + 1 );
+	
+			logFile << logBuffer;	
+		}
 		logFile.close();
 	}
 #endif

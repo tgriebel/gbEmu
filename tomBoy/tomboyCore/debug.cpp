@@ -167,7 +167,7 @@ std::string OpDebugInfo::RegistersToString() const
 	regStream << uppercase << " L: ";
 	PrintHex( regStream, static_cast<int>( regInfo.L ), 2, false );
 	regStream << uppercase << " SP: ";
-	PrintHex( regStream, static_cast<int>( regInfo.SP ), 2, false );
+	PrintHex( regStream, static_cast<int>( regInfo.SP ), 4, false );
 
 	return regStream.str();
 }

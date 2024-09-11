@@ -30,6 +30,14 @@ OP_DEF( LD_DEC ) {
 	HL--;
 }
 
+OP_DEF( LD_SP ) {
+	uint16_t addr;
+	LHS( *this )( o, addr );
+
+	WriteMemoryBus( addr, 0, SP & 0xFF );
+	WriteMemoryBus( addr, 1, SP >> 8 );
+}
+
 OP_DEF( LDI ) {
 	HL = SP + u8i8( o.op0 ).i8;
 }
@@ -369,12 +377,6 @@ const uint16_t d16 = PopWord();
 OP_DEF( POP_AF ) {
 	const uint16_t d16 = PopWord();
 	AF = d16 & 0xFFF0;
-
-	//psw = ( d16 & 0xF0 );
-	//z = ( d16 & 0x80 );
-	//n = ( d16 & 0x40 );
-	//h = ( d16 & 0x20 );
-	//c = ( d16 & 0x10 );
 }
 
 OP_DEF( PUSH ) {
@@ -697,7 +699,7 @@ void BuildOpLUT()
 
 	// 16bit load/store/move instructions
 	OP_ADDR( 0x01, LD,			BC,				IMMEDIATE_N16,	2, 12 )
-	OP_ADDR( 0x08, LD,			DIRECT_N16,		SP,				2, 20 )
+	OP_ADDR( 0x08, LD_SP,		DIRECT_N16,		SP,				2, 20 )
 	OP_ADDR( 0x11, LD,			DE,				IMMEDIATE_N16,	2, 12 )
 	OP_ADDR( 0x21, LD,			HL,				IMMEDIATE_N16,	2, 12 )
 	OP_ADDR( 0x31, LD,			SP,				IMMEDIATE_N16,	2, 12 )
