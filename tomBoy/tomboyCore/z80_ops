@@ -16,14 +16,14 @@ OP_DEF( LD ) {
 	Store<LHS>( o, value );
 }
 
-OP_DEF( LD_INC ) {
+OP_DEF( LDI ) {
 	uint16_t value;
 	Load<RHS>( o, value );
 	Store<LHS>( o, value );
 	HL++;
 }
 
-OP_DEF( LD_DEC ) {
+OP_DEF( LDD ) {
 	uint16_t value;
 	Load<RHS>( o, value );
 	Store<LHS>( o, value );
@@ -38,7 +38,7 @@ OP_DEF( LD_SP ) {
 	WriteMemoryBus( addr, 1, SP >> 8 );
 }
 
-OP_DEF( LDI ) {
+OP_DEF( LD_HL_SP ) {
 	HL = SP + u8i8( o.op0 ).i8;
 }
 
@@ -619,13 +619,13 @@ void BuildOpLUT()
 	OP_ADDR( 0x16, LD,			D,				IMMEDIATE_N8,	1, 8 )
 	OP_ADDR( 0x1A, LD,			A,				DIRECT_DE,		0, 8 )
 	OP_ADDR( 0x1E, LD,			E,				IMMEDIATE_N8,	1, 8 )
-	OP_ADDR( 0x22, LD_INC,		DIRECT_HL,		A,				0, 8 )
+	OP_ADDR( 0x22, LDI,			DIRECT_HL,		A,				0, 8 )
 	OP_ADDR( 0x26, LD,			H,				IMMEDIATE_N8,	1, 8 )
-	OP_ADDR( 0x2A, LD_INC,		A,				DIRECT_HL,		0, 8 )
+	OP_ADDR( 0x2A, LDI,			A,				DIRECT_HL,		0, 8 )
 	OP_ADDR( 0x2E, LD,			L,				IMMEDIATE_N8,	1, 8 )
-	OP_ADDR( 0x32, LD_DEC,		DIRECT_HL,		A,				0, 8 )
+	OP_ADDR( 0x32, LDD,			DIRECT_HL,		A,				0, 8 )
 	OP_ADDR( 0x36, LD,			DIRECT_HL,		IMMEDIATE_N8,	1, 12 )
-	OP_ADDR( 0x3A, LD_DEC,		A,				DIRECT_HL,		0, 8 )
+	OP_ADDR( 0x3A, LDD,			A,				DIRECT_HL,		0, 8 )
 	OP_ADDR( 0x3E, LD,			A,				IMMEDIATE_N8,	1, 8 )
 	OP_ADDR( 0x40, LD,			B,				B,				0, 4 )
 	OP_ADDR( 0x41, LD,			B,				C,				0, 4 )
@@ -711,7 +711,7 @@ void BuildOpLUT()
 	OP_ADDR( 0xE5, PUSH,		NONE,			HL,				0, 16 )
 	OP_ADDR( 0xF1, POP_AF,		AF,				NONE,			0, 12 )
 	OP_ADDR( 0xF5, PUSH,		NONE,			AF,				0, 16 )
-	OP_ADDR( 0xF8, LDI,			NONE,			NONE,			1, 12 )
+	OP_ADDR( 0xF8, LD_HL_SP,	NONE,			NONE,			1, 12 )
 	OP_ADDR( 0xF9, LD,			SP,				HL,				0, 12 )
 
 	// 8bit ALU instructions

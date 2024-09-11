@@ -11,7 +11,7 @@ class wtLog;
 enum class opType_t : uint8_t
 {
 	ILL, NOP, STOP, HALT,
-	LD, LDI, LD_INC, LD_DEC, LD_SP,
+	LD, LD_HL_SP, LDI, LDD, LD_SP,
 	INC_R8, INC_R16, DEC_R8, DEC_R16, ADD, ADD_HL, ADD_SP, ADC, SUB, SBC, DAA, CPL,
 	OR, XOR, AND, BIT, RES, SET, SWAP,
 	RLC, RRC, RR, RL, SLA, SRA, SRL, RLA, RRA, RLCA, RRCA,
