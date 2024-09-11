@@ -108,6 +108,9 @@ uint8_t GameboySystem::ReadMemory( const uint16_t address )
 			return 0x90;
 		}
 	}
+	else if ( InRange( mAddr, InterruptRegister ) )
+	{
+	}
 	else
 	{
 		return memory[ address ];
@@ -168,6 +171,9 @@ void GameboySystem::WriteMemory( const uint16_t address, const uint16_t offset, 
 		}
 		else if ( InRange( mAddr, LcdStart, LcdEnd ) ) {
 		}
+	}
+	else if( InRange( mAddr, InterruptRegister ) )
+	{
 	}
 	else
 	{
