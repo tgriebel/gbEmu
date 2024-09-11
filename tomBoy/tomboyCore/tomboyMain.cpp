@@ -140,9 +140,9 @@ int main()
 	int currentFrame = 0;
 	cpuCycle_t nextCycle = cpuCycle_t( 0 );
 
-#define LOG_DEBUG 0
+#define LOG_DEBUG 1
 
-	while( currentFrame < 250 )
+	while( currentFrame < 50 )
 	{
 		const cpuCycle_t cyclesPerFrame = MasterToCpuCycle( NanoToCycle( 1 * FrameLatencyNs.count() ) );	
 		nextCycle += cyclesPerFrame;
