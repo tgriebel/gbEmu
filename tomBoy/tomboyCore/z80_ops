@@ -301,9 +301,12 @@ OP_DEF( RET ) {
 }
 
 OP_DEF( RETI ) {
+	ime = true;
 	if ( ( psw & BIT ) == CHK ) {
 		PC = PopWord();
-		ime = true;
+	} else {
+		PopWord();
+		PC += 2;
 	}
 }
 
