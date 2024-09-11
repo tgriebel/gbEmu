@@ -126,8 +126,8 @@ void CpuZ80::WriteMemoryBus( const uint16_t address, const uint16_t offset, cons
 
 void CpuZ80::Push( const uint8_t value )
 {
+	--SP;
 	system->GetStack() = value;
-	SP--;
 }
 
 void CpuZ80::PushWord( const uint16_t value )
@@ -138,8 +138,9 @@ void CpuZ80::PushWord( const uint16_t value )
 
 uint8_t CpuZ80::Pop()
 {
-	SP++;
-	return system->GetStack();
+	const uint8_t value = system->GetStack();
+	++SP;
+	return value;
 }
 
 uint16_t CpuZ80::PopWord()
