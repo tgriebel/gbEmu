@@ -114,9 +114,9 @@ public:
 	uint8_t& GetStack()
 	{
 		if( InRange( cpu.SP, WorkRamBank0, WorkRamBankEnd0 ) ) {
-			wram[ 0 ][ cpu.SP ];
+			wram[ 0 ][ cpu.SP - WorkRamBank0 ];
 		} else if ( InRange( cpu.SP, WorkRamBank1, WorkRamBankEnd1 ) ) {
-			return wram[ 1 ][ cpu.SP ];
+			return wram[ 1 ][ cpu.SP - WorkRamBank1 ];
 		}
 		//assert( 0 ); // Probably a bug, but possible error in game ROM
 		return wram[ 0 ][ 0 ];
