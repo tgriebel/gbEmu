@@ -225,14 +225,18 @@ OP_DEF( DEC_R16 ) {
 }
 
 OP_DEF( RLCA ) {
-	uint16_t value;
-	Load<RHS>( o, value );
+	const uint8_t bit7 = ( A >> 7 ) & 0x01;
+	A = ( A << 1 ) | bit7;
 
-	const uint8_t bit7 = value & 0x80;
-	value <<= 1;
-	value = ( value & 0xFE ) | bit7;
+	z = 0;
+	n = 0;
+	h = 0;
+	c = bit7;
+}
 
-	A = static_cast<uint8_t>( value );
+OP_DEF( RLA ) {
+	const uint8_t bit7 = ( A >> 7 ) & 0x01;
+	A = ( A << 1 ) | c;
 
 	z = 0;
 	n = 0;
@@ -270,22 +274,6 @@ OP_DEF( RRA ) {
 	n = 0;
 	h = 0;
 	c = bit0;
-}
-
-OP_DEF( RLA ) {
-	uint16_t value;
-	Load<RHS>( o, value );
-
-	const uint8_t bit7 = value & 0x80;
-	value <<= 1;
-	value = ( value & 0x7F ) | c;
-
-	A = static_cast<uint8_t>( value );
-
-	z = 0;
-	n = 0;
-	h = 0;
-	c = bit7;
 }
 
 OP_DEF( RST ) {
@@ -377,6 +365,8 @@ OP_DEF( EI ) {
 }
 
 OP_DEF( CCF ) {
+	n = 0;
+	h = 0;
 	c = ~c;
 }
 
@@ -420,32 +410,30 @@ OP_DEF( BIT ) {
 }
 
 OP_DEF( RL ) {
-	uint16_t value;
-	Load<RHS>( o, value );
+	uint16_t r8;
+	Load<RHS>( o, r8 );
 
-	const uint8_t bit7 = value & 0x80;
-	value <<= 1;
-	value = ( value & 0xFE ) | c;
+	const uint8_t bit7 = ( r8 >> 7 ) & 0x01;
+	r8 = ( r8 << 1 ) | c;
 
-	Store<LHS>( o, value );
+	Store<LHS>( o, r8 );
 
-	z = CheckZero( value );
+	z = CheckZero( r8 );
 	n = 0;
 	h = 0;
 	c = bit7;
 }
 
 OP_DEF( RLC ) {
-	uint16_t value;
-	Load<RHS>( o, value );
+	uint16_t r8;
+	Load<RHS>( o, r8 );
 
-	const uint8_t bit7 = value & 0x80;
-	value <<= 1;
-	value = ( value & 0xFE ) | bit7;
+	const uint8_t bit7 = ( r8 >> 7 ) & 0x01;
+	r8 = ( ( r8 << 1 ) | bit7 );
 
-	Store<LHS>( o, value );
+	Store<LHS>( o, r8 );
 
-	z = CheckZero( value );
+	z = CheckZero( r8 );
 	n = 0;
 	h = 0;
 	c = bit7;
@@ -484,13 +472,15 @@ OP_DEF( RRC ) {
 }
 
 OP_DEF( SLA ) {
-	uint16_t value;
-	Load<RHS>( o, value );
-	const uint8_t bit7 = value & 0x80;
-	value = ( value << 1 ) & 0xFE;
-	Store<LHS>( o, value );
+	uint16_t r8;
+	Load<RHS>( o, r8 );
 
-	z = CheckZero( value );
+	const uint8_t bit7 = ( r8 >> 7 ) & 0x01;
+	r8 = ( r8 << 1 ) & 0xFE;
+
+	Store<LHS>( o, r8 );
+
+	z = CheckZero( r8 );
 	n = 0;
 	h = 0;
 	c = bit7;
@@ -514,12 +504,17 @@ OP_DEF( SRA ) {
 }
 
 OP_DEF( SWAP ) {
-	uint16_t value;
-	Load<RHS>( o, value );
-	value = ( ( value << 4 ) & 0xF0 ) | ( ( value >> 4 ) & 0x0F );
-	Store<LHS>( o, value );
+	uint16_t r8;
+	Load<RHS>( o, r8 );
 
-	z = CheckZero( value );
+	r8 = ( ( r8 << 4 ) & 0xF0 ) | ( ( r8 >> 4 ) & 0x0F );
+
+	Store<LHS>( o, r8 );
+
+	z = CheckZero( r8 );
+	n = 0;
+	h = 0;
+	c = 0;
 }
 
 OP_DEF( SRL ) {
