@@ -54,7 +54,7 @@ void Debug( const uint32_t currentFrame )
 	{
 		Bitmap tileMap( 128, 64, 0x00000000 );
 
-		for ( uint32_t bank = 0; bank < 2; ++bank )
+		for ( uint32_t bank = 0; bank < 3; ++bank )
 		{
 			for ( uint32_t tileId = 0; tileId < 128; ++tileId )
 			{
@@ -110,7 +110,7 @@ void Debug( const uint32_t currentFrame )
 
 int main()
 {
-	int test = 11;
+	int test = 0;
 	switch( test )
 	{	
 		case 0:		LoadGameboyFile( L"Games/Alleyway.gb",				gbSystem.cart ); break;
@@ -140,9 +140,9 @@ int main()
 	int currentFrame = 0;
 	cpuCycle_t nextCycle = cpuCycle_t( 0 );
 
-#define LOG_DEBUG 0
+#define LOG_DEBUG 1
 
-	while( currentFrame < 1000 )
+	while( currentFrame < 100 )
 	{
 		const cpuCycle_t cyclesPerFrame = MasterToCpuCycle( NanoToCycle( 1 * FrameLatencyNs.count() ) );	
 		nextCycle += cyclesPerFrame;
