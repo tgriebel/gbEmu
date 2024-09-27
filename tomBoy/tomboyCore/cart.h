@@ -1,6 +1,8 @@
 #pragma once
 #include "common.h"
 
+class GameboySystem;
+
 enum wtMirrorMode : uint8_t
 {
 	MIRROR_MODE_SINGLE,
@@ -42,7 +44,7 @@ protected:
 	uint32_t mapperId;
 
 public:
-	wtSystem* system;
+	GameboySystem* system;
 
 	virtual uint8_t			OnLoadCpu() { return 0; };
 	virtual uint8_t			OnLoadPpu() { return 0; };
@@ -52,7 +54,7 @@ public:
 	virtual uint8_t			Write( const uint16_t addr, const uint8_t value ) { return 0; };
 	virtual bool			InWriteWindow( const uint16_t addr, const uint16_t offset ) const { return false; };
 
-	virtual void			Serialize( Serializer& serializer ) {};
+	//virtual void			Serialize( Serializer& serializer ) {};
 	virtual void			Clock() {};
 };
 
@@ -60,7 +62,7 @@ public:
 class wtCart
 {
 private:
-	uint8_t* rom;
+	uint8_t*				rom;
 	size_t					size;
 	size_t					prgSize;
 	size_t					chrSize;

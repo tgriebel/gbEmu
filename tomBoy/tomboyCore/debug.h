@@ -15,92 +15,6 @@
 		dbgInfo.memValue		= _info.value;											\
 	}
 
-#define DEBUG_ADDR_INDEXED_ABS( _info )													\
-	if( IsTraceLogOpen() )																\
-	{																					\
-		OpDebugInfo& dbgInfo	= dbgLog.GetLogLine();									\
-		dbgInfo.address			= _info.addr;											\
-		dbgInfo.targetAddress	= _info.targetAddr;										\
-		dbgInfo.memValue		= _info.value;											\
-	}
-
-#define DEBUG_ADDR_ZERO( _info )														\
-	if( cpu.IsTraceLogOpen() )															\
-	{																					\
-		OpDebugInfo& dbgInfo	= cpu.dbgLog.GetLogLine();								\
-		dbgInfo.address			= _info.addr;											\
-		dbgInfo.memValue		= _info.value;											\
-	}
-
-#define DEBUG_ADDR_ABS( _info )															\
-	if( cpu.IsTraceLogOpen() )															\
-	{																					\
-		OpDebugInfo& dbgInfo	= cpu.dbgLog.GetLogLine();								\
-		dbgInfo.address			= _info.addr;											\
-		dbgInfo.memValue		= _info.value;											\
-	}
-
-#define DEBUG_ADDR_IMMEDIATE( _info )													\
-	if( cpu.IsTraceLogOpen() )															\
-	{																					\
-		OpDebugInfo& dbgInfo	= cpu.dbgLog.GetLogLine();								\
-		dbgInfo.address			= _info.addr;											\
-		dbgInfo.memValue		= cpu.ReadOperand(0);									\
-	}
-
-#define DEBUG_ADDR_INDIRECT_INDEXED( _info )											\
-	if( cpu.IsTraceLogOpen() )															\
-	{																					\
-		OpDebugInfo& dbgInfo	= cpu.dbgLog.GetLogLine();								\
-		dbgInfo.address			= _info.addr;											\
-		dbgInfo.targetAddress	= _info.targetAddr;										\
-		dbgInfo.memValue		= _info.value;											\
-		dbgInfo.offset			= _info.offset;											\
-	}
-
-#define DEBUG_ADDR_INDEXED_INDIRECT( _info )											\
-	if( cpu.IsTraceLogOpen() )															\
-	{																					\
-		OpDebugInfo& dbgInfo	= cpu.dbgLog.GetLogLine();								\
-		dbgInfo.address			= _info.addr;											\
-		dbgInfo.memValue		= _info.value;											\
-		dbgInfo.targetAddress	= _info.targetAddr;										\
-	}
-
-#define DEBUG_ADDR_ACCUMULATOR( _info )													\
-	if( cpu.IsTraceLogOpen() )															\
-	{																					\
-	}
-
-#define DEBUG_ADDR_JMP( _PC )															\
-	if( IsTraceLogOpen() )																\
-	{																					\
-		OpDebugInfo& dbgInfo	= dbgLog.GetLogLine();									\
-		dbgInfo.address			= _PC;													\
-	}
-
-#define DEBUG_ADDR_JMPI( _offset, _PC )													\
-	if( IsTraceLogOpen() )																\
-	{																					\
-		OpDebugInfo& dbgInfo	= dbgLog.GetLogLine();									\
-		dbgInfo.offset			= _offset;												\
-		dbgInfo.address			= _PC;													\
-	}
-
-#define DEBUG_ADDR_JSR( _PC )															\
-	if( IsTraceLogOpen() )																\
-	{																					\
-		OpDebugInfo& dbgInfo	= dbgLog.GetLogLine();									\
-		dbgInfo.address			= _PC;													\
-	}
-
-#define DEBUG_ADDR_BRANCH( _PC )														\
-	if( IsTraceLogOpen() )																\
-	{																					\
-		OpDebugInfo& dbgInfo	= dbgLog.GetLogLine();									\
-		dbgInfo.address			= _PC;													\
-	}
-
 #define DEBUG_CPU_LOG 0;
 
 #else //  #if DEBUG_ADDR == 1
@@ -232,6 +146,7 @@ private:
 	logRecords_t		log;
 	uint32_t			frameIx;
 	uint32_t			totalCount;
+	bool				latchLineFlush;
 
 public:
 	wtLog() : frameIx( 0 ), totalCount( 0 )
@@ -245,6 +160,8 @@ public:
 	const logFrame_t&	GetLogFrame( const uint32_t frameIx ) const;
 	OpDebugInfo&		GetLogLine();
 	uint32_t			GetRecordCount() const;
+	bool				HasPendingLine() const;
+	string				FlushLine();
 	bool				IsFull() const;
 	bool				IsFinished() const;
 	void				ToString( std::string& buffer, const uint32_t frameBegin, const uint32_t frameEnd, const bool registerDebug = true ) const;

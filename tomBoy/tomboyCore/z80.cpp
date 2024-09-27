@@ -254,8 +254,6 @@ cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t opCode, const
 
 cpuCycle_t CpuZ80::Exec()
 {
-	cpuCycle_t opCycle = cpuCycle_t( 0 );
-
 	//if ( oamInProcess )
 	//{
 	//	// http://wiki.nesdev.com/w/index.php/PPU_registers#OAMDMA
@@ -273,19 +271,6 @@ cpuCycle_t CpuZ80::Exec()
 	//{
 	//	return cpuCycle_t( 1 );
 	//}
-
-	const uint16_t instrAddr = PC;
-	uint8_t curbyte = system->ReadMemory( PC );
-
-
-	bool bitOp = false;
-	if( curbyte == 0xCB )
-	{
-		AdvancePC( 1 );
-		bitOp = true;
-		curbyte = system->ReadMemory( PC );
-	}
-	AdvancePC( 1 );
 
 	//if ( interruptRequestNMI )
 	//{
@@ -312,13 +297,60 @@ cpuCycle_t CpuZ80::Exec()
 	//	return opCycle;
 	//}
 
-	return OpExec( instrAddr, curbyte, bitOp );
+	return 0; 
 }
 
 bool CpuZ80::Step( const cpuCycle_t& nextCycle )
 {
-	while ( ( cycle < nextCycle ) && !halt ) {
-		cycle += cpuCycle_t( Exec() );
+	if( ( IF.byte & IE.byte ) != 0 && ime == true )
+	{
+		PushWord( PC );
+
+		if( IF.vblank & IE.vblank ) {
+			PC = VBlankInterruptAddr;
+		} else if ( IF.lcd & IE.lcd ) {
+			PC = StatInterruptAddr;
+		} else if ( IF.serial & IE.serial ) {
+			PC = SerialInterruptAddr;
+		} else if ( IF.joypad & IE.joypad ) {
+			PC = JoypadInterruptAddr;
+		}
+		IF.byte = 0;
+		ime = false;
+		halt = false;
+	}
+
+	while ( ( cycle < nextCycle ) && !halt )
+	{
+		cpuCycle_t opCycle = cpuCycle_t( 0 );
+
+		const uint16_t instrAddr = PC;
+		uint8_t curbyte = system->ReadMemory( PC );
+
+		static uint16_t bpAddr = 0x0226;
+		if( instrAddr == bpAddr ) {
+			cout << "Hit BP" << endl;
+		}
+
+		bool bitOp = false;
+		if ( curbyte == 0xCB )
+		{
+			AdvancePC( 1 );
+			bitOp = true;
+			curbyte = system->ReadMemory( PC );
+		}
+		AdvancePC( 1 );
+
+		// Execute
+		opCycle = OpExec( instrAddr, curbyte, bitOp );
+		
+		cycle += cpuCycle_t( opCycle );
+		
+		if( instructionCount == pendingInterruptEnable ) {
+			pendingInterruptEnable = 0;
+			ime = true;
+		}
+		++instructionCount;
 	}
 	return !halt;
 }

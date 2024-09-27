@@ -142,12 +142,20 @@ int main()
 
 #define LOG_DEBUG 1
 
-	while( currentFrame < 100 )
+	while( currentFrame < 32 )
 	{
-		const cpuCycle_t cyclesPerFrame = MasterToCpuCycle( NanoToCycle( 1 * FrameLatencyNs.count() ) );	
-		nextCycle += cyclesPerFrame;
+		const cpuCycle_t cyclesPerFrame = MasterToCpuCycle( NanoToCycle( 1 * FrameLatencyNs.count() ) );
+		for( cpuCycle_t i = 0; i < cyclesPerFrame; ++i )
+		{
+			nextCycle += 1;
 
-		gbSystem.cpu.Step( nextCycle );
+			gbSystem.cpu.Step( nextCycle );
+			gbSystem.ppu.Step( nextCycle );
+
+			if( gbSystem.cpu.dbgLog.HasPendingLine() ) {
+			//	cout << gbSystem.cpu.dbgLog.FlushLine() << endl;
+			}
+		}
 
 		if ( gbSystem.cpu.IsTraceLogOpen() ) {
 			gbSystem.cpu.dbgLog.NewFrame();

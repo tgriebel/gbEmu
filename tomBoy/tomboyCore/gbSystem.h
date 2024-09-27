@@ -5,6 +5,7 @@
 #include "common.h"
 #include "gbCart.h"
 #include "z80.h"
+#include "ppu.h"
 #include "interface.h"
 
 class GameboySystem
@@ -44,7 +45,8 @@ public:
 	static const uint32_t MmioEnd				= 0xFF7F;
 	static const uint32_t Hram					= 0xFF80;	// High RAM
 	static const uint32_t HramEnd				= 0xFFFE;
-	static const uint32_t InterruptRegister		= 0xFFFF;	// Hardware interrupt register
+	static const uint32_t InterruptFlagAddr		= 0xFF0F;	// Hardware interrupt flag register
+	static const uint32_t InterruptEnableAddr	= 0xFFFF;	// Hardware interrupt enable register
 
 	// MMIO
 	static const uint32_t Joypad				= 0xFF00;
@@ -72,6 +74,7 @@ public:
 	static const uint32_t WRamSelect			= 0xFF70;
 
 	CpuZ80					cpu;
+	PPU						ppu;
 	unique_ptr<gbCart>		cart;
 	uint8_t					memory[ 1024 * 16 ];
 	uint8_t					hram[ HighRamSize ];
@@ -81,11 +84,25 @@ public:
 
 	GameboySystem()
 	{
+		cpu.RegisterSystem( this );
+		ppu.RegisterSystem( this );
+
 		memset( memory, 0, 1024 * 16 );
 		memset( hram, 0, HighRamSize );
 		memset( wram, 0, 8 * WorkRamSize );
 		memset( vram, 0, VRamSize );
 		memset( oam, 0, AttributeSize );
+	}
+
+	void RequestVBlankInterrupt()
+	{
+		cpu.IF.vblank = 1;
+	}
+
+
+	void ClearVBlankInterrupt()
+	{
+		cpu.IF.vblank = 0;
 	}
 
 	void LoadProgram()

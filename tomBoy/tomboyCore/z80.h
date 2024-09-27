@@ -240,14 +240,41 @@ public:
 	uint8_t* const		r8[ 8 ] = { &A, &F, &C, &B, &E, &D, &L, &H };
 	uint16_t* const		r16[ 6 ] = { &AF, &BC, &DE, &HL, &SP, &PC };
 
-	GameboySystem*		system;
+	union
+	{
+		struct
+		{		
+			uint8_t vblank	: 1; // VBlank interrrupt handler enabled
+			uint8_t lcd		: 1; // LCD interrrupt handler enabled
+			uint8_t timer	: 1; // Timer interrrupt handler enabled
+			uint8_t serial	: 1; // Serial interrrupt handler enabled
+			uint8_t joypad	: 1; // Joypad interrrupt handler enabled
+			uint8_t unused	: 3;
+		};
+		uint8_t byte;
+	} IF; // Interrupt-Flags
 
-	uint16_t			nmiVector;
-	uint16_t			irqVector;
-	uint16_t			resetVector;
+	union
+	{
+		struct
+		{
+			uint8_t vblank	: 1; // VBlank interrrupt handler enabled
+			uint8_t lcd		: 1; // LCD interrrupt handler enabled
+			uint8_t timer	: 1; // Timer interrrupt handler enabled
+			uint8_t serial	: 1; // Serial interrrupt handler enabled
+			uint8_t joypad	: 1; // Joypad interrrupt handler enabled
+			uint8_t unused	: 3;
+		};
+		uint8_t byte;
+	} IE; // Enable Interrupt-Flags
+
 	bool				ime; // interrupt-mask-enable
 
+	GameboySystem*		system;
+
 	cpuCycle_t			cycle;
+	uint64_t			instructionCount;
+	uint64_t			pendingInterruptEnable;
 
 	opInfo_t			opLUT[ NumInstructions ];
 	wtLog				dbgLog;
@@ -259,11 +286,26 @@ public:
 #endif
 
 private:
+	static const uint16_t	VBlankInterruptAddr	= 0x40;
+	static const uint16_t	StatInterruptAddr	= 0x48;
+	static const uint16_t	TimerInterruptAddr	= 0x50;
+	static const uint16_t	SerialInterruptAddr	= 0x58;
+	static const uint16_t	JoypadInterruptAddr	= 0x60;
+
 	bool				halt;
 
 public:
 	CpuZ80() {
 		BuildOpLUT();
+
+		cycle = cpuCycle_t( 0 );
+		instructionCount = 0;
+
+		ime = false;
+		halt = false;
+
+		IF.byte = 0;
+		IE.byte = 0;
 
 		AF = 0x01B0;
 		BC = 0x0013;

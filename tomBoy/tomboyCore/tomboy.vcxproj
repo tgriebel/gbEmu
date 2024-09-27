@@ -195,6 +195,7 @@
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="gbSystem.cpp" />
     <ClCompile Include="bitmap.cpp" />
+    <ClCompile Include="ppu.cpp" />
     <ClCompile Include="systemSerialize.cpp" />
     <ClCompile Include="tomboyMain.cpp" />
     <ClCompile Include="stdafx.cpp">
