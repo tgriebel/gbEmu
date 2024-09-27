@@ -223,7 +223,7 @@ cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t opCode, const
 #if DEBUG_ADDR == 1
 	if ( IsTraceLogOpen() )
 	{
-		OpDebugInfo& instrDbg = dbgLog.NewLine();
+		OpDebugInfo instrDbg {};
 		instrDbg.loadCnt = 0;
 		instrDbg.storeCnt = 0;
 		instrDbg.byteCode = opState.opCode;
@@ -242,6 +242,8 @@ cpuCycle_t CpuZ80::OpExec( const uint16_t instrAddr, const uint8_t opCode, const
 		instrDbg.operands = op.operands;
 		instrDbg.bitCheck = op.bitCheck;
 		instrDbg.check = op.check;
+
+		dbgLog.NewLine( instrDbg );
 	}
 #endif
 

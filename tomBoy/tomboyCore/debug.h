@@ -50,6 +50,11 @@ struct regDebugInfo_t
 };
 
 
+class LogLine
+{
+	std::string ToString( std::string& buffer );
+};
+
 class OpDebugInfo
 {
 private:
@@ -157,6 +162,7 @@ public:
 	void				Reset( const uint32_t targetCount );
 	void				NewFrame();
 	OpDebugInfo&		NewLine();
+	void				NewLine( const OpDebugInfo& debugInfo );
 	const logFrame_t&	GetLogFrame( const uint32_t frameIx ) const;
 	OpDebugInfo&		GetLogLine();
 	uint32_t			GetRecordCount() const;

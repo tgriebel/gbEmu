@@ -278,6 +278,14 @@ OpDebugInfo& wtLog::NewLine()
 }
 
 
+void wtLog::NewLine( const OpDebugInfo& debugInfo )
+{
+	latchLineFlush = false;
+	log[ frameIx ].resize( log[ frameIx ].size() + 1 );
+	GetLogLine() = debugInfo;
+}
+
+
 const logFrame_t& wtLog::GetLogFrame( const uint32_t frameNum ) const
 {
 	const uint32_t frameIndex = ( frameNum >= totalCount ) ? 0 : frameNum;
