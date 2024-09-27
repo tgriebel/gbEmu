@@ -103,13 +103,16 @@ uint8_t GameboySystem::ReadMemory( const uint16_t address )
 		else if ( InRange( mAddr, VramDmaStart, VramDmaEnd ) ) {
 		}
 		else if ( InRange( mAddr, LcdStart, LcdEnd ) ) {
-			static uint8_t ly = 0;
-			ly++; // FIXME: stub
-			return 0x90;
+			return ppu.LY();
 		}
 	}
-	else if ( InRange( mAddr, InterruptRegister ) )
+	else if ( InRange( mAddr, InterruptFlagAddr ) )
 	{
+		return cpu.IF.byte;
+	}
+	else if ( InRange( mAddr, InterruptEnableAddr ) )
+	{
+		return cpu.IE.byte;
 	}
 	else
 	{
@@ -172,8 +175,13 @@ void GameboySystem::WriteMemory( const uint16_t address, const uint16_t offset, 
 		else if ( InRange( mAddr, LcdStart, LcdEnd ) ) {
 		}
 	}
-	else if( InRange( mAddr, InterruptRegister ) )
+	else if( InRange( mAddr, InterruptFlagAddr ) )
 	{
+		cpu.IF.byte = value;
+	}
+	else if ( InRange( mAddr, InterruptEnableAddr ) )
+	{
+		cpu.IE.byte = value;
 	}
 	else
 	{

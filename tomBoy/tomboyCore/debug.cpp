@@ -194,7 +194,7 @@ void OpDebugInfo::ToString( std::string& buffer, const bool registerDebug, const
 		return;
 	}
 
-	const bool refLogFormat = true;
+	const bool refLogFormat = false;
  	if( refLogFormat )
 	{
 		buffer += RegistersToString();
@@ -220,7 +220,7 @@ void OpDebugInfo::ToString( std::string& buffer, const bool registerDebug, const
 		if ( registerDebug )
 		{
 			debugStream.seekg( 0, ios::end );
-			const size_t alignment = 50;
+			const size_t alignment = 150;
 			const size_t width = ( alignment - debugStream.tellg() );
 			assert( width > 0 );
 			debugStream.seekg( 0, ios::beg );
@@ -254,6 +254,7 @@ void wtLog::Reset( const uint32_t targetCount )
 	for ( size_t frameIndex = 0; frameIndex < totalCount; ++frameIndex ) {
 		log[ frameIndex ].reserve( 10000 );
 	}
+	latchLineFlush = false;
 	NewFrame();
 }
 
@@ -271,6 +272,7 @@ void wtLog::NewFrame()
 
 OpDebugInfo& wtLog::NewLine()
 {
+	latchLineFlush = false;
 	log[ frameIx ].resize( log[ frameIx ].size() + 1 );
 	return GetLogLine();
 }
@@ -286,6 +288,22 @@ const logFrame_t& wtLog::GetLogFrame( const uint32_t frameNum ) const
 OpDebugInfo& wtLog::GetLogLine()
 {
 	return log[ frameIx ].back();
+}
+
+
+bool wtLog::HasPendingLine() const {
+	return latchLineFlush == false;
+}
+
+
+string wtLog::FlushLine()
+{
+	string buffer;
+	OpDebugInfo& line = GetLogLine();
+	line.ToString( buffer, true, true, true );
+	latchLineFlush = true;
+
+	return buffer;
 }
 
 
