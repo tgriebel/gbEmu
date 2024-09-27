@@ -51,7 +51,7 @@ OP_DEF( LD_HL_SP ) {
 }
 
 OP_DEF( HALT ) {
-	assert( 0 ); // TODO
+	halt = true;
 }
 
 OP_DEF( STOP ) {
@@ -282,20 +282,16 @@ OP_DEF( RST ) {
 }
 
 OP_DEF( RET ) {
+	const uint16_t word = PopWord();
 	if ( ( psw & BIT ) == CHK ) {
-		PC = PopWord();
+		PC = word;
 		o.opCycles += 12;
 	}
 }
 
 OP_DEF( RETI ) {
 	ime = true;
-	if ( ( psw & BIT ) == CHK ) {
-		PC = PopWord();
-	} else {
-		PopWord();
-		PC += 2;
-	}
+	PC = PopWord();
 }
 
 OP_DEF( JR ) {
@@ -361,7 +357,7 @@ OP_DEF( DI ) {
 }
 
 OP_DEF( EI ) {
-	ime = true;
+	pendingInterruptEnable = instructionCount + 1;
 }
 
 OP_DEF( CCF ) {
@@ -557,7 +553,7 @@ void BuildOpLUT()
 
 	// Misc/control instructions
 	OP_ADDR( 0x00, NOP,			NONE,	NONE,	0, 4 )
-	OP_ADDR( 0x10, STOP,		NONE,	NONE,	0, 4 )
+	OP_ADDR( 0x10, STOP,		NONE,	NONE,	1, 4 )
 	OP_ADDR( 0x76, HALT,		NONE,	NONE,	0, 4 )
 	OP_ADDR( 0xF3, DI,			NONE,	NONE,	0, 4 )
 	OP_ADDR( 0xFB, EI,			NONE,	NONE,	0, 4 )
@@ -599,10 +595,10 @@ void BuildOpLUT()
 	OP_JUMP( 0xDC, CALL,		IMMEDIATE_N16,	2, 12,	___C, ___C )
 	OP_JUMP( 0xC0, RET,			NONE,			0, 8,	Z___, ____ )
 	OP_JUMP( 0xC8, RET,			NONE,			0, 8,	Z___, Z___ )
-	OP_JUMP( 0xC9, RET,			NONE,			0, 16,	____, ____ )
+	OP_JUMP( 0xC9, RET,			NONE,			0, 4,	____, ____ )
 	OP_JUMP( 0xD0, RET,			NONE,			0, 8,	___C, ____ )
 	OP_JUMP( 0xD8, RET,			NONE,			0, 8,	___C, ___C )
-	OP_JUMP( 0xD9, RETI,		NONE,			0, 16,	____, ___C )
+	OP_JUMP( 0xD9, RETI,		NONE,			0, 16,	____, ____ )
 	OP_JUMP( 0xC7, RST,			NONE,			0, 16,	0x00, 0 )
 	OP_JUMP( 0xCF, RST,			NONE,			0, 16,	0x08, 0 )
 	OP_JUMP( 0xD7, RST,			NONE,			0, 16,	0x10, 0 )
