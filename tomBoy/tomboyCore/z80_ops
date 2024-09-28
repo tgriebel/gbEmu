@@ -282,9 +282,8 @@ OP_DEF( RST ) {
 }
 
 OP_DEF( RET ) {
-	const uint16_t word = PopWord();
 	if ( ( psw & BIT ) == CHK ) {
-		PC = word;
+		PC = PopWord();
 		o.opCycles += 12;
 	}
 }
