@@ -110,7 +110,7 @@ void Debug( const uint32_t currentFrame )
 
 int main()
 {
-	int test = 9;
+	int test = 0;
 	switch( test )
 	{	
 		case 0:		LoadGameboyFile( L"Games/Alleyway.gb",				gbSystem.cart ); break;
@@ -142,7 +142,7 @@ int main()
 
 #define LOG_DEBUG 0
 
-	while( currentFrame < 1000 )
+	while( currentFrame < 100 )
 	{
 		const cpuCycle_t cyclesPerFrame = MasterToCpuCycle( NanoToCycle( 1 * FrameLatencyNs.count() ) );
 		for( cpuCycle_t i = 0; i < cyclesPerFrame; ++i )

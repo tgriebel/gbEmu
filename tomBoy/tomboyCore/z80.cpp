@@ -1,119 +1,337 @@
 #include "z80.h"
 #include "gbSystem.h"
 
-ADDR_MODE_DEF( NONE )
+#if DEBUG_ADDR == 1
+#define TRACE_RHS( addr, value )														\
+	if( cpu.IsTraceLogOpen() )															\
+	{																					\
+		OpDebugInfo& dbgInfo = cpu.dbgLog.GetLogLine();									\
+		dbgInfo.rhsAddrMode = static_cast<uint8_t>( addrMode );							\
+		dbgInfo.rhsAddrType = static_cast<uint8_t>( type );								\
+		dbgInfo.rhsAddress = addr;														\
+		dbgInfo.rhsMemValue = static_cast<uint8_t>( value );							\
+	}
+
+#define TRACE_LHS( addr, value )														\
+	if( cpu.IsTraceLogOpen() )															\
+	{																					\
+		OpDebugInfo& dbgInfo = cpu.dbgLog.GetLogLine();									\
+		dbgInfo.lhsAddrMode = static_cast<uint8_t>( addrMode );							\
+		dbgInfo.lhsAddrType = static_cast<uint8_t>( type );								\
+		dbgInfo.lhsAddress = addr;														\
+		dbgInfo.lhsMemValue = static_cast<uint8_t>( value );							\
+	}
+#else
+#define DEBUG_ADDR_RHS		{}
+#define DEBUG_ADDR_LHS		{}
+#endif
+
+ADDR_MODE_RHS_DEF( NONE )
 {
-	addr = 0;
+	value = 0;
 }
 
-ADDR_MODE_DEF( A )
+ADDR_MODE_LHS_DEF( NONE )
 {
-	addr = A_IX;
+	value = 0;
 }
 
-ADDR_MODE_DEF( F )
+ADDR_MODE_RHS_DEF( A )
 {
-	addr = F_IX;
+	value = cpu.A;
+
+	TRACE_RHS( cpu.A, value );
 }
 
-ADDR_MODE_DEF( B )
+ADDR_MODE_LHS_DEF( A )
 {
-	addr = B_IX;
+	cpu.A = static_cast<uint8_t>( value );
+
+	TRACE_LHS( cpu.A, value );
 }
 
-ADDR_MODE_DEF( C )
+ADDR_MODE_RHS_DEF( F )
 {
-	addr = C_IX;
+	value = cpu.F;
+
+	TRACE_RHS( cpu.F, value );
 }
 
-ADDR_MODE_DEF( E )
+ADDR_MODE_LHS_DEF( F )
 {
-	addr = E_IX;
+	cpu.F = static_cast<uint8_t>( value );
+
+	TRACE_LHS( cpu.F, value );
 }
 
-ADDR_MODE_DEF( D )
+ADDR_MODE_RHS_DEF( B )
 {
-	addr = D_IX;
+	value = cpu.B;
+
+	TRACE_RHS( cpu.B, value );
 }
 
-ADDR_MODE_DEF( L )
+ADDR_MODE_LHS_DEF( B )
 {
-	addr = L_IX;
+	cpu.B = static_cast<uint8_t>( value );
+
+	TRACE_LHS( cpu.B, value );
 }
 
-ADDR_MODE_DEF( H )
+ADDR_MODE_RHS_DEF( C )
 {
-	addr = H_IX;
+	value = cpu.C;
+
+	TRACE_RHS( cpu.C, value );
 }
 
-ADDR_MODE_DEF( AF )
+ADDR_MODE_LHS_DEF( C )
 {
-	addr = AF_IX;
+	cpu.C = static_cast<uint8_t>( value );
+
+	TRACE_LHS( cpu.C, value );
 }
 
-ADDR_MODE_DEF( BC )
+ADDR_MODE_RHS_DEF( E )
 {
-	addr = BC_IX;
+	value = cpu.E;
+
+	TRACE_RHS( cpu.E, value );
 }
 
-ADDR_MODE_DEF( DE )
+ADDR_MODE_LHS_DEF( E )
 {
-	addr = DE_IX;
+	cpu.E = static_cast<uint8_t>( value );
+
+	TRACE_LHS( cpu.E, value );
 }
 
-ADDR_MODE_DEF( HL )
+ADDR_MODE_RHS_DEF( D )
 {
-	addr = HL_IX;
+	value = cpu.D;
+
+	TRACE_RHS( cpu.D, value );
 }
 
-ADDR_MODE_DEF( SP )
+ADDR_MODE_LHS_DEF( D )
 {
-	addr = SP_IX;
+	cpu.D = static_cast<uint8_t>( value );
+
+	TRACE_LHS( cpu.D, value );
 }
 
-ADDR_MODE_DEF( PC )
+ADDR_MODE_RHS_DEF( L )
 {
-	addr = PC_IX;
+	value = cpu.L;
+
+	TRACE_RHS( cpu.L, value );
 }
 
-ADDR_MODE_DEF( DIRECT_BC )
+ADDR_MODE_LHS_DEF( L )
 {
-	addr = cpu.BC;
+	cpu.L = static_cast<uint8_t>( value );
+
+	TRACE_LHS( cpu.L, value );
 }
 
-ADDR_MODE_DEF( DIRECT_DE )
+ADDR_MODE_RHS_DEF( H )
 {
-	addr = cpu.DE;
+	value = cpu.H;
+
+	TRACE_RHS( cpu.H, value );
 }
 
-ADDR_MODE_DEF( DIRECT_HL )
+ADDR_MODE_LHS_DEF( H )
 {
-	addr = cpu.HL;
+	cpu.H = static_cast<uint8_t>( value );
+
+	TRACE_LHS( cpu.H, value );
 }
 
-ADDR_MODE_DEF( DIRECT_C )
+ADDR_MODE_RHS_DEF( AF )
 {
-	addr = cpu.C + 0xFF00;
+	value = cpu.AF;
+
+	TRACE_RHS( cpu.AF, value );
 }
 
-ADDR_MODE_DEF( DIRECT_N8 )
+ADDR_MODE_LHS_DEF( AF )
 {
-	addr = o.op0 + 0xFF00;
+	cpu.AF = value;
+
+	TRACE_LHS( cpu.AF, value );
 }
 
-ADDR_MODE_DEF( DIRECT_N16 )
+ADDR_MODE_RHS_DEF( BC )
 {
-	addr = Combine( o.op0, o.op1 );
+	value = cpu.BC;
+
+	TRACE_RHS( cpu.BC, value );
 }
 
-ADDR_MODE_DEF( IMMEDIATE_N8 )
+ADDR_MODE_LHS_DEF( BC )
 {
-	addr = o.op0;
+	cpu.BC = value;
+
+	TRACE_LHS( cpu.BC, value );
 }
 
-ADDR_MODE_DEF( IMMEDIATE_N16 )
+ADDR_MODE_RHS_DEF( DE )
 {
-	addr = o.op;
+	value = cpu.DE;
+
+	TRACE_RHS( cpu.DE, value );
+}
+
+ADDR_MODE_LHS_DEF( DE )
+{
+	cpu.DE = value;
+
+	TRACE_LHS( cpu.DE, value );
+}
+
+ADDR_MODE_RHS_DEF( HL )
+{
+	value = cpu.HL;
+
+	TRACE_RHS( cpu.HL, value );
+}
+
+ADDR_MODE_LHS_DEF( HL )
+{
+	cpu.HL = value;
+
+	TRACE_LHS( cpu.HL, value );
+}
+
+ADDR_MODE_RHS_DEF( SP )
+{
+	value = cpu.SP;
+
+	TRACE_RHS( cpu.SP, value );
+}
+
+ADDR_MODE_LHS_DEF( SP )
+{
+	cpu.SP = value;
+
+	TRACE_LHS( cpu.SP, value );
+}
+
+ADDR_MODE_RHS_DEF( DIRECT_BC )
+{
+	value = cpu.ReadMemoryBus( cpu.BC );
+
+	TRACE_RHS( cpu.BC, value );
+}
+
+ADDR_MODE_LHS_DEF( DIRECT_BC )
+{
+	cpu.WriteMemoryBus( cpu.BC, 0, static_cast<uint8_t>( value & 0xFF ) );
+
+	TRACE_LHS( cpu.BC, value & 0xFF );
+}
+
+ADDR_MODE_RHS_DEF( DIRECT_DE )
+{
+	value = cpu.ReadMemoryBus( cpu.DE );
+
+	TRACE_RHS( cpu.DE, value );
+}
+
+ADDR_MODE_LHS_DEF( DIRECT_DE )
+{
+	cpu.WriteMemoryBus( cpu.DE, 0, static_cast<uint8_t>( value & 0xFF ) );
+
+	TRACE_LHS( cpu.DE, value & 0xFF );
+}
+
+ADDR_MODE_RHS_DEF( DIRECT_HL )
+{
+	value = cpu.ReadMemoryBus( cpu.HL );
+
+	TRACE_RHS( cpu.HL, value );
+}
+
+ADDR_MODE_LHS_DEF( DIRECT_HL )
+{
+	cpu.WriteMemoryBus( cpu.HL, 0, static_cast<uint8_t>( value & 0xFF ) );
+
+	TRACE_LHS( cpu.HL, value & 0xFF );
+}
+
+ADDR_MODE_RHS_DEF( DIRECT_C )
+{
+	const uint16_t addr = cpu.C + 0xFF00;
+	value = cpu.ReadMemoryBus( addr );
+
+	TRACE_RHS( addr, value );
+}
+
+ADDR_MODE_LHS_DEF( DIRECT_C )
+{
+	const uint16_t addr = cpu.C + 0xFF00;
+	cpu.WriteMemoryBus( addr, 0, static_cast<uint8_t>( value & 0xFF ) );
+
+	TRACE_LHS( addr, value & 0xFF );
+}
+
+ADDR_MODE_RHS_DEF( DIRECT_N8 )
+{
+	const uint16_t addr = o.op0 + 0xFF00;
+	value = cpu.ReadMemoryBus( addr );
+
+	TRACE_RHS( addr, value );
+}
+
+ADDR_MODE_LHS_DEF( DIRECT_N8 )
+{
+	const uint16_t addr = o.op0 + 0xFF00;
+	cpu.WriteMemoryBus( addr, 0, static_cast<uint8_t>( value & 0xFF ) );
+
+	TRACE_LHS( addr, value );
+}
+
+ADDR_MODE_RHS_DEF( DIRECT_N16 )
+{
+	const uint16_t addr = Combine( o.op0, o.op1 );
+	value = cpu.ReadMemoryBus( addr );
+
+	TRACE_RHS( addr, value );
+}
+
+ADDR_MODE_LHS_DEF( DIRECT_N16 )
+{
+	const uint16_t addr = Combine( o.op0, o.op1 );
+	cpu.WriteMemoryBus( addr, 0, static_cast<uint8_t>( value & 0xFF ) );
+
+	TRACE_RHS( addr, value & 0xFF );
+}
+
+ADDR_MODE_RHS_DEF( IMMEDIATE_N8 )
+{
+	value = o.op0;
+
+	TRACE_RHS( o.op0, value );
+}
+
+ADDR_MODE_LHS_DEF( IMMEDIATE_N8 )
+{
+	o.op0 = value & 0xFF;
+
+	TRACE_LHS( o.op0, value & 0xFF );
+}
+
+ADDR_MODE_RHS_DEF( IMMEDIATE_N16 )
+{
+	value = Combine( o.op0, o.op1 );
+
+//	TRACE_RHS( o.op0, value );
+}
+
+ADDR_MODE_LHS_DEF( IMMEDIATE_N16 )
+{
+	assert( 0 );
 }
 
 uint8_t CpuZ80::ReadMemoryBus( const uint16_t address ) {

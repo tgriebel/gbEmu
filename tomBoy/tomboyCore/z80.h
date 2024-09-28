@@ -48,25 +48,6 @@ enum class addrMode_t : uint8_t
 	IMMEDIATE_N16,
 };
 
-enum regIndex_t 
-{
-	A_IX = 0,
-	F_IX = 1,
-	C_IX = 2,
-	B_IX = 3,
-	E_IX = 4,
-	D_IX = 5,
-	L_IX = 6,
-	H_IX = 7,
-	AF_IX = 0,
-	BC_IX = 1,
-	DE_IX = 2,
-	HL_IX = 3,
-	SP_IX = 4,
-	PC_IX = 5,
-	UNKNOWN = 0xFF,
-};
-
 enum statusBit_t
 {
 	STATUS_NONE			= 0x00,
@@ -157,18 +138,32 @@ union u32i32 {
 #define OP_DEF( name )									template <class LHS, class RHS, size_t BIT, size_t CHK >				\
 														void name( opState_t& o )
 
-#define ADDR_MODE_DECL( name, addrType )				struct addrMode##name													\
+#define _ADDR_MODE_LHS_DECL( name, addrType )			struct LHS_##name														\
 														{																		\
 															static const addrMode_t addrMode = addrMode_t::##name;				\
 															static const addrType_t type = addrType;							\
 															CpuZ80& cpu;														\
-															addrMode##name( CpuZ80& _cpu ) : cpu( _cpu ) {};					\
+															LHS_##name( CpuZ80& _cpu ) : cpu( _cpu ) {};						\
+															void operator()( opState_t& o, uint16_t addr );						\
+														};
+
+#define _ADDR_MODE_RHS_DECL( name, addrType )			struct RHS_##name														\
+														{																		\
+															static const addrMode_t addrMode = addrMode_t::##name;				\
+															static const addrType_t type = addrType;							\
+															CpuZ80& cpu;														\
+															RHS_##name( CpuZ80& _cpu ) : cpu( _cpu ) {};						\
 															void operator()( opState_t& o, uint16_t& addr );					\
 														};
 
-#define ADDR_MODE_DEF( name )							void CpuZ80::addrMode##name::operator() ( opState_t& o, uint16_t& addr )
+#define ADDR_MODE_DECL( name, addrType )				_ADDR_MODE_RHS_DECL( name, addrType )									\
+														_ADDR_MODE_LHS_DECL( name, addrType )
 
-#define ADDR( name )									CpuZ80::addrMode##name
+#define ADDR_MODE_LHS_DEF( name )						void CpuZ80::LHS_##name::operator() ( opState_t& o, uint16_t value )
+#define ADDR_MODE_RHS_DEF( name )						void CpuZ80::RHS_##name::operator() ( opState_t& o, uint16_t& value )
+
+#define ADDR_LHS( name )								CpuZ80::LHS_##name
+#define ADDR_RHS( name )								CpuZ80::RHS_##name
 
 #define _OP_ADDR( num, name, lhs, rhs, ops, advance, cycles, bit, chk )															\
 														{																		\
@@ -183,7 +178,7 @@ union u32i32 {
 															opLUT[num].rhsMode		= addrMode_t::##rhs;						\
 															opLUT[num].bitCheck		= bit;										\
 															opLUT[num].check		= chk;										\
-															opLUT[num].func			= &CpuZ80::##name<ADDR(lhs),ADDR(rhs), bit, chk >; \
+															opLUT[num].func			= &CpuZ80::##name<ADDR_LHS(lhs),ADDR_RHS(rhs), bit, chk >; \
 														}
 
 #define OP_ADDR( num, name, lhs, rhs, ops, cycles )			_OP_ADDR( num, name, lhs, rhs, ops, ops, cycles, 0, 0 )
@@ -313,50 +308,6 @@ public:
 		HL = 0x014D;
 		SP = 0xFFFE;
 		PC = 0x0100;
-	}
-
-	template <class LHS>
-	void Store( opState_t& o, const uint16 value ) {
-		uint16_t addr;
-		LHS( *this )( o, addr );
-
-		if ( LHS::type == addrType_t::REGISTER_8 ) {
-			*r8[ addr ] = static_cast<uint8_t>( value & 0xFF );
-		} else if ( LHS::type == addrType_t::REGISTER_16 ) {
-			*r16[ addr ] = value;
-		} else if ( LHS::type == addrType_t::IMMEDIATE ) {
-			assert( 0 );
-		} else if ( LHS::type == addrType_t::DIRECT ) {
-			WriteMemoryBus( addr, 0, static_cast<uint8_t>( value & 0xFF ) );
-		}
-		
-		OpDebugInfo& dbgInfo = dbgLog.GetLogLine();
-		dbgInfo.lhsAddrMode = static_cast<uint8_t>( LHS::addrMode );
-		dbgInfo.lhsAddrType = static_cast<uint8_t>( LHS::type );
-		dbgInfo.lhsAddress = addr;
-		dbgInfo.lhsMemValue = static_cast<uint8_t>( value );
-	}
-
-	template <class RHS>
-	void Load( opState_t& o, uint16_t& value ) {
-		uint16_t addr;
-		RHS( *this )( o, addr );
-
-		if ( RHS::type == addrType_t::REGISTER_8 ) {
-			value = *r8[ addr ];
-		} else if ( RHS::type == addrType_t::REGISTER_16 ) {
-			value = *r16[ addr ];
-		} else if ( RHS::type == addrType_t::IMMEDIATE ) {
-			value = addr;
-		} else if ( RHS::type == addrType_t::DIRECT ) {
-			value = ReadMemoryBus( addr );
-		}
-
-		OpDebugInfo& dbgInfo = dbgLog.GetLogLine();
-		dbgInfo.rhsAddrMode = static_cast<uint8_t>( RHS::addrMode );
-		dbgInfo.rhsAddrType = static_cast<uint8_t>( RHS::type );
-		dbgInfo.rhsAddress = addr;
-		dbgInfo.rhsMemValue = static_cast<uint8_t>( value );
 	}
 
 	void		Push( const uint8_t value );

@@ -12,27 +12,26 @@ OP_DEF( ILL ) {
 
 OP_DEF( LD ) {
 	uint16_t value;
-	Load<RHS>( o, value );
-	Store<LHS>( o, value );
+	RHS( *this )( o, value );
+	LHS( *this )( o, value );
 }
 
 OP_DEF( LDI ) {
 	uint16_t value;
-	Load<RHS>( o, value );
-	Store<LHS>( o, value );
+	RHS( *this )( o, value );
+	LHS( *this )( o, value );
 	HL++;
 }
 
 OP_DEF( LDD ) {
 	uint16_t value;
-	Load<RHS>( o, value );
-	Store<LHS>( o, value );
+	RHS( *this )( o, value );
+	LHS( *this )( o, value );
 	HL--;
 }
 
 OP_DEF( LD_SP ) {
-	uint16_t addr;
-	LHS( *this )( o, addr );
+	const uint16_t addr = Combine( o.op0, o.op1 );
 
 	WriteMemoryBus( addr, 0, SP & 0xFF );
 	WriteMemoryBus( addr, 1, SP >> 8 );
@@ -60,7 +59,7 @@ OP_DEF( STOP ) {
 
 OP_DEF( ADD ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	const uint16_t result = A + value;
 
@@ -74,7 +73,7 @@ OP_DEF( ADD ) {
 
 OP_DEF( ADD_HL ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 	
 	const uint32_t result = HL + value;
 	h = ( ( HL ^ value ^ result ) >> 12 ) & 0x01;
@@ -86,7 +85,7 @@ OP_DEF( ADD_HL ) {
 
 OP_DEF( ADD_SP ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	const int8_t r8 = u8i8( (uint8_t)value ).i8;
 	const uint16_t result = SP + r8;
@@ -101,7 +100,7 @@ OP_DEF( ADD_SP ) {
 
 OP_DEF( ADC ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	const uint16_t result = A + value + c;
 
@@ -115,7 +114,7 @@ OP_DEF( ADC ) {
 
 OP_DEF( SUB ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	const uint16_t result = A - value;
 
@@ -129,7 +128,7 @@ OP_DEF( SUB ) {
 
 OP_DEF( SBC ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	const uint16_t result = A - value - c;
 
@@ -143,7 +142,7 @@ OP_DEF( SBC ) {
 
 OP_DEF( AND ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	A = A & value;
 
@@ -155,7 +154,7 @@ OP_DEF( AND ) {
 
 OP_DEF( XOR ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	A = A ^ value;
 
@@ -165,7 +164,7 @@ OP_DEF( XOR ) {
 
 OP_DEF( OR ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	A = A | value;
 
@@ -175,7 +174,7 @@ OP_DEF( OR ) {
 
 OP_DEF( CP ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	uint16_t result = A - ( value & 0xFF );
 	z = CheckZero( result );
@@ -186,12 +185,12 @@ OP_DEF( CP ) {
 
 OP_DEF( INC_R8 ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	h = ( ( value ^ ( value + 1 ) ) >> 4 ) & 0x01;
 	value += 1;
 
-	Store<LHS>( o, value );
+	LHS( *this )( o, value );
 
 	z = CheckZero( value );
 	n = 0;
@@ -199,19 +198,19 @@ OP_DEF( INC_R8 ) {
 
 OP_DEF( INC_R16 ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 	++value;
-	Store<LHS>( o, value );
+	LHS( *this )( o, value );
 }
 
 OP_DEF( DEC_R8 ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	h = ( ( value ^ ( value - 1 ) ) >> 4 ) & 0x01;
 	value -= 1;
 
-	Store<LHS>( o, value );
+	LHS( *this )( o, value );
 
 	z = CheckZero( value );
 	n = 1;
@@ -219,9 +218,9 @@ OP_DEF( DEC_R8 ) {
 
 OP_DEF( DEC_R16 ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 	--value;
-	Store<LHS>( o, value );
+	LHS( *this )( o, value );
 }
 
 OP_DEF( RLCA ) {
@@ -246,7 +245,7 @@ OP_DEF( RLA ) {
 
 OP_DEF( RRCA ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	const uint8_t bit0 = value & 0x01;
 	value >>= 1;
@@ -262,7 +261,7 @@ OP_DEF( RRCA ) {
 
 OP_DEF( RRA ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	const uint8_t bit0 = value & 0x01;
 	value >>= 1;
@@ -296,7 +295,7 @@ OP_DEF( RETI ) {
 OP_DEF( JR ) {
 	if ( ( psw & BIT ) == CHK ) {
 		uint16_t value;
-		Load<RHS>( o, value );
+		RHS( *this )( o, value );
 		PC += u8i8( (uint8_t)value ).i8 + 1;
 		o.opCycles += 4;
 	} else {
@@ -307,7 +306,7 @@ OP_DEF( JR ) {
 OP_DEF( JP ) {
 	if ( ( psw & BIT ) == CHK ) {
 		uint16_t value;
-		Load<RHS>( o, value );
+		RHS( *this )( o, value );
 		PC = value;
 		o.opCycles += 4;
 	} else {
@@ -366,8 +365,8 @@ OP_DEF( CCF ) {
 }
 
 OP_DEF( POP ) {
-const uint16_t d16 = PopWord();
-	Store<LHS>( o, d16 );
+	const uint16_t d16 = PopWord();
+	LHS( *this )( o, d16 );
 }
 
 OP_DEF( POP_AF ) {
@@ -377,14 +376,14 @@ OP_DEF( POP_AF ) {
 
 OP_DEF( PUSH ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 	PushWord( value );
 }
 
 OP_DEF( CALL ) {
 	if ( ( psw & BIT ) == CHK ) {
 		uint16_t value;
-		Load<RHS>( o, value );
+		RHS( *this )( o, value );
 
 		PushWord( PC + 2 );
 		PC = value;
@@ -397,7 +396,7 @@ OP_DEF( CALL ) {
 
 OP_DEF( BIT ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	z = ~( ( value >> BIT ) & 0x01 );
 	n = 0;
@@ -406,12 +405,12 @@ OP_DEF( BIT ) {
 
 OP_DEF( RL ) {
 	uint16_t r8;
-	Load<RHS>( o, r8 );
+	RHS( *this )( o, r8 );
 
 	const uint8_t bit7 = ( r8 >> 7 ) & 0x01;
 	r8 = ( r8 << 1 ) | c;
 
-	Store<LHS>( o, r8 );
+	LHS( *this )( o, r8 );
 
 	z = CheckZero( r8 );
 	n = 0;
@@ -421,12 +420,12 @@ OP_DEF( RL ) {
 
 OP_DEF( RLC ) {
 	uint16_t r8;
-	Load<RHS>( o, r8 );
+	RHS( *this )( o, r8 );
 
 	const uint8_t bit7 = ( r8 >> 7 ) & 0x01;
 	r8 = ( ( r8 << 1 ) | bit7 );
 
-	Store<LHS>( o, r8 );
+	LHS( *this )( o, r8 );
 
 	z = CheckZero( r8 );
 	n = 0;
@@ -436,13 +435,13 @@ OP_DEF( RLC ) {
 
 OP_DEF( RR ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	const uint8_t bit0 = value & 0x01;
 	value >>= 1;
 	value = ( value & 0x7F ) | ( c << 7 );
 
-	Store<LHS>( o, value );
+	LHS( *this )( o, value );
 
 	z = CheckZero( value );
 	n = 0;
@@ -452,13 +451,13 @@ OP_DEF( RR ) {
 
 OP_DEF( RRC ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	const uint8_t bit0 = value & 0x01;
 	value >>= 1;
 	value = ( value & 0x7F ) | ( bit0 << 7 );
 
-	Store<LHS>( o, value );
+	LHS( *this )( o, value );
 
 	z = CheckZero( value );
 	n = 0;
@@ -468,12 +467,12 @@ OP_DEF( RRC ) {
 
 OP_DEF( SLA ) {
 	uint16_t r8;
-	Load<RHS>( o, r8 );
+	RHS( *this )( o, r8 );
 
 	const uint8_t bit7 = ( r8 >> 7 ) & 0x01;
 	r8 = ( r8 << 1 ) & 0xFE;
 
-	Store<LHS>( o, r8 );
+	LHS( *this )( o, r8 );
 
 	z = CheckZero( r8 );
 	n = 0;
@@ -483,14 +482,14 @@ OP_DEF( SLA ) {
 
 OP_DEF( SRA ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	const uint8_t bit0 = value & 0x01;
 	const uint8_t bit7 = value & 0x80;
 
 	value >>= 1;
 	value = ( value & 0x7F ) | bit7;
-	Store<LHS>( o, value );
+	LHS( *this )( o, value );
 
 	z = CheckZero( value );
 	n = 0;
@@ -500,11 +499,11 @@ OP_DEF( SRA ) {
 
 OP_DEF( SWAP ) {
 	uint16_t r8;
-	Load<RHS>( o, r8 );
+	RHS( *this )( o, r8 );
 
 	r8 = ( ( r8 << 4 ) & 0xF0 ) | ( ( r8 >> 4 ) & 0x0F );
 
-	Store<LHS>( o, r8 );
+	LHS( *this )( o, r8 );
 
 	z = CheckZero( r8 );
 	n = 0;
@@ -514,11 +513,11 @@ OP_DEF( SWAP ) {
 
 OP_DEF( SRL ) {
 	uint16_t value;
-	Load<RHS>( o, value );
+	RHS( *this )( o, value );
 
 	const uint8_t bit0 = value & 0x01;
 	value = ( value >> 1 ) & 0x7F;
-	Store<LHS>( o, value );
+	LHS( *this )( o, value );
 
 	z = CheckZero( value );
 	n = 0;
@@ -528,16 +527,16 @@ OP_DEF( SRL ) {
 
 OP_DEF( RES ) {
 	uint16_t value;
-	Load<LHS>( o, value );
+	RHS( *this )( o, value );
 	value &= ~( 1 << BIT );
-	Store<RHS>( o, value );
+	LHS( *this )( o, value );
 }
 
 OP_DEF( SET ) {
 	uint16_t value;
-	Load<LHS>( o, value );
+	RHS( *this )( o, value );
 	value |= ( 1 << BIT );
-	Store<RHS>( o, value );
+	LHS( *this )( o, value );
 }
 
 void BuildOpLUT()

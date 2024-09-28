@@ -20,3 +20,7 @@
 tomBoy/.vs/wintendo/v16/.suo
 tomBoy/.vs/tomBoy/v16/.suo
 tomBoy/tomboyCore/Games/*.gb
+tomBoy/tomboyCore/tomboy.log
+tomBoy/tomboyCore/x64/Debug/tomboy.log
+tomBoy/tomboyCore/x64/Release/tomboy.log
+tomBoy/tomboyApp/x64/Release/tomboyApp.log
