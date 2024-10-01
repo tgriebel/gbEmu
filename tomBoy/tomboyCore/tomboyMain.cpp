@@ -23,9 +23,20 @@ uint8_t GetTilePalette( const uint8_t plane0, const uint8_t plane1, const uint8_
 	return ( planeBit0 | planeBit1 );
 }
 
-void DrawTile( Bitmap& tileMap, const uint32_t xOffset, const uint32_t yOffset, const uint32_t bankId, const uint32_t tileId )
+void DrawTile( Bitmap& tileMap, const uint32_t xOffset, const uint32_t yOffset, const int mode, const uint8_t tileId )
 {
-	const uint16_t baseAddr = 16 * tileId + bankId * 0x0800;
+	uint16_t baseAddr = 0;
+	if( mode == 0 ) {
+		baseAddr = 16 * tileId;
+	} else if ( mode == 1 ) {
+		baseAddr = 0x1000 + 16 * u8i8( tileId ).i8;
+	} else if ( mode == 2 ) {
+		baseAddr = 16 * tileId;
+	} else if ( mode == 3 ) {
+		baseAddr = 16 * tileId + 0x0800;
+	} else if ( mode == 4 ) {
+		baseAddr = 16 * tileId + 0x1000;
+	}
 
 	uint32_t debugPalette[ 4 ] = { 0xFFFFFFFF, 0xAAAAAAFF, 0x555555FF, 0x000000FF };
 
@@ -61,7 +72,7 @@ void Debug( const uint32_t currentFrame )
 				const uint32_t pixelOffsetX = ( tileId % 16 ) * 8;
 				const uint32_t pixelOffsetY = ( tileId / 16 ) * 8;
 
-				DrawTile( tileMap, pixelOffsetX, pixelOffsetY, bank, tileId );
+				DrawTile( tileMap, pixelOffsetX, pixelOffsetY, bank + 2, tileId );
 			}
 
 			stringstream ss;
@@ -80,8 +91,8 @@ void Debug( const uint32_t currentFrame )
 				const uint32_t pixelOffsetX = tileX * 8;
 				const uint32_t pixelOffsetY = tileY * 8;
 
-				const uint32_t tileId = gbSystem.vram[ 0x1800 + tileY * 32 + tileX ];
-				DrawTile( bgMap, pixelOffsetX, pixelOffsetY, 0, tileId );
+				const uint8_t tileId = gbSystem.vram[ 0x1800 + tileY * 32 + tileX ];
+				DrawTile( bgMap, pixelOffsetX, pixelOffsetY, 1, tileId );
 			}
 		}
 
@@ -110,22 +121,27 @@ void Debug( const uint32_t currentFrame )
 
 int main()
 {
-	int test = 0;
+	int test = 13;
 	switch( test )
 	{	
-		case 0:		LoadGameboyFile( L"Games/Alleyway.gb",				gbSystem.cart ); break;
-		case 1:		LoadGameboyFile( L"Tests/01-special.gb",			gbSystem.cart ); break;	// Passed 9/27/24
-		case 2:		LoadGameboyFile( L"Tests/02-interrupts.gb",			gbSystem.cart ); break; // Not implemented yet
-		case 3:		LoadGameboyFile( L"Tests/03-op sp,hl.gb",			gbSystem.cart ); break; // Passed 9/27/24
-		case 4:		LoadGameboyFile( L"Tests/04-op r,imm.gb",			gbSystem.cart ); break;	// Passed 9/27/24
-		case 5:		LoadGameboyFile( L"Tests/05-op rp.gb",				gbSystem.cart ); break;	// Passed 9/27/24
-		case 6:		LoadGameboyFile( L"Tests/06-ld r,r.gb",				gbSystem.cart ); break;	// Passed 9/27/24
-		case 7:		LoadGameboyFile( L"Tests/07-jr,jp,call,ret,rst.gb",	gbSystem.cart ); break; // Passed 9/27/24
-		case 8:		LoadGameboyFile( L"Tests/08-misc instrs.gb",		gbSystem.cart ); break; // Passed 9/27/24
-		case 9:		LoadGameboyFile( L"Tests/09-op r,r.gb",				gbSystem.cart ); break; // Passed 9/27/24
-		case 10:	LoadGameboyFile( L"Tests/10-bit ops.gb",			gbSystem.cart ); break; // Passed 9/27/24
-		case 11:	LoadGameboyFile( L"Tests/11-op a,(hl).gb",			gbSystem.cart ); break; // Passed 9/27/24
-	}
+		case 0:		LoadGameboyFile( L"Games/Alleyway.gb",					gbSystem.cart ); break;
+		case 1:		LoadGameboyFile( L"Tests/01-special.gb",				gbSystem.cart ); break;	// Passed 9/27/24
+		case 2:		LoadGameboyFile( L"Tests/02-interrupts.gb",				gbSystem.cart ); break; // Not implemented yet
+		case 3:		LoadGameboyFile( L"Tests/03-op sp,hl.gb",				gbSystem.cart ); break; // Passed 9/27/24
+		case 4:		LoadGameboyFile( L"Tests/04-op r,imm.gb",				gbSystem.cart ); break;	// Passed 9/27/24
+		case 5:		LoadGameboyFile( L"Tests/05-op rp.gb",					gbSystem.cart ); break;	// Passed 9/27/24
+		case 6:		LoadGameboyFile( L"Tests/06-ld r,r.gb",					gbSystem.cart ); break;	// Passed 9/27/24
+		case 7:		LoadGameboyFile( L"Tests/07-jr,jp,call,ret,rst.gb",		gbSystem.cart ); break; // Passed 9/27/24
+		case 8:		LoadGameboyFile( L"Tests/08-misc instrs.gb",			gbSystem.cart ); break; // Passed 9/27/24
+		case 9:		LoadGameboyFile( L"Tests/09-op r,r.gb",					gbSystem.cart ); break; // Passed 9/27/24
+		case 10:	LoadGameboyFile( L"Tests/10-bit ops.gb",				gbSystem.cart ); break; // Passed 9/27/24
+		case 11:	LoadGameboyFile( L"Tests/11-op a,(hl).gb",				gbSystem.cart ); break; // Passed 9/27/24
+		case 12:	LoadGameboyFile( L"Games/Tetris.gb",					gbSystem.cart ); break;
+		case 13:	LoadGameboyFile( L"Games/Dr. Mario.gb",					gbSystem.cart ); break;
+		case 14:	LoadGameboyFile( L"Games/Castlevania Adventure.gb",		gbSystem.cart ); break;
+		case 15:	LoadGameboyFile( L"Games/Metroid II.gb",				gbSystem.cart ); break;
+		case 16:	LoadGameboyFile( L"Games/Super Mario Land.gb",			gbSystem.cart ); break;
+	}	
 
 	gbSystem.cart->mapper = gbSystem.AssignMapper( gbSystem.cart->GetMapperId() );
 	gbSystem.cart->mapper->system = &gbSystem;
@@ -162,9 +178,8 @@ int main()
 		}
 
 		++currentFrame;
+		Debug( currentFrame );
 	}
-
-	Debug( currentFrame );
 
 #if LOG_DEBUG
 	{
