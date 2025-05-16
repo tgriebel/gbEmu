@@ -53,7 +53,7 @@ public:
 	static const uint32_t Serial0				= 0xFF01;
 	static const uint32_t Serial1				= 0xFF02;
 	static const uint32_t TimerandDivStart		= 0xFF04;
-	static const uint32_t TimerandDivEnd		= 0xFF07;
+	static const uint32_t TimerandDivEnd		= 0xFF07; 
 	static const uint32_t Interrupt				= 0xFF0F;
 	static const uint32_t AudioStart			= 0xFF10;
 	static const uint32_t AudioEnd				= 0xFF26;
@@ -61,6 +61,18 @@ public:
 	static const uint32_t WaveEnd				= 0xFF3F;
 	static const uint32_t LcdStart				= 0xFF40;
 	static const uint32_t LcdEnd				= 0xFF4B;
+	static const uint32_t LcdControl			= 0xFF40;
+	static const uint32_t LcdStatus				= 0xFF41;
+	static const uint32_t LcdScreenPos0			= 0xFF42;
+	static const uint32_t LcdScreenPos1			= 0xFF43;
+	static const uint32_t LcdLy					= 0xFF44;
+	static const uint32_t LcdLyc				= 0xFF45;
+	static const uint32_t LcdDma				= 0xFF46;
+	static const uint32_t LcdBgPal				= 0xFF47;
+	static const uint32_t LcdObjPal0			= 0xFF48;
+	static const uint32_t LcdObjPal1			= 0xFF49;
+	static const uint32_t LcdWindowPos0			= 0xFF4A;
+	static const uint32_t LcdWindowPos1			= 0xFF4B;
 	static const uint32_t VramBankSelect		= 0xFF4F;
 	static const uint32_t BootDisable			= 0xFF50;
 	static const uint32_t VramDmaStart			= 0xFF51;

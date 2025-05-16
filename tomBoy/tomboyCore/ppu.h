@@ -13,6 +13,35 @@ public:
 	static const uint32_t OamSize					= 0x0100;
 	static const uint32_t OamSecondSize				= 0x0020;
 
+	union
+	{
+		struct
+		{
+			uint8_t mode		: 2;
+			uint8_t lyCp		: 1;
+			uint8_t mode0Sel	: 1;
+			uint8_t mode1Sel	: 1;
+			uint8_t mode2Sel	: 1;
+			uint8_t lcdSel		: 1;
+			uint8_t unused		: 1;
+		};
+		uint16_t byte;
+	} lcdStatus;
+
+	union {
+		struct {
+			uint8_t bgPriority	: 1;
+			uint8_t objEnable	: 1;
+			uint8_t objSize		: 1;
+			uint8_t bgTileMap	: 1;
+			uint8_t bgTiles		: 1;
+			uint8_t winEnable	: 1;
+			uint8_t winTileMap	: 1;
+			uint8_t lcdEnable	: 1;
+		};
+		uint16_t byte;
+	} lcdControl;
+
 private:
 	GameboySystem*	system;
 	ppuCycle_t		cycle;

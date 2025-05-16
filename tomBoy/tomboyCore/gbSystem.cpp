@@ -96,14 +96,16 @@ uint8_t GameboySystem::ReadMemory( const uint16_t address )
 		}
 		else if ( InRange( mAddr, AudioStart, AudioEnd ) ) {
 		}
-		else if ( InRange( mAddr, WaveStart, WaveEnd ) ) {
+		else if ( InRange( mAddr, WaveStart, WaveEnd ) ) { 
 		}
 		else if ( InRange( mAddr, PaletteStart, PaletteEnd ) ) {
 		}
 		else if ( InRange( mAddr, VramDmaStart, VramDmaEnd ) ) {
 		}
 		else if ( InRange( mAddr, LcdStart, LcdEnd ) ) {
-			return ppu.LY();
+			if( InRange( mAddr, 0xFF44 ) ) {
+				return ppu.LY();
+			}
 		}
 	}
 	else if ( InRange( mAddr, InterruptFlagAddr ) )
