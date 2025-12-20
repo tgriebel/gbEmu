@@ -36,7 +36,7 @@
 
 class wtSystem;
 
-namespace Tomtendo
+namespace TomBoy
 {
 	class wtLog;
 	struct config_t;

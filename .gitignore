@@ -24,3 +24,7 @@ tomBoy/tomboyCore/tomboy.log
 tomBoy/tomboyCore/x64/Debug/tomboy.log
 tomBoy/tomboyCore/x64/Release/tomboy.log
 tomBoy/tomboyApp/x64/Release/tomboyApp.log
+/tomBoy/tomboyCore/gfx_output
+/tomBoy/tomboyCore/x64
+/tomBoy/tomboyCore/x64
+/tomBoy/tomboyCore/x64/Release

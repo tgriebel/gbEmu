@@ -23,7 +23,7 @@
 
 #include <cstdint>
 
-namespace Tomtendo
+namespace TomBoy
 {
 	struct RGBA
 	{

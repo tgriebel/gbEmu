@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{6AF9AB35-47F5-4408-AF67-F02FC20BA622}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>wintendoApp</RootNamespace>
+    <RootNamespace>tomboyApp</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -198,11 +198,8 @@
     <ClCompile Include="tomboyApp_dx12.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="wintendoApp.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="small.ico" />
-    <Image Include="wintendoApp.ico" />
+    <Image Include="tomboyApp.ico" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\crt.hlsl">
@@ -213,6 +210,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\tomboyCore\tomboy.vcxproj">
+      <Project>{1a5fbc7a-e5e2-4df2-8658-abf5883f3ccc}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="tomboyApp.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

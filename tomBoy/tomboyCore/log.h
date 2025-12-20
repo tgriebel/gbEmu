@@ -25,7 +25,7 @@
 #include <vector>
 #include <string>
 
-namespace Tomtendo
+namespace TomBoy
 {
 	struct regDebugInfo_t
 	{

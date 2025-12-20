@@ -78,10 +78,10 @@ struct swapChain_t
 struct view_t
 {
 	static const int32_t			displayScalar = 2;
-	static const int32_t			nesWidth = PPU::ScreenWidth;
-	static const int32_t			nesHeight = PPU::ScreenHeight;
+	static const int32_t			nesWidth = 256;
+	static const int32_t			nesHeight = 256;
 	static const int32_t			overscanY0 = displayScalar * 8;
-	static const int32_t			overscanY1 = displayScalar * ( PPU::ScreenHeight - 8 );
+	static const int32_t			overscanY1 = displayScalar * ( 256 - 8 );
 	static const int32_t			debugAreaX = 1024;
 	static const int32_t			debugAreaY = 0;
 	static const int32_t			defaultWidth = displayScalar * nesWidth + debugAreaX;

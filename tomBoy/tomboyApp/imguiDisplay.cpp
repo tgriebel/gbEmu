@@ -13,12 +13,14 @@ static float ImGuiGetFrameSample( void* data, int32_t idx )
 
 static float ImGuiGetSoundSample( void* data, int32_t idx )
 {
-	wtSampleQueue* queue = reinterpret_cast<wtSampleQueue*>( data );
-	return queue->Peek( idx );
+//	wtSampleQueue* queue = reinterpret_cast<wtSampleQueue*>( data );
+//	return queue->Peek( idx );
+	return 0.0f;
 }
 
 void wtRenderer::BuildImguiCommandList()
 {
+/*
 #ifdef IMGUI_ENABLE
 	wtSystem&		nesSystem		= *app->system;
 	config_t&		systemConfig	= app->systemConfig;
@@ -621,4 +623,5 @@ void wtRenderer::BuildImguiCommandList()
 
 	ThrowIfFailed( cmd.imguiCommandList[ currentFrameIx ]->Close() );
 #endif
+*/
 }
