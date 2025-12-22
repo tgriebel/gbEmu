@@ -5,10 +5,10 @@
 #include <queue>
 #include <thread>
 #include <chrono>
-#include "bitmap.h"
 #include "util.h"
 #include "assert.h"
 #include "gbTime.h"
+#include "image.h"
 
 #define NES_MODE			(1)
 #define DEBUG_MODE			(0)
@@ -71,60 +71,6 @@ struct debugTiming_t
 };
 
 
-enum class emulationFlags_t : uint32_t
-{
-	NONE		= 0,
-	CLAMP_FPS	= BIT_MASK( 1 ),
-	LIMIT_STALL = BIT_MASK( 2 ),
-	HEADLESS	= BIT_MASK( 3 ),
-	ALL			= 0xFFFFFFFF,
-};
-DEFINE_ENUM_OPERATORS( emulationFlags_t, uint32_t )
-
-
-struct config_t
-{
-	struct System
-	{
-		emulationFlags_t	flags;
-	} sys;
-
-	//struct CPU
-	//{
-	//} cpu;
-
-	struct APU
-	{
-		float				volume;
-		float				frequencyScale;
-		int32_t				waveShift;
-		bool				disableSweep;
-		bool				disableEnvelope;
-		bool				mutePulse1;
-		bool				mutePulse2;
-		bool				muteTri;
-		bool				muteNoise;
-		bool				muteDMC;
-		uint8_t				dbgChannelBits;
-	} apu;
-
-	struct PPU
-	{
-		int32_t				chrPalette;
-		int32_t				spriteLimit;
-		bool				showBG;
-		bool				showSprite;
-	} ppu;
-};
-
-
-struct wtPoint
-{
-	int32_t x;
-	int32_t y;
-};
-
-
 struct wtRect
 {
 	int32_t x;
@@ -137,9 +83,9 @@ struct wtRect
 class wtRawImageInterface
 {
 public:
-	virtual void					SetPixel( const uint32_t x, const uint32_t y, const Pixel& pixel ) = 0;
-	virtual void					Set( const uint32_t index, const Pixel value ) = 0;
-	virtual const Pixel&			Get( const uint32_t index ) = 0;
+	virtual void					SetPixel( const uint32_t x, const uint32_t y, const TomBoy::Pixel& pixel ) = 0;
+	virtual void					Set( const uint32_t index, const TomBoy::Pixel value ) = 0;
+	virtual const TomBoy::Pixel&			Get( const uint32_t index ) = 0;
 	virtual void					Clear( const uint32_t r8g8b8a8 = 0 ) = 0;
 
 	virtual const uint32_t *const	GetRawBuffer() const = 0;
@@ -150,124 +96,6 @@ public:
 	virtual void					SetDebugName( const char* debugName ) = 0;
 };
 
-
-template< uint32_t N, uint32 M >
-class wtRawImage : public wtRawImageInterface
-{
-public:
-
-	wtRawImage()
-	{
-		Clear();
-		name = "";
-	}
-
-	wtRawImage( const char* name_ )
-	{
-		Clear();
-		name = name_;
-	}
-
-	wtRawImage& operator=( const wtRawImage& _image )
-	{
-		for ( uint32_t i = 0; i < _image.length; ++i )
-		{
-			buffer[i].rawABGR = _image.buffer[i].rawABGR;
-		}
-
-		name = _image.name;
-
-		return *this;
-	}
-
-	void SetPixel( const uint32_t x, const uint32_t y, const Pixel& pixel )
-	{
-		const uint32_t index = ( x + y * width );
-		assert( index < length );
-
-		if ( index < length )
-		{
-			buffer[index] = pixel;
-		}
-	}
-
-	FORCE_INLINE void Set( const uint32_t index, const Pixel value )
-	{
-		assert( index < length );
-
-		//if ( index < length )
-		{
-			buffer[index] = value;
-		}
-	}
-
-	const Pixel& Get( const uint32_t index )
-	{
-		assert( index < length );
-		if ( index < length )
-		{
-			return buffer[ index ];
-		}
-		return buffer[ 0 ];
-	}
-
-	inline void SetDebugName( const char* debugName )
-	{
-		name = debugName;
-	}
-
-	void Clear( const uint32_t r8g8b8a8 = 0 )
-	{
-		for ( uint32_t i = 0; i < length; ++i )
-		{
-			buffer[i].rawABGR = r8g8b8a8;
-		}
-	}
-
-	inline const uint32_t *const GetRawBuffer() const
-	{
-		return &buffer[0].rawABGR;
-	}
-
-	inline uint32_t GetWidth() const
-	{
-		return width;
-	}
-
-	inline uint32_t GetHeight() const
-	{
-		return height;
-	}
-
-	inline uint32_t GetBufferLength() const
-	{
-		return length;
-	}
-
-	inline const char* GetDebugName() const
-	{
-		return name;
-	}
-
-	inline wtRect GetRect()
-	{
-		return { 0, 0, width, height };
-	}
-
-private:
-	static const uint32_t width = N;
-	static const uint32_t height = M;
-	static const uint32_t length = N * M;
-	Pixel buffer[length];
-	const char* name;
-};
-
-using wtDisplayImage = wtRawImage<256, 240>;
-using wtNameTableImage = wtRawImage<2 * 256, 2 *240>;
-using wtPaletteImage = wtRawImage<16, 2>;
-using wtPatternTableImage = wtRawImage<128, 128>;
-using wt16x8ChrImage = wtRawImage<8, 16>;
-using wt8x8ChrImage = wtRawImage<8, 8>;
 
 enum class wtImageTag
 {
@@ -363,7 +191,7 @@ public:
 		cycle = masterCycle_t( 0 );
 	}
 
-	stateHeader_t	header;
+//	stateHeader_t	header;
 private:
 	uint8_t*		bytes;
 	uint32_t		byteCount;

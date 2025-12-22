@@ -8,6 +8,10 @@
 #include "ppu.h"
 #include "interface.h"
 
+//using namespace TomBoy;
+
+#define BG_TILE_DEBUG 1
+
 class GameboySystem
 {
 public:
@@ -85,17 +89,46 @@ public:
 	static const uint32_t PaletteEnd			= 0xFF6B;
 	static const uint32_t WRamSelect			= 0xFF70;
 
+	std::wstring			fileName;
+	std::wstring			baseFileName;
+
+	//wtRawImage<128, 64>		patternTable0;
+	//wtRawImage<128, 64>		patternTable1;
+
 	CpuZ80					cpu;
 	PPU						ppu;
-	unique_ptr<gbCart>		cart;
+	std::unique_ptr<gbCart>	cart;
 	uint8_t					memory[ 1024 * 16 ];
 	uint8_t					hram[ HighRamSize ];
 	uint8_t					wram[ 8 ][ WorkRamSize ];
 	uint8_t					vram[ VRamSize ];
 	uint8_t					oam[ AttributeSize ];
+	int64_t					overflowCycles;
+	masterCycle_t			sysCycles;
+	//const Input*			input;
+	const TomBoy::config_t*	config;
 
 	GameboySystem()
 	{
+		Reset();
+	}
+
+
+	GameboySystem( const std::wstring& filePath )
+	{
+		Init( filePath );
+	}
+
+
+	~GameboySystem()
+	{
+		Shutdown();
+	}
+
+	void Reset()
+	{
+		sysCycles = masterCycle_t( 0 );
+
 		cpu.RegisterSystem( this );
 		ppu.RegisterSystem( this );
 
@@ -105,6 +138,17 @@ public:
 		memset( vram, 0, VRamSize );
 		memset( oam, 0, AttributeSize );
 	}
+
+	int		Init( const std::wstring& filePath );
+	void	Shutdown();
+	bool	Run( const masterCycle_t& nextCycle );
+	int		RunEpoch( const std::chrono::nanoseconds& runCycles );
+
+	uint8_t	GetTilePalette( const uint8_t plane0, const uint8_t plane1, const uint8_t col );
+	void	DrawTile( TomBoy::wtRawImage<128, 64>& tileMap, const uint32_t xOffset, const uint32_t yOffset, const int mode, const uint8_t tileId );
+	void	UpdateDebugImages();
+
+	void	GetFrameResult( TomBoy::wtFrameResult& outFrameResult );
 
 	void RequestVBlankInterrupt()
 	{
@@ -119,7 +163,10 @@ public:
 
 	void LoadProgram()
 	{
-
+		cart->mapper = AssignMapper( cart->GetMapperId() );
+		cart->mapper->system = this;
+		cart->mapper->OnLoadCpu();
+		cart->mapper->OnLoadPpu();
 	}
 
 	static inline bool IsRomBank( const uint16_t address )
@@ -134,6 +181,11 @@ public:
 			return address - 0x2000;
 		}
 		return address;
+	}
+
+	void SetConfig( TomBoy::config_t& systemConfig )
+	{
+		config = &systemConfig;
 	}
 
 	uint8_t ReadMemory( const uint16_t address );
@@ -152,5 +204,5 @@ public:
 	}
 
 	// mapper.h
-	unique_ptr<gbMapper> AssignMapper( const uint32_t mapperId );
+	std::unique_ptr<gbMapper> AssignMapper( const uint32_t mapperId );
 };

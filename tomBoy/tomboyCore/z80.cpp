@@ -1,6 +1,10 @@
 #include "z80.h"
 #include "gbSystem.h"
 
+#include <iostream>
+
+using namespace std;
+
 #if DEBUG_ADDR == 1
 #define TRACE_RHS( addr, value )														\
 	if( cpu.IsTraceLogOpen() )															\

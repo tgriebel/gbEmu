@@ -23,6 +23,7 @@
 
 #pragma once
 
+#include "base.h"
 #include "input.h"
 #include "command.h"
 #include "playback.h"
@@ -34,7 +35,7 @@
 
 #include <cstdint>
 
-class wtSystem;
+class GameboySystem;
 
 namespace TomBoy
 {
@@ -42,27 +43,23 @@ namespace TomBoy
 	struct config_t;
 	struct wtFrameResult;
 
-	class Emulator
+	struct Emulator
 	{
-	private:
-		wtSystem* system = nullptr;
-	public:
-
-		~Emulator();
-
-		//Input	input;
-
-		int		Boot( const std::wstring& filePath, const uint32_t resetVectorManual = 0x10000 );
-		int		RunEpoch( const std::chrono::nanoseconds& runCycles );
-		void	GetFrameResult( wtFrameResult& outFrameResult );
-		void	SetConfig( config_t& cfg );
-
-		void	SubmitCommand( const sysCmd_t& cmd );
-
-		void	UpdateDebugImages();
-		void	GenerateRomDissambly( std::string prgRomAsm[ 128 ] );
-		void	GenerateChrRomTables( wtPatternTableImage chrRom[ 32 ] );
+		GameboySystem*	system = nullptr;
+	//	Input			input;
 	};
+
+	EXPORT_DLL bool	Boot( Emulator* emu, const wchar_t* filePath );
+	EXPORT_DLL void	Shutdown( Emulator* emu );
+	EXPORT_DLL int	RunEpoch( Emulator* emu, const std::chrono::nanoseconds& runCycles );
+	//EXPORT_DLL void	GetFrameResult( Emulator* emu, wtFrameResult& outFrameResult );
+	EXPORT_DLL void	SetConfig( Emulator* emu, config_t& cfg );
+
+	//EXPORT_DLL void	SubmitCommand( Emulator* emu, const sysCmd_t& cmd );
+
+	//EXPORT_DLL void	UpdateDebugImages( Emulator* emu );
+	//EXPORT_DLL void	GenerateRomDissambly( Emulator* emu, std::string prgRomAsm[ 128 ] );
+	//EXPORT_DLL void	GenerateChrRomTables( Emulator* emu, wtPatternTableImage chrRom[ 32 ] );
 
 	//static const char* STATE_MEMORY_LABEL = "Memory";
 	//static const char* STATE_VRAM_LABEL	= "VRAM";
@@ -72,8 +69,6 @@ namespace TomBoy
 	uint32_t ScreenHeight();
 
 	uint32_t SpriteLimit();
-
-	config_t DefaultConfig();
 
 	enum analogMode_t
 	{
@@ -90,11 +85,7 @@ namespace TomBoy
 		HEADLESS		= 1 << 3,
 		ALL				= 0xFFFFFFFF,
 	};
-
-	inline uint32_t operator&( emulationFlags_t lhs, emulationFlags_t rhs )
-	{
-		return ( static_cast<uint32_t>( lhs ) & static_cast<uint32_t>( rhs ) );
-	}
+	DEFINE_ENUM_OPERATORS( emulationFlags_t, uint32_t )
 
 	struct config_t
 	{
@@ -130,6 +121,8 @@ namespace TomBoy
 			bool				showSprite;
 		} ppu;
 	};
+
+	EXPORT_DLL config_t DefaultConfig();
 
 	struct debugTiming_t
 	{
@@ -357,24 +350,18 @@ namespace TomBoy
 	struct wtFrameResult
 	{
 		uint64_t					currentFrame;
-		uint64_t					stateCount;
-		playbackState_t				playbackState;
-		wtDisplayImage*				frameBuffer;
-		apuOutput_t*				soundOutput;
-		wtStateBlob*				frameState;
+		//uint64_t					stateCount;
+		//playbackState_t				playbackState;
+		wtRawImage<160, 144>*		frameBuffer;
+		//apuOutput_t*				soundOutput;
+		//wtStateBlob*				frameState;
 
 		// Debug
 		debugTiming_t				dbgInfo;
-		wtRomHeader					romHeader;
-		wtMirrorMode				mirrorMode;
-		uint32_t					mapperId;
 		uint64_t					dbgFrameBufferIx;
 		uint64_t					frameToggleCount;
-		wtNameTableImage*			nameTableSheet;
-		wtPaletteImage*				paletteDebug;
-		wtPatternTableImage*		patternTable0;
-		wtPatternTableImage*		patternTable1;
-		wt16x8ChrImage*				pickedObj8x16;
+		wtRawImage<128, 64>*		patternTable0;
+		wtRawImage<128, 64>*		patternTable1;
 		cpuDebug_t					cpuDebug;
 		apuDebug_t					apuDebug;
 		ppuDebug_t					ppuDebug;

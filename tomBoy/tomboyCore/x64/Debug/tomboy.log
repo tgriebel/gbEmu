@@ -1,5 +1,6 @@
 ﻿  command.cpp
   gbSystem.cpp
+  interface.cpp
   ppu.cpp
   systemSerialize.cpp
   tomboyMain.cpp

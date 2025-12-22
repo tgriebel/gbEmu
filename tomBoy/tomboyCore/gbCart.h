@@ -45,12 +45,12 @@ public:
 class gbCart
 {
 private:
-	uint8_t*				rom;
-	size_t					size;
+	uint8_t*					rom;
+	size_t						size;
 
 public:
-	gbRomHeader				h;
-	shared_ptr<gbMapper>	mapper;
+	gbRomHeader					h;
+	std::shared_ptr<gbMapper>	mapper;
 
 	gbCart()
 	{

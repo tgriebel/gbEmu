@@ -293,6 +293,11 @@ public:
 	CpuZ80() {
 		BuildOpLUT();
 
+		Reset();
+	}
+
+	void Reset()
+	{
 		cycle = cpuCycle_t( 0 );
 		instructionCount = 0;
 

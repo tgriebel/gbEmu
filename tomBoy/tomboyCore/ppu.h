@@ -1,8 +1,6 @@
 #pragma once
 #include "cart.h"
 
-union Pixel;
-struct RGBA;
 class GameboySystem;
 
 class PPU

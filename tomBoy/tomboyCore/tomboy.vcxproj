@@ -108,7 +108,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;STATIC_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>UninitializedLocalUsageCheck</BasicRuntimeChecks>
     </ClCompile>
     <Link>
@@ -166,6 +166,7 @@
   <ItemGroup>
     <ClInclude Include="apu.h" />
     <ClInclude Include="assert.h" />
+    <ClInclude Include="base.h" />
     <ClInclude Include="cart.h" />
     <ClInclude Include="command.h" />
     <ClInclude Include="gbCart.h" />
@@ -176,7 +177,6 @@
     <ClInclude Include="log.h" />
     <ClInclude Include="mappers\MBC1.h" />
     <ClInclude Include="mappers\NoMBC.h" />
-    <ClInclude Include="bitmap.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="mapper.cpp" />
     <ClInclude Include="playback.h" />
@@ -194,7 +194,7 @@
     <ClCompile Include="command.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="gbSystem.cpp" />
-    <ClCompile Include="bitmap.cpp" />
+    <ClCompile Include="interface.cpp" />
     <ClCompile Include="ppu.cpp" />
     <ClCompile Include="systemSerialize.cpp" />
     <ClCompile Include="tomboyMain.cpp" />

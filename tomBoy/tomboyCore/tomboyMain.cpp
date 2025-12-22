@@ -10,56 +10,16 @@
 #include "z80.h"
 #include "gbSystem.h"
 #include "debug.h"
+#include "interface.h"
 
 GameboySystem gbSystem;
 
-void LoadGameboyFile( const std::wstring& fileName, unique_ptr<gbCart>& outCart );
-
-uint8_t GetTilePalette( const uint8_t plane0, const uint8_t plane1, const uint8_t col )
-{
-	const uint8_t planeBit0 = ( plane0 >> ( 7 - col ) ) & 0x01;
-	const uint8_t planeBit1 = ( ( plane1 >> ( 7 - col ) ) & 0x01 ) << 1;
-
-	return ( planeBit0 | planeBit1 );
-}
-
-void DrawTile( Bitmap& tileMap, const uint32_t xOffset, const uint32_t yOffset, const int mode, const uint8_t tileId )
-{
-	uint16_t baseAddr = 0;
-	if( mode == 0 ) {
-		baseAddr = 16 * tileId;
-	} else if ( mode == 1 ) {
-		baseAddr = 0x1000 + 16 * u8i8( tileId ).i8;
-	} else if ( mode == 2 ) {
-		baseAddr = 16 * tileId;
-	} else if ( mode == 3 ) {
-		baseAddr = 16 * tileId + 0x0800;
-	} else if ( mode == 4 ) {
-		baseAddr = 16 * tileId + 0x1000;
-	}
-
-	uint32_t debugPalette[ 4 ] = { 0xFFFFFFFF, 0xAAAAAAFF, 0x555555FF, 0x000000FF };
-
-	for ( uint32_t y = 0; y < 8; ++y )
-	{
-		const uint16_t rowOffset = 2 * y;
-		const uint8_t loByte = gbSystem.vram[ baseAddr + rowOffset + 0 ];
-		const uint8_t hiByte = gbSystem.vram[ baseAddr + rowOffset + 1 ];
-
-		for ( int x = 0; x < 8; ++x )
-		{
-			const uint8_t palId = GetTilePalette( loByte, hiByte, x );
-			const uint32_t hexColor = debugPalette[ palId ];
-			tileMap.SetPixel( xOffset + x, tileMap.GetHeight() - ( yOffset + y + 1 ), debugPalette[ palId ] );
-		}
-	}
-}
+void LoadGameboyFile( const std::wstring& fileName, std::unique_ptr<gbCart>& outCart );
 
 void Debug( const uint32_t currentFrame )
 {
-#define TILEMAP_DEBUG 1
+#define TILEMAP_DEBUG 0
 #define BG_DEBUG 0
-#define BG_TILE_DEBUG 1
 
 #if TILEMAP_DEBUG
 	{
@@ -84,21 +44,21 @@ void Debug( const uint32_t currentFrame )
 
 #if BG_TILE_DEBUG
 	{
-		Bitmap bgMap( 256, 256, 0x00000000 );
+		//Bitmap bgMap( 256, 256, 0x00000000 );
 
-		for ( uint32_t tileY = 0; tileY < 32; ++tileY ) {
-			for ( uint32_t tileX = 0; tileX < 32; ++tileX ) {
-				const uint32_t pixelOffsetX = tileX * 8;
-				const uint32_t pixelOffsetY = tileY * 8;
+		//for ( uint32_t tileY = 0; tileY < 32; ++tileY ) {
+		//	for ( uint32_t tileX = 0; tileX < 32; ++tileX ) {
+		//		const uint32_t pixelOffsetX = tileX * 8;
+		//		const uint32_t pixelOffsetY = tileY * 8;
 
-				const uint8_t tileId = gbSystem.vram[ 0x1800 + tileY * 32 + tileX ];
-				DrawTile( bgMap, pixelOffsetX, pixelOffsetY, 1, tileId );
-			}
-		}
+		//		const uint8_t tileId = gbSystem.vram[ 0x1800 + tileY * 32 + tileX ];
+		//		DrawTile( bgMap, pixelOffsetX, pixelOffsetY, 1, tileId );
+		//	}
+		//}
 
-		stringstream ss;
-		ss << "frame_" << currentFrame << "_bgmap" << ".bmp";
-		bgMap.Write( "gfx_output\\" + ss.str() );
+		//stringstream ss;
+		//ss << "frame_" << currentFrame << "_bgmap" << ".bmp";
+		//bgMap.Write( "gfx_output\\" + ss.str() );
 	}
 #endif
 
@@ -141,12 +101,14 @@ int main()
 		case 14:	LoadGameboyFile( L"Games/Castlevania Adventure.gb",		gbSystem.cart ); break;
 		case 15:	LoadGameboyFile( L"Games/Metroid II.gb",				gbSystem.cart ); break;
 		case 16:	LoadGameboyFile( L"Games/Super Mario Land.gb",			gbSystem.cart ); break;
-	}	
+	}
 
-	gbSystem.cart->mapper = gbSystem.AssignMapper( gbSystem.cart->GetMapperId() );
-	gbSystem.cart->mapper->system = &gbSystem;
-	gbSystem.cart->mapper->OnLoadCpu();
-	gbSystem.cart->mapper->OnLoadPpu();
+	TomBoy::config_t cfg = TomBoy::DefaultConfig();
+	cfg.sys.flags = TomBoy::emulationFlags_t::HEADLESS;
+
+	gbSystem.SetConfig( cfg );
+
+	gbSystem.LoadProgram();
 
 	gbSystem.cpu.system = &gbSystem;
 
@@ -158,20 +120,9 @@ int main()
 
 #define LOG_DEBUG 0
 
-	while( currentFrame < 100 )
+	while ( currentFrame < 100 )
 	{
-		const cpuCycle_t cyclesPerFrame = MasterToCpuCycle( NanoToCycle( 1 * FrameLatencyNs.count() ) );
-		for( cpuCycle_t i = 0; i < cyclesPerFrame; ++i )
-		{
-			nextCycle += 1;
-
-			gbSystem.cpu.Step( nextCycle );
-			gbSystem.ppu.Step( nextCycle );
-
-			if( gbSystem.cpu.dbgLog.HasPendingLine() ) {
-			//	cout << gbSystem.cpu.dbgLog.FlushLine() << endl;
-			}
-		}
+		gbSystem.RunEpoch( FrameLatencyNs );
 
 		if ( gbSystem.cpu.IsTraceLogOpen() ) {
 			gbSystem.cpu.dbgLog.NewFrame();
@@ -180,6 +131,29 @@ int main()
 		++currentFrame;
 		Debug( currentFrame );
 	}
+
+	//while( currentFrame < 100 )
+	//{
+	//	const cpuCycle_t cyclesPerFrame = MasterToCpuCycle( NanoToCycle( 1 * FrameLatencyNs.count() ) );
+	//	for( cpuCycle_t i = 0; i < cyclesPerFrame; ++i )
+	//	{
+	//		nextCycle += 1;
+
+	//		gbSystem.cpu.Step( nextCycle );
+	//		gbSystem.ppu.Step( nextCycle );
+
+	//		if( gbSystem.cpu.dbgLog.HasPendingLine() ) {
+	//		//	cout << gbSystem.cpu.dbgLog.FlushLine() << endl;
+	//		}
+	//	}
+
+	//	if ( gbSystem.cpu.IsTraceLogOpen() ) {
+	//		gbSystem.cpu.dbgLog.NewFrame();
+	//	}
+
+	//	++currentFrame;
+	//	Debug( currentFrame );
+	//}
 
 #if LOG_DEBUG
 	{

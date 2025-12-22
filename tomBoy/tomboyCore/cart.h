@@ -1,4 +1,5 @@
 #pragma once
+#include "interface.h"
 #include "common.h"
 
 class GameboySystem;
@@ -13,30 +14,6 @@ enum wtMirrorMode : uint8_t
 	MIRROR_MODE_SINGLE_HI,
 	MIRROR_MODE_COUNT
 };
-
-// TODO: bother with endianness?
-struct wtRomHeader
-{
-	uint8_t type[ 3 ];
-	uint8_t magic;
-	uint8_t prgRomBanks;
-	uint8_t chrRomBanks;
-	struct ControlsBits0
-	{
-		uint8_t mirror				: 1;
-		uint8_t usesBattery			: 1;
-		uint8_t usesTrainer			: 1;
-		uint8_t fourScreenMirror	: 1;
-		uint8_t mapperNumberLower	: 4;
-	} controlBits0;
-	struct ControlsBits1
-	{
-		uint8_t reserved0			: 4;
-		uint8_t mappedNumberUpper	: 4;
-	} controlBits1;
-	uint8_t reserved[ 8 ];
-};
-
 
 class wtMapper
 {
@@ -68,21 +45,21 @@ private:
 	size_t					chrSize;
 
 public:
-	wtRomHeader				h;
-	shared_ptr<wtMapper>	mapper;
+	TomBoy::wtRomHeader			h;
+	std::shared_ptr<wtMapper>	mapper;
 
 	wtCart()
 	{
-		memset( &h, 0, sizeof( wtRomHeader ) );
+		memset( &h, 0, sizeof( TomBoy::wtRomHeader ) );
 		rom = nullptr;
 		size = 0;
 	}
 
-	wtCart( wtRomHeader& header, uint8_t* romData, uint32_t romSize )
+	wtCart( TomBoy::wtRomHeader& header, uint8_t* romData, uint32_t romSize )
 	{
 		rom = new uint8_t[ romSize ];
 
-		memcpy( &h, &header, sizeof( wtRomHeader ) );
+		memcpy( &h, &header, sizeof( TomBoy::wtRomHeader ) );
 		memcpy( rom, romData, romSize );
 		size = romSize;
 		prgSize = KB( 16 ) * (size_t)h.prgRomBanks;
@@ -96,7 +73,7 @@ public:
 
 	~wtCart()
 	{
-		memset( &h, 0, sizeof( wtRomHeader ) );
+		memset( &h, 0, sizeof( TomBoy::wtRomHeader ) );
 		if ( rom != nullptr )
 		{
 			delete[] rom;

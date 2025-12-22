@@ -1,7 +1,2 @@
-﻿  audioEngine.cpp
-  imguiDisplay.cpp
-  renderer_dx12.cpp
-  test.cpp
-  tomboyApp.cpp
-  Generating Code...
+﻿  tomboyApp.cpp
   tomboyApp.vcxproj -> C:\Users\thoma\source\repos\gbEmu\tomBoy\x64\Debug\tomboyApp.exe

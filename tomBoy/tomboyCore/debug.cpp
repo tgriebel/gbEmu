@@ -6,6 +6,8 @@
 #include "debug.h"
 #include "z80.h"
 
+using namespace std;
+
 static void PrintHex( std::stringstream& debugStream, const uint32_t value, const uint32_t charCount, const bool markup )
 {
 	std::ios_base::fmtflags flags = debugStream.flags();

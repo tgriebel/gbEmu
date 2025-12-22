@@ -143,7 +143,7 @@ public:
 	OpDebugInfo&		GetLogLine();
 	uint32_t			GetRecordCount() const;
 	bool				HasPendingLine() const;
-	string				FlushLine();
+	std::string			FlushLine();
 	bool				IsFull() const;
 	bool				IsFinished() const;
 	void				ToString( std::string& buffer, const uint32_t frameBegin, const uint32_t frameEnd, const bool registerDebug = true ) const;

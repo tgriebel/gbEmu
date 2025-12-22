@@ -2,6 +2,14 @@
 #include "mappers/NoMBC.h"
 #include "mappers/MBC1.h"
 
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <memory>
+
+using namespace TomBoy;
+using namespace std;
+
 unique_ptr<gbMapper> GameboySystem::AssignMapper( const uint32_t mapperId )
 {
 	switch ( mapperId )
@@ -14,7 +22,7 @@ unique_ptr<gbMapper> GameboySystem::AssignMapper( const uint32_t mapperId )
 
 /*static*/ void LoadGameboyFile( const std::wstring& fileName, unique_ptr<gbCart>& outCart )
 {
-	std::ifstream gbFile;
+	ifstream gbFile;
 	gbFile.open( fileName, std::ios::binary );
 
 	assert( gbFile.good() );
@@ -189,4 +197,184 @@ void GameboySystem::WriteMemory( const uint16_t address, const uint16_t offset, 
 	{
 		memory[ mAddr ] = value;
 	}
+}
+
+
+void GameboySystem::GetFrameResult( TomBoy::wtFrameResult& outFrameResult )
+{
+//	outFrameResult.patternTable0 = 
+}
+
+
+int GameboySystem::Init( const wstring& filePath )
+{
+	Reset();
+
+	LoadGameboyFile( filePath, cart );
+
+	ppu.Reset();
+	ppu.RegisterSystem( this );
+
+	//apu.Reset();
+	//apu.RegisterSystem( this );
+
+	cpu.Reset();
+	cpu.RegisterSystem( this );
+
+	LoadProgram();
+	fileName = filePath;
+
+	const size_t offset = fileName.find( L".gb", 0 );
+	baseFileName = fileName.substr( 0, offset );
+
+	return 0;
+}
+
+
+void GameboySystem::Shutdown()
+{
+//	SaveSRam();
+}
+
+
+bool GameboySystem::Run( const masterCycle_t& nextCycle )
+{
+	bool isRunning = true;
+
+	static const masterCycle_t ticks( CpuClockDivide );
+
+	// TODO: CHECK WRAP AROUND LOGIC
+	while ( ( sysCycles < nextCycle ) && isRunning )
+	{
+		sysCycles += ticks;
+
+		const cpuCycle_t nextCpuCycle = MasterToCpuCycle( sysCycles );
+		const ppuCycle_t nextPpuCycle = MasterToPpuCycle( sysCycles );
+
+		isRunning = cpu.Step( nextCpuCycle );
+		ppu.Step( nextPpuCycle );
+	}
+
+#if DEBUG_MODE == 1
+	dbgInfo.masterCpu = chrono::duration_cast<masterCycle_t>( cpu.cycle );
+	dbgInfo.masterPpu = chrono::duration_cast<masterCycle_t>( ppu.cycle );
+	dbgInfo.masterApu = chrono::duration_cast<masterCycle_t>( apu.cpuCycle );
+#endif // #if DEBUG_MODE == 1
+
+#if DEBUG_ADDR == 1
+	if ( cpu.IsTraceLogOpen() )
+	{
+		cpu.logFrameCount--;
+		cpu.dbgLog.NewFrame();
+	}
+#endif // #if DEBUG_ADDR == 1
+
+	return isRunning;
+}
+
+
+int GameboySystem::RunEpoch( const std::chrono::nanoseconds& runEpoch )
+{
+	const nano_t e = nano_t( runEpoch.count() );
+
+	masterCycle_t cyclesPerFrame = masterCycle_t( overflowCycles );
+	overflowCycles = 0;
+
+	const bool clampFps = ( config->sys.flags & emulationFlags_t::CLAMP_FPS ) != 0;
+	const bool stallLimit = ( config->sys.flags & emulationFlags_t::LIMIT_STALL ) != 0;
+
+	if ( ( runEpoch > MaxFrameLatencyNs ) && stallLimit ) // Clamp simulation catch-up for hitches/debugging
+	{
+		cyclesPerFrame = NanoToCycle( MaxFrameLatencyNs.count() );
+	}
+	else if ( ( runEpoch > FrameLatencyNs ) && clampFps ) // Don't skip frames, instead even out bubbles over a few frames
+	{
+		cyclesPerFrame = NanoToCycle( FrameLatencyNs.count() );
+		overflowCycles = ( runEpoch - FrameLatencyNs ).count();
+	}
+	else
+	{
+		cyclesPerFrame = masterCycle_t( NanoToCycle( e ) );
+	}
+
+	const masterCycle_t startCycle = sysCycles;
+	const masterCycle_t nextCycle = sysCycles + cyclesPerFrame;
+
+	Timer emuTime;
+	emuTime.Start();
+	bool isRunning = Run( nextCycle );
+	emuTime.Stop();
+
+	const masterCycle_t endCycle = sysCycles;
+	overflowCycles += ( endCycle - nextCycle ).count();
+
+	if ( ( config->sys.flags & emulationFlags_t::HEADLESS ) != 0 ) {
+		return isRunning;
+	}
+
+	return isRunning;
+}
+
+
+uint8_t GameboySystem::GetTilePalette( const uint8_t plane0, const uint8_t plane1, const uint8_t col )
+{
+	const uint8_t planeBit0 = ( plane0 >> ( 7 - col ) ) & 0x01;
+	const uint8_t planeBit1 = ( ( plane1 >> ( 7 - col ) ) & 0x01 ) << 1;
+
+	return ( planeBit0 | planeBit1 );
+}
+
+
+void GameboySystem::DrawTile( TomBoy::wtRawImage<128, 64>& tileMap, const uint32_t xOffset, const uint32_t yOffset, const int mode, const uint8_t tileId )
+{
+	uint16_t baseAddr = 0;
+	if ( mode == 0 ) {
+		baseAddr = 16 * tileId;
+	}
+	else if ( mode == 1 ) {
+		baseAddr = 0x1000 + 16 * u8i8( tileId ).i8;
+	}
+	else if ( mode == 2 ) {
+		baseAddr = 16 * tileId;
+	}
+	else if ( mode == 3 ) {
+		baseAddr = 16 * tileId + 0x0800;
+	}
+	else if ( mode == 4 ) {
+		baseAddr = 16 * tileId + 0x1000;
+	}
+
+	uint32_t debugPalette[ 4 ] = { 0xFFFFFFFF, 0xAAAAAAFF, 0x555555FF, 0x000000FF };
+
+	for ( uint32_t y = 0; y < 8; ++y )
+	{
+		const uint16_t rowOffset = 2 * y;
+		const uint8_t loByte = vram[ baseAddr + rowOffset + 0 ];
+		const uint8_t hiByte = vram[ baseAddr + rowOffset + 1 ];
+
+		for ( int x = 0; x < 8; ++x )
+		{
+			const uint8_t palId = GetTilePalette( loByte, hiByte, x );
+			const uint32_t hexColor = debugPalette[ palId ];
+		//	tileMap.SetPixel( xOffset + x, tileMap.GetHeight() - ( yOffset + y + 1 ), debugPalette[ palId ] );
+		}
+	}
+}
+
+
+void GameboySystem::UpdateDebugImages()
+{
+#if BG_TILE_DEBUG
+	{
+		for ( uint32_t tileY = 0; tileY < 32; ++tileY ) {
+			for ( uint32_t tileX = 0; tileX < 32; ++tileX ) {
+				const uint32_t pixelOffsetX = tileX * 8;
+				const uint32_t pixelOffsetY = tileY * 8;
+
+				const uint8_t tileId = vram[ 0x1800 + tileY * 32 + tileX ];
+			//	DrawTile( patternTable0, pixelOffsetX, pixelOffsetY, 1, tileId );
+			}
+		}
+	}
+#endif
 }
