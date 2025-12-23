@@ -319,7 +319,7 @@ void wtRenderer::BuildDrawCommandList()
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle( swapChain.rtvHeap->GetCPUDescriptorHandleForHeapStart(), currentFrameIx, swapChain.rtvDescriptorSize );
 	cmd.commandList[ currentFrameIx ]->OMSetRenderTargets( 1, &rtvHandle, FALSE, nullptr );
 
-	const float clearColor[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+	const float clearColor[] = { 1.0f, 0.1f, 0.1f, 1.0f };
 	cmd.commandList[ currentFrameIx ]->ClearRenderTargetView( rtvHandle, clearColor, 0, nullptr );
 	cmd.commandList[ currentFrameIx ]->IASetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 	cmd.commandList[ currentFrameIx ]->IASetVertexBuffers( 0, 1, &pipeline.vbView );
@@ -334,7 +334,11 @@ void wtRenderer::BuildDrawCommandList()
 
 void wtRenderer::ExecuteDrawCommands()
 {
-	ID3D12CommandList* ppCommandLists[] = { cmd.commandList[ currentFrameIx ].Get(), cmd.imguiCommandList[ currentFrameIx ].Get() };
+	ID3D12CommandList* ppCommandLists[] = { cmd.commandList[ currentFrameIx ].Get()
+	#ifdef IMGUI_ENABLE
+		, cmd.imguiCommandList[ currentFrameIx ].Get()
+	#endif
+	};
 	cmd.d3d12CommandQueue->Wait( sync.cpyFence.Get(), sync.fenceValues[ currentFrameIx ] );
 	cmd.d3d12CommandQueue->ExecuteCommandLists( _countof( ppCommandLists ), ppCommandLists );
 }
@@ -406,11 +410,10 @@ void wtRenderer::CreateFrameBuffers()
 
 void wtRenderer::CreateTextureResources( const uint32_t frameIx )
 {
-/*
 	int dbgImageIx = 0;
-	wtPoint sourceImages[ SHADER_RESOURES_TEXTURE_CNT ];
-	sourceImages[ dbgImageIx++ ] = { PPU::ScreenWidth, PPU::ScreenHeight };
-	sourceImages[ dbgImageIx++ ] = { 2 * PPU::NameTableWidthPixels, 2 * PPU::NameTableHeightPixels };
+	TomBoy::wtPoint sourceImages[ SHADER_RESOURES_TEXTURE_CNT ];
+	sourceImages[ dbgImageIx++ ] = { 160, 144 };
+	sourceImages[ dbgImageIx++ ] = { 128, 128 };
 	sourceImages[ dbgImageIx++ ] = { 16, 2 };
 	sourceImages[ dbgImageIx++ ] = { 128, 128 };
 	sourceImages[ dbgImageIx++ ] = { 128, 128 };
@@ -489,7 +492,6 @@ void wtRenderer::CreateTextureResources( const uint32_t frameIx )
 
 		d3d12device->CreateShaderResourceView( textureResources[ frameIx ][ i ].srv.Get(), &srvDesc, textureResources[ frameIx ][ i ].cpuHandle );
 	}
-*/
 }
 
 
@@ -577,59 +579,56 @@ void wtRenderer::RecreateSwapChain( const uint32_t width, const uint32_t height 
 
 void wtRenderer::IssueTextureCopyCommands( const uint32_t srcFrameIx, const uint32_t renderFrameIx )
 {
-	//ThrowIfFailed( cmd.cpyCommandAllocator[ renderFrameIx ]->Reset() );
-	//ThrowIfFailed( cmd.cpyCommandList[ renderFrameIx ]->Reset( cmd.cpyCommandAllocator[ renderFrameIx ].Get(), pipeline.pso.Get() ) );
+	ThrowIfFailed( cmd.cpyCommandAllocator[ renderFrameIx ]->Reset() );
+	ThrowIfFailed( cmd.cpyCommandList[ renderFrameIx ]->Reset( cmd.cpyCommandAllocator[ renderFrameIx ].Get(), pipeline.pso.Get() ) );
 
-	//const uint32_t textureCount = static_cast<uint32_t>( textureResources[ renderFrameIx ].size() );
-	//std::vector<D3D12_SUBRESOURCE_DATA> textureData( textureCount );
+	const uint32_t textureCount = static_cast<uint32_t>( textureResources[ renderFrameIx ].size() );
+	std::vector<D3D12_SUBRESOURCE_DATA> textureData( textureCount );
 
-	//wtFrameResult* fr = &app->frameResult[ srcFrameIx ];
+	TomBoy::wtFrameResult* fr = &app->frameResult[ srcFrameIx ];
 
-	//uint32_t imageIx = 0;
-	//const wtRawImageInterface* sourceImages[ SHADER_RESOURES_TEXTURE_CNT ];
-	//// All that this needs right now are the dimensions.
-	//sourceImages[ imageIx++ ] = fr->frameBuffer;
+	uint32_t imageIx = 0;
+	const TomBoy::wtRawImageInterface* sourceImages[ SHADER_RESOURES_TEXTURE_CNT ];
+	// All that this needs right now are the dimensions.
+	sourceImages[ imageIx++ ] = fr->frameBuffer;
 	//sourceImages[ imageIx++ ] = fr->nameTableSheet;
 	//sourceImages[ imageIx++ ] = fr->paletteDebug;
-	//sourceImages[ imageIx++ ] = fr->patternTable0;
-	//sourceImages[ imageIx++ ] = fr->patternTable1;
+	sourceImages[ imageIx++ ] = fr->patternTable0;
+	sourceImages[ imageIx++ ] = fr->patternTable1;
 	//sourceImages[ imageIx++ ] = fr->pickedObj8x16;
 
-	//for ( int i = 0; i < SHADER_RESOURES_CHRBANK_CNT; ++i )
-	//{
-	//	sourceImages[ imageIx + i ] = &app->debugData.chrRom[ i ];
-	//}
+	const uint32_t texturePixelSize = 4;
 
-	//const uint32_t texturePixelSize = 4;
+	/*
+	for ( uint32_t i = 0; i < textureCount; ++i )
+	{
+		D3D12_SUBRESOURCE_DATA textureData;
+		textureData.pData = sourceImages[ i ]->GetRawBuffer();
+		textureData.RowPitch = textureResources[ renderFrameIx ][ i ].width * static_cast<uint64_t>( texturePixelSize );
+		textureData.SlicePitch = textureData.RowPitch * textureResources[ renderFrameIx ][ i ].height;
 
-	//for ( uint32_t i = 0; i < textureCount; ++i )
-	//{
-	//	D3D12_SUBRESOURCE_DATA textureData;
-	//	textureData.pData = sourceImages[ i ]->GetRawBuffer();
-	//	textureData.RowPitch = textureResources[ renderFrameIx ][ i ].width * static_cast<uint64_t>( texturePixelSize );
-	//	textureData.SlicePitch = textureData.RowPitch * textureResources[ renderFrameIx ][ i ].height;
+		D3D12_PLACED_SUBRESOURCE_FOOTPRINT pLayouts = {};
+		pLayouts.Offset = 0;
+		pLayouts.Footprint.Depth = 1;
+		pLayouts.Footprint.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		pLayouts.Footprint.Width = textureResources[ renderFrameIx ][ i ].width;
+		pLayouts.Footprint.Height = textureResources[ renderFrameIx ][ i ].height;
+		pLayouts.Footprint.RowPitch = static_cast<uint32_t>( textureData.RowPitch );
 
-	//	D3D12_PLACED_SUBRESOURCE_FOOTPRINT pLayouts = {};
-	//	pLayouts.Offset = 0;
-	//	pLayouts.Footprint.Depth = 1;
-	//	pLayouts.Footprint.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	//	pLayouts.Footprint.Width = textureResources[ renderFrameIx ][ i ].width;
-	//	pLayouts.Footprint.Height = textureResources[ renderFrameIx ][ i ].height;
-	//	pLayouts.Footprint.RowPitch = static_cast<uint32_t>( textureData.RowPitch );
+		D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition( textureResources[ renderFrameIx ][ i ].srv.Get(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST );
+		cmd.cpyCommandList[ renderFrameIx ]->ResourceBarrier( 1, &barrier );
 
-	//	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition( textureResources[ renderFrameIx ][ i ].srv.Get(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST );
-	//	cmd.cpyCommandList[ renderFrameIx ]->ResourceBarrier( 1, &barrier );
+		// TODO: use only one intermediate buffer
+		UpdateSubresources( cmd.cpyCommandList[ renderFrameIx ].Get(), textureResources[ renderFrameIx ][ i ].srv.Get(), textureResources[ renderFrameIx ][ i ].uploadBuffer.Get(), 0, 0, 1, &textureData );
+	
+		barrier = CD3DX12_RESOURCE_BARRIER::Transition( textureResources[ renderFrameIx ][ i ].srv.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_COMMON );
+		cmd.cpyCommandList[ renderFrameIx ]->ResourceBarrier( 1, &barrier );
+	}
+	*/
 
-	//	// TODO: use only one intermediate buffer
-	//	UpdateSubresources( cmd.cpyCommandList[ renderFrameIx ].Get(), textureResources[ renderFrameIx ][ i ].srv.Get(), textureResources[ renderFrameIx ][ i ].uploadBuffer.Get(), 0, 0, 1, &textureData );
-	//
-	//	barrier = CD3DX12_RESOURCE_BARRIER::Transition( textureResources[ renderFrameIx ][ i ].srv.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_COMMON );
-	//	cmd.cpyCommandList[ renderFrameIx ]->ResourceBarrier( 1, &barrier );
-	//}
+	ThrowIfFailed( cmd.cpyCommandList[ renderFrameIx ]->Close() );
 
-	//ThrowIfFailed( cmd.cpyCommandList[ renderFrameIx ]->Close() );
-
-	//ID3D12CommandList* ppCommandLists[] = { cmd.cpyCommandList[ renderFrameIx ].Get() };
-	//cmd.d3d12CopyQueue->ExecuteCommandLists( 1, ppCommandLists );
-	//cmd.d3d12CopyQueue->Signal( sync.cpyFence.Get(), sync.fenceValues[ renderFrameIx ] );
+	ID3D12CommandList* ppCommandLists[] = { cmd.cpyCommandList[ renderFrameIx ].Get() };
+	cmd.d3d12CopyQueue->ExecuteCommandLists( 1, ppCommandLists );
+	cmd.d3d12CopyQueue->Signal( sync.cpyFence.Get(), sync.fenceValues[ renderFrameIx ] );
 }

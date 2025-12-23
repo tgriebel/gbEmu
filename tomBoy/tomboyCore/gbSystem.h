@@ -7,6 +7,7 @@
 #include "z80.h"
 #include "ppu.h"
 #include "interface.h"
+#include "image.h"
 
 //using namespace TomBoy;
 
@@ -89,11 +90,14 @@ public:
 	static const uint32_t PaletteEnd			= 0xFF6B;
 	static const uint32_t WRamSelect			= 0xFF70;
 
+	static const uint32_t OutputBuffersCount	= 3;
+
 	std::wstring			fileName;
 	std::wstring			baseFileName;
 
-	//wtRawImage<128, 64>		patternTable0;
-	//wtRawImage<128, 64>		patternTable1;
+	TomBoy::wtRawImage<160, 144>	frameBuffer[ OutputBuffersCount ];
+	TomBoy::wtRawImage<128, 64>		patternTable0;
+	TomBoy::wtRawImage<128, 64>		patternTable1;
 
 	CpuZ80					cpu;
 	PPU						ppu;
@@ -107,6 +111,9 @@ public:
 	masterCycle_t			sysCycles;
 	//const Input*			input;
 	const TomBoy::config_t*	config;
+
+	bool					toggledFrame;
+	uint64_t				frameNumber;
 
 	GameboySystem()
 	{
@@ -129,6 +136,9 @@ public:
 	{
 		sysCycles = masterCycle_t( 0 );
 
+		toggledFrame = false;
+		frameNumber = 0;
+
 		cpu.RegisterSystem( this );
 		ppu.RegisterSystem( this );
 
@@ -149,6 +159,20 @@ public:
 	void	UpdateDebugImages();
 
 	void	GetFrameResult( TomBoy::wtFrameResult& outFrameResult );
+
+	bool HasNewFrame() const
+	{
+		return toggledFrame;
+	}
+
+	void ToggleFrame()
+	{
+#if 0
+		// Debug code. Should never see red flashes in final display
+		frameBuffer[ currentFrameIx ].Clear( 0xFF0000FF );
+#endif
+		frameNumber++;
+	}
 
 	void RequestVBlankInterrupt()
 	{

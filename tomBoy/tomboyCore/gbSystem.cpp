@@ -202,7 +202,11 @@ void GameboySystem::WriteMemory( const uint16_t address, const uint16_t offset, 
 
 void GameboySystem::GetFrameResult( TomBoy::wtFrameResult& outFrameResult )
 {
-//	outFrameResult.patternTable0 = 
+	outFrameResult.frameBuffer = &frameBuffer[ 0 ];
+	outFrameResult.patternTable0 = &patternTable0;
+	outFrameResult.patternTable1 = &patternTable1;
+
+	outFrameResult.currentFrame = frameNumber;
 }
 
 
@@ -300,10 +304,18 @@ int GameboySystem::RunEpoch( const std::chrono::nanoseconds& runEpoch )
 	const masterCycle_t startCycle = sysCycles;
 	const masterCycle_t nextCycle = sysCycles + cyclesPerFrame;
 
+	toggledFrame = false;
+
 	Timer emuTime;
 	emuTime.Start();
 	bool isRunning = Run( nextCycle );
 	emuTime.Stop();
+
+	// FIXME: TEMP until the PPU is finished
+	if(( startCycle.count() / cyclesPerFrame.count() ) != ( nextCycle.count() / cyclesPerFrame.count() ))
+	{
+		ToggleFrame();
+	}
 
 	const masterCycle_t endCycle = sysCycles;
 	overflowCycles += ( endCycle - nextCycle ).count();
