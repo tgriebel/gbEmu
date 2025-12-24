@@ -360,6 +360,7 @@ namespace TomBoy
 		debugTiming_t				dbgInfo;
 		uint64_t					dbgFrameBufferIx;
 		uint64_t					frameToggleCount;
+		wtRawImage<256, 256>*		bgMap;
 		wtRawImage<128, 64>*		patternTable0;
 		wtRawImage<128, 64>*		patternTable1;
 		cpuDebug_t					cpuDebug;

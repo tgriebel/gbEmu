@@ -307,7 +307,7 @@ void wtRenderer::BuildDrawCommandList()
 
 	ID3D12DescriptorHeap* ppHeaps[] = { pipeline.cbvSrvUavHeap.Get() };
 	cmd.commandList[ currentFrameIx ]->SetDescriptorHeaps( _countof( ppHeaps ), ppHeaps );
-	cmd.commandList[ currentFrameIx ]->SetGraphicsRootDescriptorTable( 0, textureResources[ currentFrameIx ][ 0 ].gpuHandle );
+	cmd.commandList[ currentFrameIx ]->SetGraphicsRootDescriptorTable( 0, textureResources[ currentFrameIx ][ SHADER_RESOURES_PATTERN0 ].gpuHandle );
 	cmd.commandList[ currentFrameIx ]->SetGraphicsRootDescriptorTable( 1, pipeline.cbvSrvGpuHandle );
 
 	cmd.commandList[ currentFrameIx ]->RSSetViewports( 1, &view.viewport );
@@ -479,8 +479,8 @@ void wtRenderer::CreateTextureResources( const uint32_t frameIx )
 		swprintf_s( texName, 128, L"Upload Texture #%i(%i)", i, frameIx );
 		textureResources[ frameIx ][ i ].srv->SetName( texName );
 
-		textureResources[ frameIx ][ i ].cpuHandle.InitOffsetted( cpuHeapStart, i + SHADER_RESOURES_NAMETABLE, cbvSrvUavHeapIncrement );
-		textureResources[ frameIx ][ i ].gpuHandle.InitOffsetted( gpuHeapStart, i + SHADER_RESOURES_NAMETABLE, cbvSrvUavHeapIncrement );
+		textureResources[ frameIx ][ i ].cpuHandle.InitOffsetted( cpuHeapStart, i + SHADER_RESOURES_PATTERN0, cbvSrvUavHeapIncrement );
+		textureResources[ frameIx ][ i ].gpuHandle.InitOffsetted( gpuHeapStart, i + SHADER_RESOURES_PATTERN0, cbvSrvUavHeapIncrement );
 		textureResources[ frameIx ][ i ].width = sourceImages[ i ].x;
 		textureResources[ frameIx ][ i ].height = sourceImages[ i ].y;
 
@@ -599,8 +599,7 @@ void wtRenderer::IssueTextureCopyCommands( const uint32_t srcFrameIx, const uint
 
 	const uint32_t texturePixelSize = 4;
 
-	/*
-	for ( uint32_t i = 0; i < textureCount; ++i )
+	for ( uint32_t i = 0; i < imageIx; ++i )
 	{
 		D3D12_SUBRESOURCE_DATA textureData;
 		textureData.pData = sourceImages[ i ]->GetRawBuffer();
@@ -624,7 +623,6 @@ void wtRenderer::IssueTextureCopyCommands( const uint32_t srcFrameIx, const uint
 		barrier = CD3DX12_RESOURCE_BARRIER::Transition( textureResources[ renderFrameIx ][ i ].srv.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_COMMON );
 		cmd.cpyCommandList[ renderFrameIx ]->ResourceBarrier( 1, &barrier );
 	}
-	*/
 
 	ThrowIfFailed( cmd.cpyCommandList[ renderFrameIx ]->Close() );
 

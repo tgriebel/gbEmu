@@ -96,6 +96,7 @@ public:
 	std::wstring			baseFileName;
 
 	TomBoy::wtRawImage<160, 144>	frameBuffer[ OutputBuffersCount ];
+	TomBoy::wtRawImage<256, 256>	bgMap;
 	TomBoy::wtRawImage<128, 64>		patternTable0;
 	TomBoy::wtRawImage<128, 64>		patternTable1;
 
