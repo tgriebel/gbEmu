@@ -413,16 +413,10 @@ void wtRenderer::CreateTextureResources( const uint32_t frameIx )
 	int dbgImageIx = 0;
 	TomBoy::wtPoint sourceImages[ SHADER_RESOURES_TEXTURE_CNT ];
 	sourceImages[ dbgImageIx++ ] = { 160, 144 };
-	sourceImages[ dbgImageIx++ ] = { 128, 128 };
-	sourceImages[ dbgImageIx++ ] = { 16, 2 };
-	sourceImages[ dbgImageIx++ ] = { 128, 128 };
-	sourceImages[ dbgImageIx++ ] = { 128, 128 };
-	sourceImages[ dbgImageIx++ ] = { 8, 16 };
-
-	for ( int i = 0; i < SHADER_RESOURES_CHRBANK_CNT; ++i )
-	{
-		sourceImages[ dbgImageIx + i ] = { 128, 128 };
-	}
+	sourceImages[ dbgImageIx++ ] = { 256, 256 };
+	sourceImages[ dbgImageIx++ ] = { 128, 64 };
+	sourceImages[ dbgImageIx++ ] = { 128, 64 };
+	sourceImages[ dbgImageIx++ ] = { 128, 64 };
 
 	const uint32_t textureCount = _countof( sourceImages );
 	assert( textureCount <= SHADER_RESOURES_COUNT );
@@ -479,8 +473,8 @@ void wtRenderer::CreateTextureResources( const uint32_t frameIx )
 		swprintf_s( texName, 128, L"Upload Texture #%i(%i)", i, frameIx );
 		textureResources[ frameIx ][ i ].srv->SetName( texName );
 
-		textureResources[ frameIx ][ i ].cpuHandle.InitOffsetted( cpuHeapStart, i + SHADER_RESOURES_PATTERN0, cbvSrvUavHeapIncrement );
-		textureResources[ frameIx ][ i ].gpuHandle.InitOffsetted( gpuHeapStart, i + SHADER_RESOURES_PATTERN0, cbvSrvUavHeapIncrement );
+		textureResources[ frameIx ][ i ].cpuHandle.InitOffsetted( cpuHeapStart, i + 1, cbvSrvUavHeapIncrement );
+		textureResources[ frameIx ][ i ].gpuHandle.InitOffsetted( gpuHeapStart, i + 1, cbvSrvUavHeapIncrement );
 		textureResources[ frameIx ][ i ].width = sourceImages[ i ].x;
 		textureResources[ frameIx ][ i ].height = sourceImages[ i ].y;
 
@@ -591,11 +585,10 @@ void wtRenderer::IssueTextureCopyCommands( const uint32_t srcFrameIx, const uint
 	const TomBoy::wtRawImageInterface* sourceImages[ SHADER_RESOURES_TEXTURE_CNT ];
 	// All that this needs right now are the dimensions.
 	sourceImages[ imageIx++ ] = fr->frameBuffer;
-	//sourceImages[ imageIx++ ] = fr->nameTableSheet;
-	//sourceImages[ imageIx++ ] = fr->paletteDebug;
+	sourceImages[ imageIx++ ] = fr->bgMap;
 	sourceImages[ imageIx++ ] = fr->patternTable0;
 	sourceImages[ imageIx++ ] = fr->patternTable1;
-	//sourceImages[ imageIx++ ] = fr->pickedObj8x16;
+	sourceImages[ imageIx++ ] = fr->patternTable2;
 
 	const uint32_t texturePixelSize = 4;
 

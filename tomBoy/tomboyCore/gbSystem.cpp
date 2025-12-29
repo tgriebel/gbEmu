@@ -206,6 +206,7 @@ void GameboySystem::GetFrameResult( TomBoy::wtFrameResult& outFrameResult )
 	outFrameResult.bgMap = &bgMap;
 	outFrameResult.patternTable0 = &patternTable0;
 	outFrameResult.patternTable1 = &patternTable1;
+	outFrameResult.patternTable2 = &patternTable2;
 
 	outFrameResult.currentFrame = frameNumber;
 }
@@ -338,7 +339,7 @@ uint8_t GameboySystem::GetTilePalette( const uint8_t plane0, const uint8_t plane
 }
 
 
-void GameboySystem::DrawTile( TomBoy::wtRawImage<128, 64>& tileMap, const uint32_t xOffset, const uint32_t yOffset, const int mode, const uint8_t tileId )
+void GameboySystem::DrawTile( TomBoy::wtRawImageInterface* tileMap, const uint32_t xOffset, const uint32_t yOffset, const int mode, const uint8_t tileId )
 {
 	uint16_t baseAddr = 0;
 	if ( mode == 0 ) {
@@ -372,7 +373,7 @@ void GameboySystem::DrawTile( TomBoy::wtRawImage<128, 64>& tileMap, const uint32
 			Pixel px;
 			px.rawABGR = debugPalette[ palId ];
 			
-			tileMap.SetPixel( xOffset + x, tileMap.GetHeight() - ( yOffset + y + 1 ), px );
+			tileMap->SetPixel( xOffset + x, yOffset + y, px );
 		}
 	}
 }
@@ -381,10 +382,12 @@ void GameboySystem::DrawTile( TomBoy::wtRawImage<128, 64>& tileMap, const uint32
 void GameboySystem::UpdateDebugImages()
 {
 #define TILEMAP_DEBUG 1
-#define BG_DEBUG 0
+#define BG_DEBUG 1
 
 #if TILEMAP_DEBUG
 	{
+		TomBoy::wtRawImage<128, 64>* patternTables[ 3 ] = { &patternTable0, &patternTable1, &patternTable2 };
+
 		for ( uint32_t bank = 0; bank < 3; ++bank )
 		{
 			for ( uint32_t tileId = 0; tileId < 128; ++tileId )
@@ -392,7 +395,7 @@ void GameboySystem::UpdateDebugImages()
 				const uint32_t pixelOffsetX = ( tileId % 16 ) * 8;
 				const uint32_t pixelOffsetY = ( tileId / 16 ) * 8;
 
-				DrawTile( patternTable0, pixelOffsetX, pixelOffsetY, bank + 2, tileId );
+				DrawTile( patternTables[ bank ], pixelOffsetX, pixelOffsetY, bank + 2, tileId );
 			}
 		}
 	}
@@ -406,7 +409,7 @@ void GameboySystem::UpdateDebugImages()
 				const uint32_t pixelOffsetY = tileY * 8;
 
 				const uint8_t tileId = vram[ 0x1800 + tileY * 32 + tileX ];
-				DrawTile( patternTable0, pixelOffsetX, pixelOffsetY, 1, tileId );
+				DrawTile( &bgMap, pixelOffsetX, pixelOffsetY, 1, tileId );
 			}
 		}
 	}

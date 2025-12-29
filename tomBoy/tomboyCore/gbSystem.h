@@ -99,6 +99,7 @@ public:
 	TomBoy::wtRawImage<256, 256>	bgMap;
 	TomBoy::wtRawImage<128, 64>		patternTable0;
 	TomBoy::wtRawImage<128, 64>		patternTable1;
+	TomBoy::wtRawImage<128, 64>		patternTable2;
 
 	CpuZ80					cpu;
 	PPU						ppu;
@@ -156,7 +157,7 @@ public:
 	int		RunEpoch( const std::chrono::nanoseconds& runCycles );
 
 	uint8_t	GetTilePalette( const uint8_t plane0, const uint8_t plane1, const uint8_t col );
-	void	DrawTile( TomBoy::wtRawImage<128, 64>& tileMap, const uint32_t xOffset, const uint32_t yOffset, const int mode, const uint8_t tileId );
+	void	DrawTile( TomBoy::wtRawImageInterface* tileMap, const uint32_t xOffset, const uint32_t yOffset, const int mode, const uint8_t tileId );
 	void	UpdateDebugImages();
 
 	void	GetFrameResult( TomBoy::wtFrameResult& outFrameResult );

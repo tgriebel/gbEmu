@@ -363,6 +363,7 @@ namespace TomBoy
 		wtRawImage<256, 256>*		bgMap;
 		wtRawImage<128, 64>*		patternTable0;
 		wtRawImage<128, 64>*		patternTable1;
+		wtRawImage<128, 64>*		patternTable2;
 		cpuDebug_t					cpuDebug;
 		apuDebug_t					apuDebug;
 		ppuDebug_t					ppuDebug;
