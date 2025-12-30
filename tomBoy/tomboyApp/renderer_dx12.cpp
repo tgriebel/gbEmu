@@ -3,7 +3,7 @@
 
 void wtRenderer::WaitForGpu()
 {
-	ThrowIfFailed( cmd.d3d12CommandQueue->Signal( sync.fence.Get(), sync.fenceValues[ currentFrameIx ] ) );
+	ThrowIfFailed( m_cmd.d3d12CommandQueue->Signal( sync.fence.Get(), sync.fenceValues[ currentFrameIx ] ) );
 
 	ThrowIfFailed( sync.fence->SetEventOnCompletion( sync.fenceValues[ currentFrameIx ], sync.fenceEvent ) );
 	WaitForSingleObjectEx( sync.fenceEvent, INFINITE, FALSE );
@@ -15,9 +15,9 @@ void wtRenderer::WaitForGpu()
 void wtRenderer::AdvanceNextFrame()
 {
 	const UINT64 currentFence = sync.fenceValues[ currentFrameIx ];
-	ThrowIfFailed( cmd.d3d12CommandQueue->Signal( sync.fence.Get(), currentFence ) );
+	ThrowIfFailed( m_cmd.d3d12CommandQueue->Signal( sync.fence.Get(), currentFence ) );
 
-	currentFrameIx = swapChain.dxgi->GetCurrentBackBufferIndex();
+	currentFrameIx = m_swapChain.dxgi->GetCurrentBackBufferIndex();
 
 	if ( sync.fence->GetCompletedValue() < sync.fenceValues[ currentFrameIx ] )
 	{
@@ -49,22 +49,22 @@ uint32_t wtRenderer::InitD3D12()
 	}
 #endif
 
-	ThrowIfFailed( CreateDXGIFactory2( dxgiFactoryFlags, IID_PPV_ARGS( &dxgiFactory ) ) );
-	GetHardwareAdapter( dxgiFactory.Get(), &dxgiAdapter );
-	ThrowIfFailed( D3D12CreateDevice( dxgiAdapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS( &d3d12device ) ) );
+	ThrowIfFailed( CreateDXGIFactory2( dxgiFactoryFlags, IID_PPV_ARGS( &m_dxgiFactory ) ) );
+	GetHardwareAdapter( m_dxgiFactory.Get(), &m_dxgiAdapter );
+	ThrowIfFailed( D3D12CreateDevice( m_dxgiAdapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS( &m_d3d12device ) ) );
 
 	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
 	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
 	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 
-	ThrowIfFailed( d3d12device->CreateCommandQueue( &queueDesc, IID_PPV_ARGS( &cmd.d3d12CommandQueue ) ) );
+	ThrowIfFailed( m_d3d12device->CreateCommandQueue( &queueDesc, IID_PPV_ARGS( &m_cmd.d3d12CommandQueue ) ) );
 
 	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
 	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_COPY;
-	ThrowIfFailed( d3d12device->CreateCommandQueue( &queueDesc, IID_PPV_ARGS( &cmd.d3d12CopyQueue ) ) );
+	ThrowIfFailed( m_d3d12device->CreateCommandQueue( &queueDesc, IID_PPV_ARGS( &m_cmd.d3d12CopyQueue ) ) );
 
-	cmd.d3d12CopyQueue->SetName( L"Copy Queue" );
-	cmd.d3d12CommandQueue->SetName( L"Draw Queue" );
+	m_cmd.d3d12CopyQueue->SetName( L"Copy Queue" );
+	m_cmd.d3d12CommandQueue->SetName( L"Draw Queue" );
 
 	CreateFrameBuffers();
 
@@ -72,14 +72,14 @@ uint32_t wtRenderer::InitD3D12()
 	cbvSrvUavHeapDesc.NumDescriptors = SHADER_RESOURES_COUNT;
 	cbvSrvUavHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	cbvSrvUavHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	ThrowIfFailed( d3d12device->CreateDescriptorHeap( &cbvSrvUavHeapDesc, IID_PPV_ARGS( &pipeline.cbvSrvUavHeap ) ) );
-	pipeline.cbvSrvUavDescStride = d3d12device->GetDescriptorHandleIncrementSize( D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV );
+	ThrowIfFailed( m_d3d12device->CreateDescriptorHeap( &cbvSrvUavHeapDesc, IID_PPV_ARGS( &m_pipeline.cbvSrvUavHeap ) ) );
+	m_pipeline.cbvSrvUavDescStride = m_d3d12device->GetDescriptorHandleIncrementSize( D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV );
 
 	for ( uint32_t i = 0; i < FrameCount; ++i )
 	{
-		ThrowIfFailed( d3d12device->CreateCommandAllocator( D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS( &cmd.commandAllocator[ i ] ) ) );
-		ThrowIfFailed( d3d12device->CreateCommandAllocator( D3D12_COMMAND_LIST_TYPE_COPY, IID_PPV_ARGS( &cmd.cpyCommandAllocator[ i ] ) ) );
-		ThrowIfFailed( d3d12device->CreateCommandAllocator( D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS( &cmd.imguiCommandAllocator[ i ] ) ) );
+		ThrowIfFailed( m_d3d12device->CreateCommandAllocator( D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS( &m_cmd.commandAllocator[ i ] ) ) );
+		ThrowIfFailed( m_d3d12device->CreateCommandAllocator( D3D12_COMMAND_LIST_TYPE_COPY, IID_PPV_ARGS( &m_cmd.cpyCommandAllocator[ i ] ) ) );
+		ThrowIfFailed( m_d3d12device->CreateCommandAllocator( D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS( &m_cmd.imguiCommandAllocator[ i ] ) ) );
 	}
 
 	InitImgui();
@@ -95,7 +95,7 @@ void wtRenderer::CreatePSO()
 	D3D12_FEATURE_DATA_ROOT_SIGNATURE featureData = {};
 	featureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_1;
 
-	if ( FAILED( d3d12device->CheckFeatureSupport( D3D12_FEATURE_ROOT_SIGNATURE, &featureData, sizeof( featureData ) ) ) )
+	if ( FAILED( m_d3d12device->CheckFeatureSupport( D3D12_FEATURE_ROOT_SIGNATURE, &featureData, sizeof( featureData ) ) ) )
 	{
 		featureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_0;
 	}
@@ -130,7 +130,7 @@ void wtRenderer::CreatePSO()
 	ComPtr<ID3DBlob> signature;
 	ComPtr<ID3DBlob> error;
 	ThrowIfFailed( D3DX12SerializeVersionedRootSignature( &rootSignatureDesc, featureData.HighestVersion, &signature, &error ) );
-	ThrowIfFailed( d3d12device->CreateRootSignature( 0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS( &pipeline.rootSig ) ) );
+	ThrowIfFailed( m_d3d12device->CreateRootSignature( 0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS( &m_pipeline.rootSig ) ) );
 
 	ComPtr<ID3DBlob> vertexShader;
 	ComPtr<ID3DBlob> pixelShader;
@@ -154,7 +154,7 @@ void wtRenderer::CreatePSO()
 	// Describe and create the graphics pipeline state object (PSO).
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
 	psoDesc.InputLayout = { inputElementDescs, _countof( inputElementDescs ) };
-	psoDesc.pRootSignature = pipeline.rootSig.Get();
+	psoDesc.pRootSignature = m_pipeline.rootSig.Get();
 	psoDesc.VS = CD3DX12_SHADER_BYTECODE( vertexShader.Get() );
 	psoDesc.PS = CD3DX12_SHADER_BYTECODE( pixelShader.Get() );
 	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC( D3D12_DEFAULT );
@@ -166,7 +166,7 @@ void wtRenderer::CreatePSO()
 	psoDesc.NumRenderTargets = 1;
 	psoDesc.RTVFormats[ 0 ] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	psoDesc.SampleDesc.Count = 1;
-	ThrowIfFailed( d3d12device->CreateGraphicsPipelineState( &psoDesc, IID_PPV_ARGS( &pipeline.pso ) ) );
+	ThrowIfFailed( m_d3d12device->CreateGraphicsPipelineState( &psoDesc, IID_PPV_ARGS( &m_pipeline.pso ) ) );
 }
 
 
@@ -174,13 +174,13 @@ void wtRenderer::CreateCommandLists()
 {
 	for ( uint32_t i = 0; i < FrameCount; ++i )
 	{
-		ThrowIfFailed( d3d12device->CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_DIRECT, cmd.commandAllocator[ i ].Get(), pipeline.pso.Get(), IID_PPV_ARGS( &cmd.commandList[ i ] ) ) );
-		ThrowIfFailed( d3d12device->CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_DIRECT, cmd.imguiCommandAllocator[ i ].Get(), pipeline.pso.Get(), IID_PPV_ARGS( &cmd.imguiCommandList[ i ] ) ) );
-		ThrowIfFailed( d3d12device->CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_COPY, cmd.cpyCommandAllocator[ i ].Get(), pipeline.pso.Get(), IID_PPV_ARGS( &cmd.cpyCommandList[ i ] ) ) );
+		ThrowIfFailed( m_d3d12device->CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_cmd.commandAllocator[ i ].Get(), m_pipeline.pso.Get(), IID_PPV_ARGS( &m_cmd.commandList[ i ] ) ) );
+		ThrowIfFailed( m_d3d12device->CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_cmd.imguiCommandAllocator[ i ].Get(), m_pipeline.pso.Get(), IID_PPV_ARGS( &m_cmd.imguiCommandList[ i ] ) ) );
+		ThrowIfFailed( m_d3d12device->CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_COPY, m_cmd.cpyCommandAllocator[ i ].Get(), m_pipeline.pso.Get(), IID_PPV_ARGS( &m_cmd.cpyCommandList[ i ] ) ) );
 
-		ThrowIfFailed( cmd.commandList[ i ]->Close() );
-		ThrowIfFailed( cmd.imguiCommandList[ i ]->Close() );
-		ThrowIfFailed( cmd.cpyCommandList[ i ]->Close() );
+		ThrowIfFailed( m_cmd.commandList[ i ]->Close() );
+		ThrowIfFailed( m_cmd.imguiCommandList[ i ]->Close() );
+		ThrowIfFailed( m_cmd.cpyCommandList[ i ]->Close() );
 	}
 }
 
@@ -192,43 +192,43 @@ void wtRenderer::CreateConstantBuffers()
 	D3D12_HEAP_PROPERTIES props = CD3DX12_HEAP_PROPERTIES( D3D12_HEAP_TYPE_UPLOAD );
 	D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer( constantBufferDataSize );
 
-	ThrowIfFailed( d3d12device->CreateCommittedResource(
+	ThrowIfFailed( m_d3d12device->CreateCommittedResource(
 		&props,
 		D3D12_HEAP_FLAG_NONE,
 		&desc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS( &pipeline.cb ) ) );
+		IID_PPV_ARGS( &m_pipeline.cb ) ) );
 
-	NAME_D3D12_OBJECT( pipeline.cb );
+	NAME_D3D12_OBJECT( m_pipeline.cb );
 
-	pipeline.shaderData.hardPix = -3.0f;
-	pipeline.shaderData.hardScan = -8.0f;
-	pipeline.shaderData.maskDark = 0.9f;
-	pipeline.shaderData.maskLight = 1.1f;
-	pipeline.shaderData.warp = { 0.0f, 0.002f };
-	pipeline.shaderData.imageDim = { 0.0f, 0.0f, 256.0f, 256.0f };
-	pipeline.shaderData.destImageDim = { 0.0f, 0.0f, 256.0f, 256.0f };
-	pipeline.shaderData.enable = false;
+	m_pipeline.shaderData.hardPix = -3.0f;
+	m_pipeline.shaderData.hardScan = -8.0f;
+	m_pipeline.shaderData.maskDark = 0.9f;
+	m_pipeline.shaderData.maskLight = 1.1f;
+	m_pipeline.shaderData.warp = { 0.0f, 0.002f };
+	m_pipeline.shaderData.imageDim = { 0.0f, 0.0f, 256.0f, 256.0f };
+	m_pipeline.shaderData.destImageDim = { 0.0f, 0.0f, 256.0f, 256.0f };
+	m_pipeline.shaderData.enable = false;
 
-	pipeline.cbvSrvCpuHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE( pipeline.cbvSrvUavHeap->GetCPUDescriptorHandleForHeapStart(), SHADER_RESOURES_CBV0, pipeline.cbvSrvUavDescStride );
-	pipeline.cbvSrvGpuHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE( pipeline.cbvSrvUavHeap->GetGPUDescriptorHandleForHeapStart(), SHADER_RESOURES_CBV0, pipeline.cbvSrvUavDescStride );
+	m_pipeline.cbvSrvCpuHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE( m_pipeline.cbvSrvUavHeap->GetCPUDescriptorHandleForHeapStart(), SHADER_RESOURES_CBV0, m_pipeline.cbvSrvUavDescStride );
+	m_pipeline.cbvSrvGpuHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE( m_pipeline.cbvSrvUavHeap->GetGPUDescriptorHandleForHeapStart(), SHADER_RESOURES_CBV0, m_pipeline.cbvSrvUavDescStride );
 
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
-	cbvDesc.BufferLocation = pipeline.cb->GetGPUVirtualAddress();
+	cbvDesc.BufferLocation = m_pipeline.cb->GetGPUVirtualAddress();
 	cbvDesc.SizeInBytes = constantBufferDataSize;
-	d3d12device->CreateConstantBufferView( &cbvDesc, pipeline.cbvSrvCpuHandle );
+	m_d3d12device->CreateConstantBufferView( &cbvDesc, m_pipeline.cbvSrvCpuHandle );
 
 	CD3DX12_RANGE readRange( 0, 0 );
-	ThrowIfFailed( pipeline.cb->Map( 0, &readRange, reinterpret_cast<void**>( &pipeline.pCbvDataBegin ) ) );
-	memcpy( pipeline.pCbvDataBegin, &pipeline.shaderData, sizeof( pipeline.cb ) );
+	ThrowIfFailed( m_pipeline.cb->Map( 0, &readRange, reinterpret_cast<void**>( &m_pipeline.pCbvDataBegin ) ) );
+	memcpy( m_pipeline.pCbvDataBegin, &m_pipeline.shaderData, sizeof( m_pipeline.cb ) );
 }
 
 
 void wtRenderer::CreateSyncObjects()
 {
-	ThrowIfFailed( d3d12device->CreateFence( 0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS( &sync.fence ) ) );
-	ThrowIfFailed( d3d12device->CreateFence( 0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS( &sync.cpyFence ) ) );
+	ThrowIfFailed( m_d3d12device->CreateFence( 0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS( &sync.fence ) ) );
+	ThrowIfFailed( m_d3d12device->CreateFence( 0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS( &sync.cpyFence ) ) );
 	sync.fenceValues[ currentFrameIx ]++;
 
 	sync.fenceEvent = CreateEvent( nullptr, FALSE, FALSE, nullptr );
@@ -278,75 +278,75 @@ void wtRenderer::CreateVertexBuffers()
 	D3D12_HEAP_PROPERTIES props = CD3DX12_HEAP_PROPERTIES( D3D12_HEAP_TYPE_UPLOAD );
 	D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer( vertexBufferSize );
 
-	ThrowIfFailed( d3d12device->CreateCommittedResource(
+	ThrowIfFailed( m_d3d12device->CreateCommittedResource(
 		&props,
 		D3D12_HEAP_FLAG_NONE,
 		&desc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS( &pipeline.vb ) ) );
+		IID_PPV_ARGS( &m_pipeline.vb ) ) );
 
 	UINT8* pVertexDataBegin;
 	CD3DX12_RANGE readRange( 0, 0 );
-	ThrowIfFailed( pipeline.vb->Map( 0, &readRange, reinterpret_cast<void**>( &pVertexDataBegin ) ) );
+	ThrowIfFailed( m_pipeline.vb->Map( 0, &readRange, reinterpret_cast<void**>( &pVertexDataBegin ) ) );
 	memcpy( pVertexDataBegin, triangleVertices, sizeof( triangleVertices ) );
-	pipeline.vb->Unmap( 0, nullptr );
+	m_pipeline.vb->Unmap( 0, nullptr );
 
-	pipeline.vbView.BufferLocation = pipeline.vb->GetGPUVirtualAddress();
-	pipeline.vbView.StrideInBytes = sizeof( Vertex );
-	pipeline.vbView.SizeInBytes = vertexBufferSize;
+	m_pipeline.vbView.BufferLocation = m_pipeline.vb->GetGPUVirtualAddress();
+	m_pipeline.vbView.StrideInBytes = sizeof( Vertex );
+	m_pipeline.vbView.SizeInBytes = vertexBufferSize;
 }
 
 
 void wtRenderer::BuildDrawCommandList()
 {
-	ThrowIfFailed( cmd.commandAllocator[ currentFrameIx ]->Reset() );
-	ThrowIfFailed( cmd.commandList[ currentFrameIx ]->Reset( cmd.commandAllocator[ currentFrameIx ].Get(), pipeline.pso.Get() ) );
+	ThrowIfFailed( m_cmd.commandAllocator[ currentFrameIx ]->Reset() );
+	ThrowIfFailed( m_cmd.commandList[ currentFrameIx ]->Reset( m_cmd.commandAllocator[ currentFrameIx ].Get(), m_pipeline.pso.Get() ) );
 
-	cmd.commandList[ currentFrameIx ]->SetGraphicsRootSignature( pipeline.rootSig.Get() );
+	m_cmd.commandList[ currentFrameIx ]->SetGraphicsRootSignature( m_pipeline.rootSig.Get() );
 
-	ID3D12DescriptorHeap* ppHeaps[] = { pipeline.cbvSrvUavHeap.Get() };
-	cmd.commandList[ currentFrameIx ]->SetDescriptorHeaps( _countof( ppHeaps ), ppHeaps );
-	cmd.commandList[ currentFrameIx ]->SetGraphicsRootDescriptorTable( 0, textureResources[ currentFrameIx ][ SHADER_RESOURES_PATTERN0 ].gpuHandle );
-	cmd.commandList[ currentFrameIx ]->SetGraphicsRootDescriptorTable( 1, pipeline.cbvSrvGpuHandle );
+	ID3D12DescriptorHeap* ppHeaps[] = { m_pipeline.cbvSrvUavHeap.Get() };
+	m_cmd.commandList[ currentFrameIx ]->SetDescriptorHeaps( _countof( ppHeaps ), ppHeaps );
+	m_cmd.commandList[ currentFrameIx ]->SetGraphicsRootDescriptorTable( 0, textureResources[ currentFrameIx ][ SHADER_RESOURES_PATTERN0 ].gpuHandle );
+	m_cmd.commandList[ currentFrameIx ]->SetGraphicsRootDescriptorTable( 1, m_pipeline.cbvSrvGpuHandle );
 
-	cmd.commandList[ currentFrameIx ]->RSSetViewports( 1, &view.viewport );
-	cmd.commandList[ currentFrameIx ]->RSSetScissorRects( 1, &view.scissorRect );
+	m_cmd.commandList[ currentFrameIx ]->RSSetViewports( 1, &view.viewport );
+	m_cmd.commandList[ currentFrameIx ]->RSSetScissorRects( 1, &view.scissorRect );
 
-	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition( swapChain.renderTargets[ currentFrameIx ].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET );
-	cmd.commandList[ currentFrameIx ]->ResourceBarrier( 1, &barrier );
+	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition( m_swapChain.renderTargets[ currentFrameIx ].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET );
+	m_cmd.commandList[ currentFrameIx ]->ResourceBarrier( 1, &barrier );
 
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle( swapChain.rtvHeap->GetCPUDescriptorHandleForHeapStart(), currentFrameIx, swapChain.rtvDescriptorSize );
-	cmd.commandList[ currentFrameIx ]->OMSetRenderTargets( 1, &rtvHandle, FALSE, nullptr );
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle( m_swapChain.rtvHeap->GetCPUDescriptorHandleForHeapStart(), currentFrameIx, m_swapChain.rtvDescriptorSize );
+	m_cmd.commandList[ currentFrameIx ]->OMSetRenderTargets( 1, &rtvHandle, FALSE, nullptr );
 
 	const float clearColor[] = { 1.0f, 0.1f, 0.1f, 1.0f };
-	cmd.commandList[ currentFrameIx ]->ClearRenderTargetView( rtvHandle, clearColor, 0, nullptr );
-	cmd.commandList[ currentFrameIx ]->IASetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-	cmd.commandList[ currentFrameIx ]->IASetVertexBuffers( 0, 1, &pipeline.vbView );
-	cmd.commandList[ currentFrameIx ]->DrawInstanced( 6, 1, 0, 0 );
+	m_cmd.commandList[ currentFrameIx ]->ClearRenderTargetView( rtvHandle, clearColor, 0, nullptr );
+	m_cmd.commandList[ currentFrameIx ]->IASetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+	m_cmd.commandList[ currentFrameIx ]->IASetVertexBuffers( 0, 1, &m_pipeline.vbView );
+	m_cmd.commandList[ currentFrameIx ]->DrawInstanced( 6, 1, 0, 0 );
 
-	barrier = CD3DX12_RESOURCE_BARRIER::Transition( swapChain.renderTargets[ currentFrameIx ].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT );
-	cmd.commandList[ currentFrameIx ]->ResourceBarrier( 1, &barrier );
+	barrier = CD3DX12_RESOURCE_BARRIER::Transition( m_swapChain.renderTargets[ currentFrameIx ].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT );
+	m_cmd.commandList[ currentFrameIx ]->ResourceBarrier( 1, &barrier );
 
-	ThrowIfFailed( cmd.commandList[ currentFrameIx ]->Close() );
+	ThrowIfFailed( m_cmd.commandList[ currentFrameIx ]->Close() );
 }
 
 
 void wtRenderer::ExecuteDrawCommands()
 {
-	ID3D12CommandList* ppCommandLists[] = { cmd.commandList[ currentFrameIx ].Get()
+	ID3D12CommandList* ppCommandLists[] = { m_cmd.commandList[ currentFrameIx ].Get()
 	#ifdef IMGUI_ENABLE
-		, cmd.imguiCommandList[ currentFrameIx ].Get()
+		, m_cmd.imguiCommandList[ currentFrameIx ].Get()
 	#endif
 	};
-	cmd.d3d12CommandQueue->Wait( sync.cpyFence.Get(), sync.fenceValues[ currentFrameIx ] );
-	cmd.d3d12CommandQueue->ExecuteCommandLists( _countof( ppCommandLists ), ppCommandLists );
+	m_cmd.d3d12CommandQueue->Wait( sync.cpyFence.Get(), sync.fenceValues[ currentFrameIx ] );
+	m_cmd.d3d12CommandQueue->ExecuteCommandLists( _countof( ppCommandLists ), ppCommandLists );
 }
 
 
 void wtRenderer::UpdateD3D12()
 {
-	memcpy( pipeline.pCbvDataBegin, &pipeline.shaderData, sizeof( pipeline.shaderData ) );
+	memcpy( m_pipeline.pCbvDataBegin, &m_pipeline.shaderData, sizeof( m_pipeline.shaderData ) );
 }
 
 
@@ -358,7 +358,7 @@ void wtRenderer::SubmitFrame()
 	BuildImguiCommandList();
 	ExecuteDrawCommands();
 
-	ThrowIfFailed( swapChain.dxgi->Present( 1, 0 ) );
+	ThrowIfFailed( m_swapChain.dxgi->Present( 1, 0 ) );
 	AdvanceNextFrame();
 }
 
@@ -385,25 +385,25 @@ void wtRenderer::CreateFrameBuffers()
 	swapChainFullDesc.Scaling			= DXGI_MODE_SCALING_CENTERED;
 
 	ComPtr<IDXGISwapChain1> tmpSwapChain;
-	ThrowIfFailed( dxgiFactory->CreateSwapChainForHwnd( cmd.d3d12CommandQueue.Get(), hWnd, &swapChainDesc, &swapChainFullDesc, nullptr, &tmpSwapChain ) );
+	ThrowIfFailed( m_dxgiFactory->CreateSwapChainForHwnd( m_cmd.d3d12CommandQueue.Get(), hWnd, &swapChainDesc, &swapChainFullDesc, nullptr, &tmpSwapChain ) );
 
-	ThrowIfFailed( tmpSwapChain.As( &swapChain.dxgi ) );
-	currentFrameIx = swapChain.dxgi->GetCurrentBackBufferIndex();
+	ThrowIfFailed( tmpSwapChain.As( &m_swapChain.dxgi ) );
+	currentFrameIx = m_swapChain.dxgi->GetCurrentBackBufferIndex();
 
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
 	rtvHeapDesc.NumDescriptors = FrameCount;
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	ThrowIfFailed( d3d12device->CreateDescriptorHeap( &rtvHeapDesc, IID_PPV_ARGS( &swapChain.rtvHeap ) ) );
+	ThrowIfFailed( m_d3d12device->CreateDescriptorHeap( &rtvHeapDesc, IID_PPV_ARGS( &m_swapChain.rtvHeap ) ) );
 
-	swapChain.rtvDescriptorSize = d3d12device->GetDescriptorHandleIncrementSize( D3D12_DESCRIPTOR_HEAP_TYPE_RTV );
+	m_swapChain.rtvDescriptorSize = m_d3d12device->GetDescriptorHandleIncrementSize( D3D12_DESCRIPTOR_HEAP_TYPE_RTV );
 
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle( swapChain.rtvHeap->GetCPUDescriptorHandleForHeapStart() );
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle( m_swapChain.rtvHeap->GetCPUDescriptorHandleForHeapStart() );
 	for ( uint32_t i = 0; i < FrameCount; ++i )
 	{
-		ThrowIfFailed( swapChain.dxgi->GetBuffer( i, IID_PPV_ARGS( &swapChain.renderTargets[ i ] ) ) );
-		d3d12device->CreateRenderTargetView( swapChain.renderTargets[ i ].Get(), nullptr, rtvHandle );
-		rtvHandle.Offset( 1, swapChain.rtvDescriptorSize );
+		ThrowIfFailed( m_swapChain.dxgi->GetBuffer( i, IID_PPV_ARGS( &m_swapChain.renderTargets[ i ] ) ) );
+		m_d3d12device->CreateRenderTargetView( m_swapChain.renderTargets[ i ].Get(), nullptr, rtvHandle );
+		rtvHandle.Offset( 1, m_swapChain.rtvDescriptorSize );
 	}
 }
 
@@ -421,12 +421,36 @@ void wtRenderer::CreateTextureResources( const uint32_t frameIx )
 	const uint32_t textureCount = _countof( sourceImages );
 	assert( textureCount <= SHADER_RESOURES_COUNT );
 
+	// Texture Heap
+	{
+		m_textureHeap.Reset();
+
+		const uint64_t SizeInBytes = 256 * 256 * 4; // Worst-case resolution
+		const uint64_t heapSize = textureCount * SizeInBytes;
+		CD3DX12_HEAP_DESC heapDesc( heapSize, D3D12_HEAP_TYPE_DEFAULT, 0, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES );
+		ThrowIfFailed( m_d3d12device->CreateHeap( &heapDesc, IID_PPV_ARGS( &m_textureHeap ) ) );
+	}
+
+	// Upload Heap
+	{
+		m_uploadHeap.Reset();
+
+		const uint64_t SizeInBytes = 256 * 256 * 4; // Worst-case resolution
+		const uint64_t heapSize = 2 * textureCount * SizeInBytes; // Doubled needed size because it's just a large scratch buffer
+		
+		CD3DX12_HEAP_DESC heapDesc( heapSize, D3D12_HEAP_TYPE_UPLOAD, 0, D3D12_HEAP_FLAG_ALLOW_ALL_BUFFERS_AND_TEXTURES );
+		ThrowIfFailed( m_d3d12device->CreateHeap( &heapDesc, IID_PPV_ARGS( &m_uploadHeap ) ) );
+	}
+
 	textureResources[ frameIx ].clear();
 	textureResources[ frameIx ].resize( SHADER_RESOURES_TEXTURE_CNT );
 
-	const UINT cbvSrvUavHeapIncrement = d3d12device->GetDescriptorHandleIncrementSize( D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV );
-	const CD3DX12_CPU_DESCRIPTOR_HANDLE cpuHeapStart( pipeline.cbvSrvUavHeap->GetCPUDescriptorHandleForHeapStart() );
-	const CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHeapStart( pipeline.cbvSrvUavHeap->GetGPUDescriptorHandleForHeapStart() );
+	const UINT cbvSrvUavHeapIncrement = m_d3d12device->GetDescriptorHandleIncrementSize( D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV );
+	const CD3DX12_CPU_DESCRIPTOR_HANDLE cpuHeapStart( m_pipeline.cbvSrvUavHeap->GetCPUDescriptorHandleForHeapStart() );
+	const CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHeapStart( m_pipeline.cbvSrvUavHeap->GetGPUDescriptorHandleForHeapStart() );
+
+	uint64_t heapOffset = 0;
+	uint64_t uploadHeapOffset = 0;
 
 	for ( uint32_t i = 0; i < textureCount; ++i )
 	{
@@ -441,36 +465,44 @@ void wtRenderer::CreateTextureResources( const uint32_t frameIx )
 		textureResources[ frameIx ][ i ].desc.SampleDesc.Quality = 0;
 		textureResources[ frameIx ][ i ].desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 
-		textureResources[ frameIx ][ i ].allocInfo = d3d12device->GetResourceAllocationInfo( 0, 1, &textureResources[ frameIx ][ i ].desc );
+		textureResources[ frameIx ][ i ].allocInfo = m_d3d12device->GetResourceAllocationInfo( 0, 1, &textureResources[ frameIx ][ i ].desc );
+		
+		// Shader Resource Texture
+		{
+			textureResources[ frameIx ][ i ].heapOffset = heapOffset;
 
-		D3D12_HEAP_PROPERTIES props = CD3DX12_HEAP_PROPERTIES( D3D12_HEAP_TYPE_DEFAULT );
+			ThrowIfFailed( m_d3d12device->CreatePlacedResource(
+				m_textureHeap.Get(),
+				textureResources[ frameIx ][ i ].heapOffset,
+				&textureResources[ frameIx ][ i ].desc,
+				D3D12_RESOURCE_STATE_COMMON,
+				nullptr,
+				IID_PPV_ARGS( &textureResources[ frameIx ][ i ].srv ) ) );
 
-		ThrowIfFailed( d3d12device->CreateCommittedResource(
-			&props,
-			D3D12_HEAP_FLAG_NONE,
-			&textureResources[ frameIx ][ i ].desc,
-			D3D12_RESOURCE_STATE_COMMON,
-			nullptr,
-			IID_PPV_ARGS( &textureResources[ frameIx ][ i ].srv ) ) );
+			heapOffset += textureResources[ frameIx ][ i ].allocInfo.SizeInBytes;
+		}
+
+		// Intermediate Upload Texture
+		{
+			const UINT64 uploadBufferSize = GetRequiredIntermediateSize( textureResources[ frameIx ][ i ].srv.Get(), 0, 1 );
+
+			D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer( uploadBufferSize );
+
+			textureResources[ frameIx ][ i ].uploadHeapOffset = uploadHeapOffset;
+
+			ThrowIfFailed( m_d3d12device->CreatePlacedResource(
+				m_uploadHeap.Get(),
+				textureResources[ frameIx ][ i ].uploadHeapOffset,
+				&desc,
+				D3D12_RESOURCE_STATE_GENERIC_READ,
+				nullptr,
+				IID_PPV_ARGS( &textureResources[ frameIx ][ i ].uploadBuffer ) ) );
+
+			uploadHeapOffset += textureResources[ frameIx ][ i ].allocInfo.SizeInBytes; // Offset by alignment not actually allocation size
+		}
 
 		wchar_t texName[ 128 ];
 		swprintf_s( texName, 128, L"Texture #%i(%i)", i, frameIx );
-		textureResources[ frameIx ][ i ].srv->SetName( texName );
-
-		const UINT64 uploadBufferSize = GetRequiredIntermediateSize( textureResources[ frameIx ][ i ].srv.Get(), 0, 1 );
-
-		props = CD3DX12_HEAP_PROPERTIES( D3D12_HEAP_TYPE_UPLOAD );
-		D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer( uploadBufferSize );
-
-		ThrowIfFailed( d3d12device->CreateCommittedResource(
-			&props,
-			D3D12_HEAP_FLAG_NONE,
-			&desc,
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			nullptr,
-			IID_PPV_ARGS( &textureResources[ frameIx ][ i ].uploadBuffer ) ) );
-
-		swprintf_s( texName, 128, L"Upload Texture #%i(%i)", i, frameIx );
 		textureResources[ frameIx ][ i ].srv->SetName( texName );
 
 		textureResources[ frameIx ][ i ].cpuHandle.InitOffsetted( cpuHeapStart, i + 1, cbvSrvUavHeapIncrement );
@@ -484,7 +516,7 @@ void wtRenderer::CreateTextureResources( const uint32_t frameIx )
 		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 		srvDesc.Texture2D.MipLevels = 1;
 
-		d3d12device->CreateShaderResourceView( textureResources[ frameIx ][ i ].srv.Get(), &srvDesc, textureResources[ frameIx ][ i ].cpuHandle );
+		m_d3d12device->CreateShaderResourceView( textureResources[ frameIx ][ i ].srv.Get(), &srvDesc, textureResources[ frameIx ][ i ].cpuHandle );
 	}
 }
 
@@ -499,10 +531,10 @@ void wtRenderer::InitImgui()
 	ImGui::StyleColorsDark();
 
 	ImGui_ImplWin32_Init( hWnd );
-	ImGui_ImplDX12_Init( d3d12device.Get(), FrameCount,
-		DXGI_FORMAT_R8G8B8A8_UNORM, pipeline.cbvSrvUavHeap.Get(),
-		pipeline.cbvSrvUavHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
-		pipeline.cbvSrvUavHeap.Get()->GetGPUDescriptorHandleForHeapStart() );
+	ImGui_ImplDX12_Init( m_d3d12device.Get(), FrameCount,
+		DXGI_FORMAT_R8G8B8A8_UNORM, m_pipeline.cbvSrvUavHeap.Get(),
+		m_pipeline.cbvSrvUavHeap.Get()->GetCPUDescriptorHandleForHeapStart(),
+		m_pipeline.cbvSrvUavHeap.Get()->GetGPUDescriptorHandleForHeapStart() );
 #endif
 }
 
@@ -544,37 +576,37 @@ void wtRenderer::RecreateSwapChain( const uint32_t width, const uint32_t height 
 
 	for ( uint32_t i = 0; i < FrameCount; i++ )
 	{
-		swapChain.renderTargets[ i ].Reset();
+		m_swapChain.renderTargets[ i ].Reset();
 		sync.fenceValues[ i ] = sync.fenceValues[ currentFrameIx ];
 	}
 
 	// Resize the swap chain to the desired dimensions.
 	DXGI_SWAP_CHAIN_DESC desc = {};
-	swapChain.dxgi->GetDesc( &desc );
-	ThrowIfFailed( swapChain.dxgi->ResizeBuffers( FrameCount, width, height, desc.BufferDesc.Format, desc.Flags ) );
+	m_swapChain.dxgi->GetDesc( &desc );
+	ThrowIfFailed( m_swapChain.dxgi->ResizeBuffers( FrameCount, width, height, desc.BufferDesc.Format, desc.Flags ) );
 
 	// Reset the frame index to the current back buffer index.
-	currentFrameIx = swapChain.dxgi->GetCurrentBackBufferIndex();
+	currentFrameIx = m_swapChain.dxgi->GetCurrentBackBufferIndex();
 
 	view.width = width;
 	view.height = height;
 	view.viewport = CD3DX12_VIEWPORT( 0.0f, 0.0f, static_cast<float>( width ), static_cast<float>( height ) );
 	view.scissorRect = CD3DX12_RECT( 0, view.overscanY0, width, height );
 
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle( swapChain.rtvHeap->GetCPUDescriptorHandleForHeapStart() );
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle( m_swapChain.rtvHeap->GetCPUDescriptorHandleForHeapStart() );
 	for ( uint32_t i = 0; i < FrameCount; ++i )
 	{
-		ThrowIfFailed( swapChain.dxgi->GetBuffer( i, IID_PPV_ARGS( &swapChain.renderTargets[ i ] ) ) );
-		d3d12device->CreateRenderTargetView( swapChain.renderTargets[ i ].Get(), nullptr, rtvHandle );
-		rtvHandle.Offset( 1, swapChain.rtvDescriptorSize );
+		ThrowIfFailed( m_swapChain.dxgi->GetBuffer( i, IID_PPV_ARGS( &m_swapChain.renderTargets[ i ] ) ) );
+		m_d3d12device->CreateRenderTargetView( m_swapChain.renderTargets[ i ].Get(), nullptr, rtvHandle );
+		rtvHandle.Offset( 1, m_swapChain.rtvDescriptorSize );
 	}
 }
 
 
 void wtRenderer::IssueTextureCopyCommands( const uint32_t srcFrameIx, const uint32_t renderFrameIx )
 {
-	ThrowIfFailed( cmd.cpyCommandAllocator[ renderFrameIx ]->Reset() );
-	ThrowIfFailed( cmd.cpyCommandList[ renderFrameIx ]->Reset( cmd.cpyCommandAllocator[ renderFrameIx ].Get(), pipeline.pso.Get() ) );
+	ThrowIfFailed( m_cmd.cpyCommandAllocator[ renderFrameIx ]->Reset() );
+	ThrowIfFailed( m_cmd.cpyCommandList[ renderFrameIx ]->Reset( m_cmd.cpyCommandAllocator[ renderFrameIx ].Get(), m_pipeline.pso.Get() ) );
 
 	const uint32_t textureCount = static_cast<uint32_t>( textureResources[ renderFrameIx ].size() );
 	std::vector<D3D12_SUBRESOURCE_DATA> textureData( textureCount );
@@ -608,18 +640,18 @@ void wtRenderer::IssueTextureCopyCommands( const uint32_t srcFrameIx, const uint
 		pLayouts.Footprint.RowPitch = static_cast<uint32_t>( textureData.RowPitch );
 
 		D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition( textureResources[ renderFrameIx ][ i ].srv.Get(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST );
-		cmd.cpyCommandList[ renderFrameIx ]->ResourceBarrier( 1, &barrier );
+		m_cmd.cpyCommandList[ renderFrameIx ]->ResourceBarrier( 1, &barrier );
 
 		// TODO: use only one intermediate buffer
-		UpdateSubresources( cmd.cpyCommandList[ renderFrameIx ].Get(), textureResources[ renderFrameIx ][ i ].srv.Get(), textureResources[ renderFrameIx ][ i ].uploadBuffer.Get(), 0, 0, 1, &textureData );
+		UpdateSubresources( m_cmd.cpyCommandList[ renderFrameIx ].Get(), textureResources[ renderFrameIx ][ i ].srv.Get(), textureResources[ renderFrameIx ][ i ].uploadBuffer.Get(), 0, 0, 1, &textureData );
 	
 		barrier = CD3DX12_RESOURCE_BARRIER::Transition( textureResources[ renderFrameIx ][ i ].srv.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_COMMON );
-		cmd.cpyCommandList[ renderFrameIx ]->ResourceBarrier( 1, &barrier );
+		m_cmd.cpyCommandList[ renderFrameIx ]->ResourceBarrier( 1, &barrier );
 	}
 
-	ThrowIfFailed( cmd.cpyCommandList[ renderFrameIx ]->Close() );
+	ThrowIfFailed( m_cmd.cpyCommandList[ renderFrameIx ]->Close() );
 
-	ID3D12CommandList* ppCommandLists[] = { cmd.cpyCommandList[ renderFrameIx ].Get() };
-	cmd.d3d12CopyQueue->ExecuteCommandLists( 1, ppCommandLists );
-	cmd.d3d12CopyQueue->Signal( sync.cpyFence.Get(), sync.fenceValues[ renderFrameIx ] );
+	ID3D12CommandList* ppCommandLists[] = { m_cmd.cpyCommandList[ renderFrameIx ].Get() };
+	m_cmd.d3d12CopyQueue->ExecuteCommandLists( 1, ppCommandLists );
+	m_cmd.d3d12CopyQueue->Signal( sync.cpyFence.Get(), sync.fenceValues[ renderFrameIx ] );
 }

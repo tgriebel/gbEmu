@@ -61,6 +61,8 @@ struct wtAppTextureD3D12
 
 	uint32_t						width;
 	uint32_t						height;
+	uint64_t						heapOffset;
+	uint64_t						uploadHeapOffset;
 	D3D12_RESOURCE_ALLOCATION_INFO	allocInfo;
 	D3D12_RESOURCE_DESC				desc;
 };
@@ -148,13 +150,16 @@ enum ShaderResources
 class wtRenderer
 {
 private:
-	ComPtr<IDXGIAdapter1>					dxgiAdapter;
-	ComPtr<IDXGIFactory4>					dxgiFactory;
-	ComPtr<ID3D12Device>					d3d12device;
+	ComPtr<IDXGIAdapter1>					m_dxgiAdapter;
+	ComPtr<IDXGIFactory4>					m_dxgiFactory;
+	ComPtr<ID3D12Device>					m_d3d12device;
 
-	swapChain_t								swapChain;
-	pipeline_t								pipeline;
-	command_t								cmd;
+	ComPtr<ID3D12Heap>						m_textureHeap;
+	ComPtr<ID3D12Heap>						m_uploadHeap;
+
+	swapChain_t								m_swapChain;
+	pipeline_t								m_pipeline;
+	command_t								m_cmd;
 
 	std::vector<wtAppTextureD3D12>			textureResources[ FrameCount ];
 
