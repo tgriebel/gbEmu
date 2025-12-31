@@ -150,28 +150,45 @@ enum ShaderResources
 class wtRenderer
 {
 private:
-	ComPtr<IDXGIAdapter1>					m_dxgiAdapter;
-	ComPtr<IDXGIFactory4>					m_dxgiFactory;
-	ComPtr<ID3D12Device>					m_d3d12device;
+	static const uint32_t MaxTextures = 64;
 
-	ComPtr<ID3D12Heap>						m_textureHeap;
-	ComPtr<ID3D12Heap>						m_uploadHeap;
+	ComPtr<IDXGIAdapter1>			m_dxgiAdapter;
+	ComPtr<IDXGIFactory4>			m_dxgiFactory;
+	ComPtr<ID3D12Device>			m_d3d12device;
 
-	swapChain_t								m_swapChain;
-	pipeline_t								m_pipeline;
-	command_t								m_cmd;
+	ComPtr<ID3D12Heap>				m_textureHeap;
+	ComPtr<ID3D12Heap>				m_uploadHeap;
 
-	std::vector<wtAppTextureD3D12>			textureResources[ FrameCount ];
+	swapChain_t						m_swapChain;
+	pipeline_t						m_pipeline;
+	command_t						m_cmd;
+
+	uint64_t						m_heapOffset = 0;
+	uint64_t						m_uploadHeapOffset = 0;
+
+	uint32_t						m_textureCount;
+	TomBoy::wtRawImageInterface*	m_sourceImage[ FrameCount ][ MaxTextures ];
+	wtAppTextureD3D12				m_textureResources[ FrameCount ][ MaxTextures ];
 
 public:
 
 	wtRenderer()
 	{
+		m_heapOffset = 0;
+		m_uploadHeapOffset = 0;
+
+		m_textureCount = 0;
+
 		currentFrameIx = 0;
 		frameResultIx = 0;
 		frameNumber = 0;
 		lastFrameDrawn = 0;
 		initD3D12 = false;
+
+		for ( uint32_t i = 0; i < FrameCount; ++i )
+		{
+			memset( m_sourceImage[ currentFrameIx ], 0, MaxTextures * sizeof( TomBoy::wtRawImageInterface* ) );
+		}
 	}
 
 	bool									initD3D12;
@@ -192,7 +209,7 @@ public:
 	void									CreateCommandLists();
 	void									CreateVertexBuffers();
 	void									CreateConstantBuffers();
-	void									CreateTextureResources( const uint32_t frameIx );
+	void									CreateTextureResources();
 	void									CreateSyncObjects();
 	void									CreateD3D12Pipeline();
 
@@ -204,6 +221,9 @@ public:
 	bool									NeedsResize( const uint32_t width, const uint32_t height );
 	void									RecreateSwapChain( const uint32_t width, const uint32_t height );
 
+	void									BeginFrame();
+	void									EndFrame();
+	void									BindTextureSlot( const uint32_t slotIndex, TomBoy::wtRawImageInterface* img );
 	void									IssueTextureCopyCommands( const uint32_t srcFrameIx, const uint32_t renderFrameIx );
 	void									BuildImguiCommandList();
 	void									BuildDrawCommandList();

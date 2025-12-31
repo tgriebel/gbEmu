@@ -102,8 +102,8 @@ void wtRenderer::CreatePSO()
 
 	const uint32_t srvCnt = 1; // Only 1 texture is visible to ImGui at a time
 	CD3DX12_DESCRIPTOR_RANGE1 ranges[ 2 ] = {};
-	ranges[ 0 ].Init( D3D12_DESCRIPTOR_RANGE_TYPE_SRV, srvCnt, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC_WHILE_SET_AT_EXECUTE );
-	ranges[ 1 ].Init( D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC_WHILE_SET_AT_EXECUTE );
+	ranges[ 0 ].Init( D3D12_DESCRIPTOR_RANGE_TYPE_SRV, srvCnt, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_VOLATILE );
+	ranges[ 1 ].Init( D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_VOLATILE );
 
 	CD3DX12_ROOT_PARAMETER1 rootParameters[ 2 ] = {};
 	rootParameters[ 0 ].InitAsDescriptorTable( 1, &ranges[ 0 ], D3D12_SHADER_VISIBILITY_PIXEL );
@@ -244,9 +244,7 @@ void wtRenderer::CreateD3D12Pipeline()
 	CreatePSO();
 	CreateCommandLists();
 	CreateVertexBuffers();
-	for ( uint32_t i = 0; i < FrameCount; ++i ) {
-		CreateTextureResources( i );
-	}
+	CreateTextureResources();
 	CreateConstantBuffers();
 	CreateSyncObjects();
 	WaitForGpu();
@@ -307,7 +305,7 @@ void wtRenderer::BuildDrawCommandList()
 
 	ID3D12DescriptorHeap* ppHeaps[] = { m_pipeline.cbvSrvUavHeap.Get() };
 	m_cmd.commandList[ currentFrameIx ]->SetDescriptorHeaps( _countof( ppHeaps ), ppHeaps );
-	m_cmd.commandList[ currentFrameIx ]->SetGraphicsRootDescriptorTable( 0, textureResources[ currentFrameIx ][ SHADER_RESOURES_PATTERN0 ].gpuHandle );
+	m_cmd.commandList[ currentFrameIx ]->SetGraphicsRootDescriptorTable( 0, m_textureResources[ currentFrameIx ][ SHADER_RESOURES_PATTERN0 ].gpuHandle );
 	m_cmd.commandList[ currentFrameIx ]->SetGraphicsRootDescriptorTable( 1, m_pipeline.cbvSrvGpuHandle );
 
 	m_cmd.commandList[ currentFrameIx ]->RSSetViewports( 1, &view.viewport );
@@ -408,8 +406,30 @@ void wtRenderer::CreateFrameBuffers()
 }
 
 
-void wtRenderer::CreateTextureResources( const uint32_t frameIx )
+void wtRenderer::CreateTextureResources()
 {
+	// Texture Heap
+	{
+		m_textureHeap.Reset();
+
+		const uint64_t SizeInBytes = 256 * 256 * 4; // Worst-case resolution
+		const uint64_t heapSize = MaxTextures * SizeInBytes;
+		CD3DX12_HEAP_DESC heapDesc( heapSize, D3D12_HEAP_TYPE_DEFAULT, 0, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES );
+		ThrowIfFailed( m_d3d12device->CreateHeap( &heapDesc, IID_PPV_ARGS( &m_textureHeap ) ) );
+	}
+
+	// Upload Heap
+	{
+		m_uploadHeap.Reset();
+
+		const uint64_t SizeInBytes = 256 * 256 * 4; // Worst-case resolution
+		const uint64_t heapSize = 2 * MaxTextures * SizeInBytes; // Doubled needed size because it's just a large scratch buffer
+
+		CD3DX12_HEAP_DESC heapDesc( heapSize, D3D12_HEAP_TYPE_UPLOAD, 0, D3D12_HEAP_FLAG_ALLOW_ALL_BUFFERS_AND_TEXTURES );
+		ThrowIfFailed( m_d3d12device->CreateHeap( &heapDesc, IID_PPV_ARGS( &m_uploadHeap ) ) );
+	}
+
+	/*
 	int dbgImageIx = 0;
 	TomBoy::wtPoint sourceImages[ SHADER_RESOURES_TEXTURE_CNT ];
 	sourceImages[ dbgImageIx++ ] = { 160, 144 };
@@ -442,82 +462,79 @@ void wtRenderer::CreateTextureResources( const uint32_t frameIx )
 		ThrowIfFailed( m_d3d12device->CreateHeap( &heapDesc, IID_PPV_ARGS( &m_uploadHeap ) ) );
 	}
 
-	textureResources[ frameIx ].clear();
-	textureResources[ frameIx ].resize( SHADER_RESOURES_TEXTURE_CNT );
+	m_textureCount = textureCount;
 
 	const UINT cbvSrvUavHeapIncrement = m_d3d12device->GetDescriptorHandleIncrementSize( D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV );
 	const CD3DX12_CPU_DESCRIPTOR_HANDLE cpuHeapStart( m_pipeline.cbvSrvUavHeap->GetCPUDescriptorHandleForHeapStart() );
 	const CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHeapStart( m_pipeline.cbvSrvUavHeap->GetGPUDescriptorHandleForHeapStart() );
 
-	uint64_t heapOffset = 0;
-	uint64_t uploadHeapOffset = 0;
-
 	for ( uint32_t i = 0; i < textureCount; ++i )
 	{
-		textureResources[ frameIx ][ i ].desc.MipLevels = 1;
-		textureResources[ frameIx ][ i ].desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		textureResources[ frameIx ][ i ].desc.Alignment = 0;
-		textureResources[ frameIx ][ i ].desc.Width = sourceImages[ i ].x;
-		textureResources[ frameIx ][ i ].desc.Height = sourceImages[ i ].y;
-		textureResources[ frameIx ][ i ].desc.Flags = D3D12_RESOURCE_FLAG_NONE;
-		textureResources[ frameIx ][ i ].desc.DepthOrArraySize = 1;
-		textureResources[ frameIx ][ i ].desc.SampleDesc.Count = 1;
-		textureResources[ frameIx ][ i ].desc.SampleDesc.Quality = 0;
-		textureResources[ frameIx ][ i ].desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+		m_textureResources[ frameIx ][ i ].desc.MipLevels = 1;
+		m_textureResources[ frameIx ][ i ].desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		m_textureResources[ frameIx ][ i ].desc.Alignment = 0;
+		m_textureResources[ frameIx ][ i ].desc.Width = sourceImages[ i ].x;
+		m_textureResources[ frameIx ][ i ].desc.Height = sourceImages[ i ].y;
+		m_textureResources[ frameIx ][ i ].desc.Flags = D3D12_RESOURCE_FLAG_NONE;
+		m_textureResources[ frameIx ][ i ].desc.DepthOrArraySize = 1;
+		m_textureResources[ frameIx ][ i ].desc.SampleDesc.Count = 1;
+		m_textureResources[ frameIx ][ i ].desc.SampleDesc.Quality = 0;
+		m_textureResources[ frameIx ][ i ].desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 
-		textureResources[ frameIx ][ i ].allocInfo = m_d3d12device->GetResourceAllocationInfo( 0, 1, &textureResources[ frameIx ][ i ].desc );
+		m_textureResources[ frameIx ][ i ].allocInfo = m_d3d12device->GetResourceAllocationInfo( 0, 1, &m_textureResources[ frameIx ][ i ].desc );
 		
 		// Shader Resource Texture
 		{
-			textureResources[ frameIx ][ i ].heapOffset = heapOffset;
+			m_textureResources[ frameIx ][ i ].heapOffset = m_heapOffset;
 
 			ThrowIfFailed( m_d3d12device->CreatePlacedResource(
 				m_textureHeap.Get(),
-				textureResources[ frameIx ][ i ].heapOffset,
-				&textureResources[ frameIx ][ i ].desc,
+				m_textureResources[ frameIx ][ i ].heapOffset,
+				&m_textureResources[ frameIx ][ i ].desc,
 				D3D12_RESOURCE_STATE_COMMON,
 				nullptr,
-				IID_PPV_ARGS( &textureResources[ frameIx ][ i ].srv ) ) );
+				IID_PPV_ARGS( &m_textureResources[ frameIx ][ i ].srv ) ) );
 
-			heapOffset += textureResources[ frameIx ][ i ].allocInfo.SizeInBytes;
+			m_heapOffset += m_textureResources[ frameIx ][ i ].allocInfo.SizeInBytes;
 		}
 
 		// Intermediate Upload Texture
 		{
-			const UINT64 uploadBufferSize = GetRequiredIntermediateSize( textureResources[ frameIx ][ i ].srv.Get(), 0, 1 );
+			const UINT64 uploadBufferSize = GetRequiredIntermediateSize( m_textureResources[ frameIx ][ i ].srv.Get(), 0, 1 );
 
 			D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer( uploadBufferSize );
 
-			textureResources[ frameIx ][ i ].uploadHeapOffset = uploadHeapOffset;
+			m_textureResources[ frameIx ][ i ].uploadHeapOffset = m_uploadHeapOffset;
 
 			ThrowIfFailed( m_d3d12device->CreatePlacedResource(
 				m_uploadHeap.Get(),
-				textureResources[ frameIx ][ i ].uploadHeapOffset,
+				m_textureResources[ frameIx ][ i ].uploadHeapOffset,
 				&desc,
 				D3D12_RESOURCE_STATE_GENERIC_READ,
 				nullptr,
-				IID_PPV_ARGS( &textureResources[ frameIx ][ i ].uploadBuffer ) ) );
+				IID_PPV_ARGS( &m_textureResources[ frameIx ][ i ].uploadBuffer ) ) );
 
-			uploadHeapOffset += textureResources[ frameIx ][ i ].allocInfo.SizeInBytes; // Offset by alignment not actually allocation size
+			m_uploadHeapOffset += m_textureResources[ frameIx ][ i ].allocInfo.SizeInBytes; // Offset by alignment not actually allocation size
 		}
 
 		wchar_t texName[ 128 ];
 		swprintf_s( texName, 128, L"Texture #%i(%i)", i, frameIx );
-		textureResources[ frameIx ][ i ].srv->SetName( texName );
+		m_textureResources[ frameIx ][ i ].srv->SetName( texName );
 
-		textureResources[ frameIx ][ i ].cpuHandle.InitOffsetted( cpuHeapStart, i + 1, cbvSrvUavHeapIncrement );
-		textureResources[ frameIx ][ i ].gpuHandle.InitOffsetted( gpuHeapStart, i + 1, cbvSrvUavHeapIncrement );
-		textureResources[ frameIx ][ i ].width = sourceImages[ i ].x;
-		textureResources[ frameIx ][ i ].height = sourceImages[ i ].y;
+		m_textureResources[ frameIx ][ i ].cpuHandle.InitOffsetted( cpuHeapStart, i + 1, cbvSrvUavHeapIncrement );
+		m_textureResources[ frameIx ][ i ].gpuHandle.InitOffsetted( gpuHeapStart, i + 1, cbvSrvUavHeapIncrement );
+		m_textureResources[ frameIx ][ i ].width = sourceImages[ i ].x;
+		m_textureResources[ frameIx ][ i ].height = sourceImages[ i ].y;
 
 		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-		srvDesc.Format = textureResources[ frameIx ][ i ].desc.Format;
+		srvDesc.Format = m_textureResources[ frameIx ][ i ].desc.Format;
 		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 		srvDesc.Texture2D.MipLevels = 1;
 
-		m_d3d12device->CreateShaderResourceView( textureResources[ frameIx ][ i ].srv.Get(), &srvDesc, textureResources[ frameIx ][ i ].cpuHandle );
+		m_d3d12device->CreateShaderResourceView( m_textureResources[ frameIx ][ i ].srv.Get(), &srvDesc, m_textureResources[ frameIx ][ i ].cpuHandle );
 	}
+	*/
 }
 
 
@@ -603,49 +620,127 @@ void wtRenderer::RecreateSwapChain( const uint32_t width, const uint32_t height 
 }
 
 
+void wtRenderer::BeginFrame()
+{
+	m_heapOffset = 0;
+	m_uploadHeapOffset = 0;
+}
+
+
+void wtRenderer::EndFrame()
+{
+}
+
+
+void wtRenderer::BindTextureSlot( const uint32_t slotIndex, TomBoy::wtRawImageInterface* img )
+{
+	m_textureResources[ currentFrameIx ][ slotIndex ].desc.MipLevels = 1;
+	m_textureResources[ currentFrameIx ][ slotIndex ].desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	m_textureResources[ currentFrameIx ][ slotIndex ].desc.Alignment = 0;
+	m_textureResources[ currentFrameIx ][ slotIndex ].desc.Width = img->GetWidth();
+	m_textureResources[ currentFrameIx ][ slotIndex ].desc.Height = img->GetHeight();
+	m_textureResources[ currentFrameIx ][ slotIndex ].desc.Flags = D3D12_RESOURCE_FLAG_NONE;
+	m_textureResources[ currentFrameIx ][ slotIndex ].desc.DepthOrArraySize = 1;
+	m_textureResources[ currentFrameIx ][ slotIndex ].desc.SampleDesc.Count = 1;
+	m_textureResources[ currentFrameIx ][ slotIndex ].desc.SampleDesc.Quality = 0;
+	m_textureResources[ currentFrameIx ][ slotIndex ].desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+
+	m_textureResources[ currentFrameIx ][ slotIndex ].allocInfo = m_d3d12device->GetResourceAllocationInfo( 0, 1, &m_textureResources[ currentFrameIx ][ slotIndex ].desc );
+
+	const UINT cbvSrvUavHeapIncrement = m_d3d12device->GetDescriptorHandleIncrementSize( D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV );
+	const CD3DX12_CPU_DESCRIPTOR_HANDLE cpuHeapStart( m_pipeline.cbvSrvUavHeap->GetCPUDescriptorHandleForHeapStart() );
+	const CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHeapStart( m_pipeline.cbvSrvUavHeap->GetGPUDescriptorHandleForHeapStart() );
+
+	// Shader Resource Texture
+	{
+		m_textureResources[ currentFrameIx ][ slotIndex ].heapOffset = m_heapOffset;
+
+		ThrowIfFailed( m_d3d12device->CreatePlacedResource(
+			m_textureHeap.Get(),
+			m_textureResources[ currentFrameIx ][ slotIndex ].heapOffset,
+			&m_textureResources[ currentFrameIx ][ slotIndex ].desc,
+			D3D12_RESOURCE_STATE_COMMON,
+			nullptr,
+			IID_PPV_ARGS( &m_textureResources[ currentFrameIx ][ slotIndex ].srv ) ) );
+
+		m_heapOffset += m_textureResources[ currentFrameIx ][ slotIndex ].allocInfo.SizeInBytes;
+	}
+
+	// Intermediate Upload Texture
+	{
+		const UINT64 uploadBufferSize = GetRequiredIntermediateSize( m_textureResources[ currentFrameIx ][ slotIndex ].srv.Get(), 0, 1 );
+
+		D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer( uploadBufferSize );
+
+		m_textureResources[ currentFrameIx ][ slotIndex ].uploadHeapOffset = m_uploadHeapOffset;
+
+		ThrowIfFailed( m_d3d12device->CreatePlacedResource(
+			m_uploadHeap.Get(),
+			m_textureResources[ currentFrameIx ][ slotIndex ].uploadHeapOffset,
+			&desc,
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS( &m_textureResources[ currentFrameIx ][ slotIndex ].uploadBuffer ) ) );
+
+		m_uploadHeapOffset += m_textureResources[ currentFrameIx ][ slotIndex ].allocInfo.SizeInBytes; // Offset by alignment not actually allocation size
+	}
+
+	wchar_t texName[ 128 ];
+	swprintf_s( texName, 128, L"Texture #%i(%i)", slotIndex, currentFrameIx );
+	m_textureResources[ currentFrameIx ][ slotIndex ].srv->SetName( texName );
+
+	m_textureResources[ currentFrameIx ][ slotIndex ].cpuHandle.InitOffsetted( cpuHeapStart, slotIndex + 1, cbvSrvUavHeapIncrement );
+	m_textureResources[ currentFrameIx ][ slotIndex ].gpuHandle.InitOffsetted( gpuHeapStart, slotIndex + 1, cbvSrvUavHeapIncrement );
+	m_textureResources[ currentFrameIx ][ slotIndex ].width = img->GetWidth();
+	m_textureResources[ currentFrameIx ][ slotIndex ].height = img->GetHeight();
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Format = m_textureResources[ currentFrameIx ][ slotIndex ].desc.Format;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1;
+
+	m_d3d12device->CreateShaderResourceView( m_textureResources[ currentFrameIx ][ slotIndex ].srv.Get(), &srvDesc, m_textureResources[ currentFrameIx ][ slotIndex ].cpuHandle );
+
+	m_sourceImage[ currentFrameIx ][ slotIndex ] = img;
+}
+
+
 void wtRenderer::IssueTextureCopyCommands( const uint32_t srcFrameIx, const uint32_t renderFrameIx )
 {
 	ThrowIfFailed( m_cmd.cpyCommandAllocator[ renderFrameIx ]->Reset() );
 	ThrowIfFailed( m_cmd.cpyCommandList[ renderFrameIx ]->Reset( m_cmd.cpyCommandAllocator[ renderFrameIx ].Get(), m_pipeline.pso.Get() ) );
 
-	const uint32_t textureCount = static_cast<uint32_t>( textureResources[ renderFrameIx ].size() );
-	std::vector<D3D12_SUBRESOURCE_DATA> textureData( textureCount );
-
 	TomBoy::wtFrameResult* fr = &app->frameResult[ srcFrameIx ];
-
-	uint32_t imageIx = 0;
-	const TomBoy::wtRawImageInterface* sourceImages[ SHADER_RESOURES_TEXTURE_CNT ];
-	// All that this needs right now are the dimensions.
-	sourceImages[ imageIx++ ] = fr->frameBuffer;
-	sourceImages[ imageIx++ ] = fr->bgMap;
-	sourceImages[ imageIx++ ] = fr->patternTable0;
-	sourceImages[ imageIx++ ] = fr->patternTable1;
-	sourceImages[ imageIx++ ] = fr->patternTable2;
 
 	const uint32_t texturePixelSize = 4;
 
-	for ( uint32_t i = 0; i < imageIx; ++i )
+	for ( uint32_t i = 0; i < MaxTextures; ++i )
 	{
+		if( m_sourceImage[ currentFrameIx ][ i ] == nullptr ) {
+			continue;
+		}
+
 		D3D12_SUBRESOURCE_DATA textureData;
-		textureData.pData = sourceImages[ i ]->GetRawBuffer();
-		textureData.RowPitch = textureResources[ renderFrameIx ][ i ].width * static_cast<uint64_t>( texturePixelSize );
-		textureData.SlicePitch = textureData.RowPitch * textureResources[ renderFrameIx ][ i ].height;
+		textureData.pData = m_sourceImage[ currentFrameIx ][ i ]->GetRawBuffer();
+		textureData.RowPitch = m_textureResources[ renderFrameIx ][ i ].width * static_cast<uint64_t>( texturePixelSize );
+		textureData.SlicePitch = textureData.RowPitch * m_textureResources[ renderFrameIx ][ i ].height;
 
 		D3D12_PLACED_SUBRESOURCE_FOOTPRINT pLayouts = {};
 		pLayouts.Offset = 0;
 		pLayouts.Footprint.Depth = 1;
 		pLayouts.Footprint.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		pLayouts.Footprint.Width = textureResources[ renderFrameIx ][ i ].width;
-		pLayouts.Footprint.Height = textureResources[ renderFrameIx ][ i ].height;
+		pLayouts.Footprint.Width = m_textureResources[ renderFrameIx ][ i ].width;
+		pLayouts.Footprint.Height = m_textureResources[ renderFrameIx ][ i ].height;
 		pLayouts.Footprint.RowPitch = static_cast<uint32_t>( textureData.RowPitch );
 
-		D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition( textureResources[ renderFrameIx ][ i ].srv.Get(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST );
+		D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition( m_textureResources[ renderFrameIx ][ i ].srv.Get(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST );
 		m_cmd.cpyCommandList[ renderFrameIx ]->ResourceBarrier( 1, &barrier );
 
 		// TODO: use only one intermediate buffer
-		UpdateSubresources( m_cmd.cpyCommandList[ renderFrameIx ].Get(), textureResources[ renderFrameIx ][ i ].srv.Get(), textureResources[ renderFrameIx ][ i ].uploadBuffer.Get(), 0, 0, 1, &textureData );
+		UpdateSubresources( m_cmd.cpyCommandList[ renderFrameIx ].Get(), m_textureResources[ renderFrameIx ][ i ].srv.Get(), m_textureResources[ renderFrameIx ][ i ].uploadBuffer.Get(), 0, 0, 1, &textureData );
 	
-		barrier = CD3DX12_RESOURCE_BARRIER::Transition( textureResources[ renderFrameIx ][ i ].srv.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_COMMON );
+		barrier = CD3DX12_RESOURCE_BARRIER::Transition( m_textureResources[ renderFrameIx ][ i ].srv.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_COMMON );
 		m_cmd.cpyCommandList[ renderFrameIx ]->ResourceBarrier( 1, &barrier );
 	}
 
