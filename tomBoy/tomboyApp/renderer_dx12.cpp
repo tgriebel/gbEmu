@@ -69,7 +69,7 @@ uint32_t wtRenderer::InitD3D12()
 	CreateFrameBuffers();
 
 	D3D12_DESCRIPTOR_HEAP_DESC cbvSrvUavHeapDesc = {};
-	cbvSrvUavHeapDesc.NumDescriptors = SHADER_RESOURES_COUNT;
+	cbvSrvUavHeapDesc.NumDescriptors = MaxTextures + 1;
 	cbvSrvUavHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	cbvSrvUavHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	ThrowIfFailed( m_d3d12device->CreateDescriptorHeap( &cbvSrvUavHeapDesc, IID_PPV_ARGS( &m_pipeline.cbvSrvUavHeap ) ) );
@@ -211,8 +211,8 @@ void wtRenderer::CreateConstantBuffers()
 	m_pipeline.shaderData.destImageDim = { 0.0f, 0.0f, 256.0f, 256.0f };
 	m_pipeline.shaderData.enable = false;
 
-	m_pipeline.cbvSrvCpuHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE( m_pipeline.cbvSrvUavHeap->GetCPUDescriptorHandleForHeapStart(), SHADER_RESOURES_CBV0, m_pipeline.cbvSrvUavDescStride );
-	m_pipeline.cbvSrvGpuHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE( m_pipeline.cbvSrvUavHeap->GetGPUDescriptorHandleForHeapStart(), SHADER_RESOURES_CBV0, m_pipeline.cbvSrvUavDescStride );
+	m_pipeline.cbvSrvCpuHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE( m_pipeline.cbvSrvUavHeap->GetCPUDescriptorHandleForHeapStart(), MaxTextures, m_pipeline.cbvSrvUavDescStride );
+	m_pipeline.cbvSrvGpuHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE( m_pipeline.cbvSrvUavHeap->GetGPUDescriptorHandleForHeapStart(), MaxTextures, m_pipeline.cbvSrvUavDescStride );
 
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
 	cbvDesc.BufferLocation = m_pipeline.cb->GetGPUVirtualAddress();
@@ -305,7 +305,7 @@ void wtRenderer::BuildDrawCommandList()
 
 	ID3D12DescriptorHeap* ppHeaps[] = { m_pipeline.cbvSrvUavHeap.Get() };
 	m_cmd.commandList[ currentFrameIx ]->SetDescriptorHeaps( _countof( ppHeaps ), ppHeaps );
-	m_cmd.commandList[ currentFrameIx ]->SetGraphicsRootDescriptorTable( 0, m_textureResources[ currentFrameIx ][ SHADER_RESOURES_PATTERN0 ].gpuHandle );
+	m_cmd.commandList[ currentFrameIx ]->SetGraphicsRootDescriptorTable( 0, m_textureResources[ currentFrameIx ][ m_mainDisplayImageIndex ].gpuHandle );
 	m_cmd.commandList[ currentFrameIx ]->SetGraphicsRootDescriptorTable( 1, m_pipeline.cbvSrvGpuHandle );
 
 	m_cmd.commandList[ currentFrameIx ]->RSSetViewports( 1, &view.viewport );
@@ -428,113 +428,6 @@ void wtRenderer::CreateTextureResources()
 		CD3DX12_HEAP_DESC heapDesc( heapSize, D3D12_HEAP_TYPE_UPLOAD, 0, D3D12_HEAP_FLAG_ALLOW_ALL_BUFFERS_AND_TEXTURES );
 		ThrowIfFailed( m_d3d12device->CreateHeap( &heapDesc, IID_PPV_ARGS( &m_uploadHeap ) ) );
 	}
-
-	/*
-	int dbgImageIx = 0;
-	TomBoy::wtPoint sourceImages[ SHADER_RESOURES_TEXTURE_CNT ];
-	sourceImages[ dbgImageIx++ ] = { 160, 144 };
-	sourceImages[ dbgImageIx++ ] = { 256, 256 };
-	sourceImages[ dbgImageIx++ ] = { 128, 64 };
-	sourceImages[ dbgImageIx++ ] = { 128, 64 };
-	sourceImages[ dbgImageIx++ ] = { 128, 64 };
-
-	const uint32_t textureCount = _countof( sourceImages );
-	assert( textureCount <= SHADER_RESOURES_COUNT );
-
-	// Texture Heap
-	{
-		m_textureHeap.Reset();
-
-		const uint64_t SizeInBytes = 256 * 256 * 4; // Worst-case resolution
-		const uint64_t heapSize = textureCount * SizeInBytes;
-		CD3DX12_HEAP_DESC heapDesc( heapSize, D3D12_HEAP_TYPE_DEFAULT, 0, D3D12_HEAP_FLAG_DENY_BUFFERS | D3D12_HEAP_FLAG_DENY_RT_DS_TEXTURES );
-		ThrowIfFailed( m_d3d12device->CreateHeap( &heapDesc, IID_PPV_ARGS( &m_textureHeap ) ) );
-	}
-
-	// Upload Heap
-	{
-		m_uploadHeap.Reset();
-
-		const uint64_t SizeInBytes = 256 * 256 * 4; // Worst-case resolution
-		const uint64_t heapSize = 2 * textureCount * SizeInBytes; // Doubled needed size because it's just a large scratch buffer
-		
-		CD3DX12_HEAP_DESC heapDesc( heapSize, D3D12_HEAP_TYPE_UPLOAD, 0, D3D12_HEAP_FLAG_ALLOW_ALL_BUFFERS_AND_TEXTURES );
-		ThrowIfFailed( m_d3d12device->CreateHeap( &heapDesc, IID_PPV_ARGS( &m_uploadHeap ) ) );
-	}
-
-	m_textureCount = textureCount;
-
-	const UINT cbvSrvUavHeapIncrement = m_d3d12device->GetDescriptorHandleIncrementSize( D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV );
-	const CD3DX12_CPU_DESCRIPTOR_HANDLE cpuHeapStart( m_pipeline.cbvSrvUavHeap->GetCPUDescriptorHandleForHeapStart() );
-	const CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHeapStart( m_pipeline.cbvSrvUavHeap->GetGPUDescriptorHandleForHeapStart() );
-
-	for ( uint32_t i = 0; i < textureCount; ++i )
-	{
-		m_textureResources[ frameIx ][ i ].desc.MipLevels = 1;
-		m_textureResources[ frameIx ][ i ].desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		m_textureResources[ frameIx ][ i ].desc.Alignment = 0;
-		m_textureResources[ frameIx ][ i ].desc.Width = sourceImages[ i ].x;
-		m_textureResources[ frameIx ][ i ].desc.Height = sourceImages[ i ].y;
-		m_textureResources[ frameIx ][ i ].desc.Flags = D3D12_RESOURCE_FLAG_NONE;
-		m_textureResources[ frameIx ][ i ].desc.DepthOrArraySize = 1;
-		m_textureResources[ frameIx ][ i ].desc.SampleDesc.Count = 1;
-		m_textureResources[ frameIx ][ i ].desc.SampleDesc.Quality = 0;
-		m_textureResources[ frameIx ][ i ].desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-
-		m_textureResources[ frameIx ][ i ].allocInfo = m_d3d12device->GetResourceAllocationInfo( 0, 1, &m_textureResources[ frameIx ][ i ].desc );
-		
-		// Shader Resource Texture
-		{
-			m_textureResources[ frameIx ][ i ].heapOffset = m_heapOffset;
-
-			ThrowIfFailed( m_d3d12device->CreatePlacedResource(
-				m_textureHeap.Get(),
-				m_textureResources[ frameIx ][ i ].heapOffset,
-				&m_textureResources[ frameIx ][ i ].desc,
-				D3D12_RESOURCE_STATE_COMMON,
-				nullptr,
-				IID_PPV_ARGS( &m_textureResources[ frameIx ][ i ].srv ) ) );
-
-			m_heapOffset += m_textureResources[ frameIx ][ i ].allocInfo.SizeInBytes;
-		}
-
-		// Intermediate Upload Texture
-		{
-			const UINT64 uploadBufferSize = GetRequiredIntermediateSize( m_textureResources[ frameIx ][ i ].srv.Get(), 0, 1 );
-
-			D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer( uploadBufferSize );
-
-			m_textureResources[ frameIx ][ i ].uploadHeapOffset = m_uploadHeapOffset;
-
-			ThrowIfFailed( m_d3d12device->CreatePlacedResource(
-				m_uploadHeap.Get(),
-				m_textureResources[ frameIx ][ i ].uploadHeapOffset,
-				&desc,
-				D3D12_RESOURCE_STATE_GENERIC_READ,
-				nullptr,
-				IID_PPV_ARGS( &m_textureResources[ frameIx ][ i ].uploadBuffer ) ) );
-
-			m_uploadHeapOffset += m_textureResources[ frameIx ][ i ].allocInfo.SizeInBytes; // Offset by alignment not actually allocation size
-		}
-
-		wchar_t texName[ 128 ];
-		swprintf_s( texName, 128, L"Texture #%i(%i)", i, frameIx );
-		m_textureResources[ frameIx ][ i ].srv->SetName( texName );
-
-		m_textureResources[ frameIx ][ i ].cpuHandle.InitOffsetted( cpuHeapStart, i + 1, cbvSrvUavHeapIncrement );
-		m_textureResources[ frameIx ][ i ].gpuHandle.InitOffsetted( gpuHeapStart, i + 1, cbvSrvUavHeapIncrement );
-		m_textureResources[ frameIx ][ i ].width = sourceImages[ i ].x;
-		m_textureResources[ frameIx ][ i ].height = sourceImages[ i ].y;
-
-		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-		srvDesc.Format = m_textureResources[ frameIx ][ i ].desc.Format;
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-		srvDesc.Texture2D.MipLevels = 1;
-
-		m_d3d12device->CreateShaderResourceView( m_textureResources[ frameIx ][ i ].srv.Get(), &srvDesc, m_textureResources[ frameIx ][ i ].cpuHandle );
-	}
-	*/
 }
 
 
@@ -629,6 +522,12 @@ void wtRenderer::BeginFrame()
 
 void wtRenderer::EndFrame()
 {
+}
+
+
+void wtRenderer::SetDisplayTexture( const uint32_t slotIndex )
+{
+	m_mainDisplayImageIndex = slotIndex;
 }
 
 

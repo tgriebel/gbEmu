@@ -212,6 +212,24 @@ void GameboySystem::GetFrameResult( TomBoy::wtFrameResult& outFrameResult )
 }
 
 
+bool GameboySystem::MouseInRegion( const TomBoy::wtRect& region ) const // TODO: draft code, kill later
+{
+	return ( ( GetMouse( GetInput() ).x >= region.x ) && ( GetMouse( GetInput() ).x < region.width ) && ( GetMouse( GetInput() ).y >= region.y ) && ( GetMouse( GetInput() ).y < region.height ) );
+}
+
+
+void GameboySystem::AttachInputHandler( const Input* inputHandler )
+{
+	input = inputHandler;
+}
+
+
+const Input* GameboySystem::GetInput() const
+{
+	return input;
+}
+
+
 int GameboySystem::Init( const wstring& filePath )
 {
 	Reset();

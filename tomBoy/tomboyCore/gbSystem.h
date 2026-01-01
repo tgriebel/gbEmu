@@ -7,6 +7,7 @@
 #include "z80.h"
 #include "ppu.h"
 #include "interface.h"
+#include "input.h"
 #include "image.h"
 
 //using namespace TomBoy;
@@ -111,7 +112,7 @@ public:
 	uint8_t					oam[ AttributeSize ];
 	int64_t					overflowCycles;
 	masterCycle_t			sysCycles;
-	//const Input*			input;
+	const TomBoy::Input*	input;
 	const TomBoy::config_t*	config;
 
 	bool					toggledFrame;
@@ -125,6 +126,9 @@ public:
 
 	GameboySystem( const std::wstring& filePath )
 	{
+		input = nullptr;
+		config = nullptr;
+
 		Init( filePath );
 	}
 
@@ -151,16 +155,19 @@ public:
 		memset( oam, 0, AttributeSize );
 	}
 
-	int		Init( const std::wstring& filePath );
-	void	Shutdown();
-	bool	Run( const masterCycle_t& nextCycle );
-	int		RunEpoch( const std::chrono::nanoseconds& runCycles );
+	int						Init( const std::wstring& filePath );
+	void					Shutdown();
+	bool					Run( const masterCycle_t& nextCycle );
+	int						RunEpoch( const std::chrono::nanoseconds& runCycles );
 
-	uint8_t	GetTilePalette( const uint8_t plane0, const uint8_t plane1, const uint8_t col );
-	void	DrawTile( TomBoy::wtRawImageInterface* tileMap, const uint32_t xOffset, const uint32_t yOffset, const int mode, const uint8_t tileId );
-	void	UpdateDebugImages();
+	uint8_t					GetTilePalette( const uint8_t plane0, const uint8_t plane1, const uint8_t col );
+	void					DrawTile( TomBoy::wtRawImageInterface* tileMap, const uint32_t xOffset, const uint32_t yOffset, const int mode, const uint8_t tileId );
+	void					UpdateDebugImages();
 
-	void	GetFrameResult( TomBoy::wtFrameResult& outFrameResult );
+	void					GetFrameResult( TomBoy::wtFrameResult& outFrameResult );
+	bool					MouseInRegion( const TomBoy::wtRect& region ) const;
+	void					AttachInputHandler( const TomBoy::Input* inputHandler );
+	const TomBoy::Input*	GetInput() const;
 
 	bool HasNewFrame() const
 	{

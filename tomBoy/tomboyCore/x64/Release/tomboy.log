@@ -1,7 +1,36 @@
-﻿  tomboyMain.cpp
-  Generating code
-  1 of 1119 functions (<0.1%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    2 functions had inline decision re-evaluated but remain unchanged
-  Finished generating code
-  tomboy.vcxproj -> C:\Users\thoma\source\repos\gbEmu\tomBoy\x64\Release\tomboyCore.exe
+﻿  command.cpp
+  gbSystem.cpp
+  interface.cpp
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.cpp(30,2): warning C4273: 'TomBoy::DefaultConfig': inconsistent dll linkage
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(125,22): message : see previous definition of 'DefaultConfig'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.cpp(72,2): warning C4273: 'TomBoy::Shutdown': inconsistent dll linkage
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(53,18): message : see previous definition of 'Shutdown'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.cpp(82,2): warning C4273: 'TomBoy::Boot': inconsistent dll linkage
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(52,18): message : see previous definition of 'Boot'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.cpp(100,2): warning C4273: 'TomBoy::RunEpoch': inconsistent dll linkage
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(54,17): message : see previous definition of 'RunEpoch'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.cpp(108,2): warning C4273: 'TomBoy::GetFrameResult': inconsistent dll linkage
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(55,18): message : see previous definition of 'GetFrameResult'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.cpp(116,2): warning C4273: 'TomBoy::UpdateDebugImages': inconsistent dll linkage
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(60,18): message : see previous definition of 'UpdateDebugImages'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.cpp(124,2): warning C4273: 'TomBoy::SetConfig': inconsistent dll linkage
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(56,18): message : see previous definition of 'SetConfig'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.cpp(132,2): warning C4273: 'TomBoy::GetKeyBuffer': inconsistent dll linkage
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\input.h(63,25): message : see previous definition of 'GetKeyBuffer'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.cpp(137,2): warning C4273: 'TomBoy::GetMouse': inconsistent dll linkage
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\input.h(64,22): message : see previous definition of 'GetMouse'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.cpp(142,2): warning C4273: 'TomBoy::BindKey': inconsistent dll linkage
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\input.h(65,20): message : see previous definition of 'BindKey'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.cpp(147,2): warning C4273: 'TomBoy::StoreKey': inconsistent dll linkage
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\input.h(66,20): message : see previous definition of 'StoreKey'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.cpp(153,2): warning C4273: 'TomBoy::ReleaseKey': inconsistent dll linkage
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\input.h(67,20): message : see previous definition of 'ReleaseKey'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.cpp(159,2): warning C4273: 'TomBoy::StoreMouseClick': inconsistent dll linkage
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\input.h(68,20): message : see previous definition of 'StoreMouseClick'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.cpp(164,2): warning C4273: 'TomBoy::ClearMouseClick': inconsistent dll linkage
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\input.h(69,20): message : see previous definition of 'ClearMouseClick'
+  ppu.cpp
+  systemSerialize.cpp
+  tomboyMain.cpp
+  z80.cpp
+  tomboy.vcxproj -> C:\Users\thoma\source\repos\gbEmu\tomBoy\x64\Release\tomboyCore.lib

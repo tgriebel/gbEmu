@@ -52,12 +52,12 @@ namespace TomBoy
 	EXPORT_DLL bool	Boot( Emulator* emu, const wchar_t* filePath );
 	EXPORT_DLL void	Shutdown( Emulator* emu );
 	EXPORT_DLL int	RunEpoch( Emulator* emu, const std::chrono::nanoseconds& runCycles );
-	//EXPORT_DLL void	GetFrameResult( Emulator* emu, wtFrameResult& outFrameResult );
+	EXPORT_DLL void	GetFrameResult( Emulator* emu, wtFrameResult& outFrameResult );
 	EXPORT_DLL void	SetConfig( Emulator* emu, config_t& cfg );
 
 	//EXPORT_DLL void	SubmitCommand( Emulator* emu, const sysCmd_t& cmd );
 
-	//EXPORT_DLL void	UpdateDebugImages( Emulator* emu );
+	EXPORT_DLL void	UpdateDebugImages( Emulator* emu );
 	//EXPORT_DLL void	GenerateRomDissambly( Emulator* emu, std::string prgRomAsm[ 128 ] );
 	//EXPORT_DLL void	GenerateChrRomTables( Emulator* emu, wtPatternTableImage chrRom[ 32 ] );
 

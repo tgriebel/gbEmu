@@ -21,7 +21,7 @@ static float ImGuiGetSoundSample( void* data, int32_t idx )
 void wtRenderer::BuildImguiCommandList()
 {
 #ifdef IMGUI_ENABLE
-	GameboySystem& nesSystem = *app->system;
+	GameboySystem& nesSystem = *app->system->system;
 	TomBoy::config_t& systemConfig = app->systemConfig;
 	wtAppDebug_t& debugData = app->debugData;
 	wtAudioEngine& audio = *app->audio;

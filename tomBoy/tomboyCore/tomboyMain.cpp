@@ -12,18 +12,31 @@
 #include "debug.h"
 #include "interface.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#pragma warning(push)
+#pragma warning(disable : 4996) // sprintf
+#include "stb_image_write.h"
+#pragma warning(pop)
+
+using namespace std;
+using namespace TomBoy;
+
 GameboySystem gbSystem;
 
 void LoadGameboyFile( const std::wstring& fileName, std::unique_ptr<gbCart>& outCart );
 
 void Debug( const uint32_t currentFrame )
 {
-#define TILEMAP_DEBUG 0
+#define TILEMAP_DEBUG 1
+#define BG_TILE_DEBUG 1
 #define BG_DEBUG 0
 
 #if TILEMAP_DEBUG
 	{
-		Bitmap tileMap( 128, 64, 0x00000000 );
+		wtRawImage<128, 64> debugTileMap;
 
 		for ( uint32_t bank = 0; bank < 3; ++bank )
 		{
@@ -32,33 +45,35 @@ void Debug( const uint32_t currentFrame )
 				const uint32_t pixelOffsetX = ( tileId % 16 ) * 8;
 				const uint32_t pixelOffsetY = ( tileId / 16 ) * 8;
 
-				DrawTile( tileMap, pixelOffsetX, pixelOffsetY, bank + 2, tileId );
+				gbSystem.DrawTile( &debugTileMap, pixelOffsetX, pixelOffsetY, bank + 2, tileId );
 			}
 
 			stringstream ss;
 			ss << "frame_" << currentFrame << "_tilemap_" << bank << ".bmp";
-			tileMap.Write( "gfx_output\\" + ss.str() );
+
+			stbi_write_bmp( ( "gfx_output\\" + ss.str() ).c_str(), debugTileMap.GetWidth(), debugTileMap.GetHeight(), 4, debugTileMap.GetRawBuffer() );
 		}
 	}
 #endif
 
 #if BG_TILE_DEBUG
 	{
-		//Bitmap bgMap( 256, 256, 0x00000000 );
+		wtRawImage<256, 256> debugBgMap;
 
-		//for ( uint32_t tileY = 0; tileY < 32; ++tileY ) {
-		//	for ( uint32_t tileX = 0; tileX < 32; ++tileX ) {
-		//		const uint32_t pixelOffsetX = tileX * 8;
-		//		const uint32_t pixelOffsetY = tileY * 8;
+		for ( uint32_t tileY = 0; tileY < 32; ++tileY ) {
+			for ( uint32_t tileX = 0; tileX < 32; ++tileX ) {
+				const uint32_t pixelOffsetX = tileX * 8;
+				const uint32_t pixelOffsetY = tileY * 8;
 
-		//		const uint8_t tileId = gbSystem.vram[ 0x1800 + tileY * 32 + tileX ];
-		//		DrawTile( bgMap, pixelOffsetX, pixelOffsetY, 1, tileId );
-		//	}
-		//}
+				const uint8_t tileId = gbSystem.vram[ 0x1800 + tileY * 32 + tileX ];
+				gbSystem.DrawTile( &debugBgMap, pixelOffsetX, pixelOffsetY, 1, tileId );
+			}
+		}
 
-		//stringstream ss;
-		//ss << "frame_" << currentFrame << "_bgmap" << ".bmp";
-		//bgMap.Write( "gfx_output\\" + ss.str() );
+		stringstream ss;
+		ss << "frame_" << currentFrame << "_bgmap" << ".bmp";
+
+		stbi_write_bmp( ("gfx_output\\" + ss.str()).c_str(), debugBgMap.GetWidth(), debugBgMap.GetHeight(), 4, debugBgMap.GetRawBuffer());
 	}
 #endif
 
@@ -103,8 +118,8 @@ int main()
 		case 16:	LoadGameboyFile( L"Games/Super Mario Land.gb",			gbSystem.cart ); break;
 	}
 
-	TomBoy::config_t cfg = TomBoy::DefaultConfig();
-	cfg.sys.flags = TomBoy::emulationFlags_t::HEADLESS;
+	config_t cfg = DefaultConfig();
+	cfg.sys.flags = emulationFlags_t::HEADLESS;
 
 	gbSystem.SetConfig( cfg );
 

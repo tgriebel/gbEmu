@@ -133,20 +133,6 @@ struct sync_t
 };
 
 
-enum ShaderResources
-{
-	SHADER_RESOURES_FRAMEBUFFER,
-	SHADER_RESOURES_BGMAP,
-	SHADER_RESOURES_PATTERN0,
-	SHADER_RESOURES_PATTERN1,
-	SHADER_RESOURES_PATTERN2,
-
-	SHADER_RESOURES_TEXTURE_CNT,
-	SHADER_RESOURES_CBV0 = SHADER_RESOURES_TEXTURE_CNT,
-	SHADER_RESOURES_COUNT,
-};
-
-
 class wtRenderer
 {
 private:
@@ -163,8 +149,10 @@ private:
 	pipeline_t						m_pipeline;
 	command_t						m_cmd;
 
-	uint64_t						m_heapOffset = 0;
-	uint64_t						m_uploadHeapOffset = 0;
+	uint64_t						m_heapOffset;
+	uint64_t						m_uploadHeapOffset;
+
+	uint32_t						m_mainDisplayImageIndex;
 
 	uint32_t						m_textureCount;
 	TomBoy::wtRawImageInterface*	m_sourceImage[ FrameCount ][ MaxTextures ];
@@ -176,6 +164,8 @@ public:
 	{
 		m_heapOffset = 0;
 		m_uploadHeapOffset = 0;
+
+		m_mainDisplayImageIndex = 0;
 
 		m_textureCount = 0;
 
@@ -223,6 +213,7 @@ public:
 
 	void									BeginFrame();
 	void									EndFrame();
+	void									SetDisplayTexture( const uint32_t slotIndex );
 	void									BindTextureSlot( const uint32_t slotIndex, TomBoy::wtRawImageInterface* img );
 	void									IssueTextureCopyCommands( const uint32_t srcFrameIx, const uint32_t renderFrameIx );
 	void									BuildImguiCommandList();

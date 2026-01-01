@@ -112,11 +112,56 @@ namespace TomBoy
 		emu->system->GetFrameResult( outFrameResult );
 	}
 
+	void UpdateDebugImages( Emulator* emu )
+	{
+		if ( emu == nullptr ) {
+			return;
+		}
+		emu->system->UpdateDebugImages();
+	}
+
 	void SetConfig( Emulator* emu, config_t& cfg )
 	{
 		if ( emu == nullptr ) {
 			return;
 		}
 		emu->system->SetConfig( cfg );
+	}
+
+	ButtonFlags GetKeyBuffer( const Input* input )
+	{
+		return input->keyBuffer;
+	}
+
+	mouse_t GetMouse( const Input* input )
+	{
+		return input->mousePoint;
+	}
+
+	void BindKey( Input* input, const char key, const ButtonFlags button )
+	{
+		input->keyMap[ key ].buttonFlags = button;
+	}
+
+	void StoreKey( Input* input, const uint32_t key )
+	{
+		keyBinding_t keyBinding = input->keyMap[ key ];
+		input->keyBuffer = input->keyBuffer | static_cast<ButtonFlags>( keyBinding.buttonFlags );
+	}
+
+	void ReleaseKey( Input* input, const uint32_t key )
+	{
+		keyBinding_t keyBinding = input->keyMap[ key ];
+		input->keyBuffer = input->keyBuffer & static_cast<ButtonFlags>( ~static_cast<uint8_t>( keyBinding.buttonFlags ) );
+	}
+
+	void StoreMouseClick( Input* input, const int32_t x, const int32_t y )
+	{
+		input->mousePoint = mouse_t( { x, y } );
+	}
+
+	void ClearMouseClick( Input* input )
+	{
+		input->mousePoint = mouse_t( { -1, -1 } );
 	}
 }

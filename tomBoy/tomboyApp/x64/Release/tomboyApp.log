@@ -1,449 +1,394 @@
 ﻿  audioEngine.cpp
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(383,2): error C2590: 'addrModeNONE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(384,2): error C2590: 'addrModeA': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(385,2): error C2590: 'addrModeF': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(386,2): error C2590: 'addrModeB': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(387,2): error C2590: 'addrModeC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(388,2): error C2590: 'addrModeE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(389,2): error C2590: 'addrModeD': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(390,2): error C2590: 'addrModeL': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(391,2): error C2590: 'addrModeH': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(392,2): error C2590: 'addrModeAF': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(393,2): error C2590: 'addrModeBC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(394,2): error C2590: 'addrModeDE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(395,2): error C2590: 'addrModeHL': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(396,2): error C2590: 'addrModeSP': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(397,2): error C2590: 'addrModePC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(398,2): error C2590: 'addrModeDIRECT_BC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(399,2): error C2590: 'addrModeDIRECT_DE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(400,2): error C2590: 'addrModeDIRECT_HL': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(401,2): error C2590: 'addrModeDIRECT_C': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(402,2): error C2590: 'addrModeDIRECT_N8': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(403,2): error C2590: 'addrModeDIRECT_N16': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(404,2): error C2590: 'addrModeIMMEDIATE_N8': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(405,2): error C2590: 'addrModeIMMEDIATE_N16': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(333,3): error C2039: 'addrModeLHS': is not a member of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(206): message : see declaration of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(333,3): message : This diagnostic occurred in the compiler generated function 'void CpuZ80::Store(opState_t &,const uint16)'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(345,3): error C2039: 'addrModeRHS': is not a member of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(206): message : see declaration of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(345,3): message : This diagnostic occurred in the compiler generated function 'void CpuZ80::Load(opState_t &,uint16_t &)'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(35,2): error C2039: 'addrModeLHS': is not a member of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(206): message : see declaration of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(35,2): message : This diagnostic occurred in the compiler generated function 'void CpuZ80::LD_SP(opState_t &)'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C3646: 'frameResult': unknown override specifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C2143: syntax error: missing ',' before '['
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,48): error C2238: unexpected token(s) preceding ';'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(115,35): error C3646: 'currentSoundBuffer': unknown override specifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(115,35): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(82,3): error C2065: 'currentSoundBuffer': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,21): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,21): error C2143: syntax error: missing ';' before '*'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,23): error C2065: 'quque': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,61): error C2061: syntax error: identifier 'wtSampleQueue'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(212,9): error C2065: 'quque': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(213,47): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(214,47): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1326,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1326,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1360): message : see reference to class template instantiation 'ImVector<T>' being compiled
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1327,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1327,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1334,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1334,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1335,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1335,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1336,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1336,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1337,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1337,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1343,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1343,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1348,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1348,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1654,155): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1715,51): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1806,75): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(546,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(553,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(560,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(614,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(624,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(735,9): error C3861: 'assert': identifier not found
   imguiDisplay.cpp
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(383,2): error C2590: 'addrModeNONE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(384,2): error C2590: 'addrModeA': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(385,2): error C2590: 'addrModeF': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(386,2): error C2590: 'addrModeB': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(387,2): error C2590: 'addrModeC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(388,2): error C2590: 'addrModeE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(389,2): error C2590: 'addrModeD': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(390,2): error C2590: 'addrModeL': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(391,2): error C2590: 'addrModeH': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(392,2): error C2590: 'addrModeAF': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(393,2): error C2590: 'addrModeBC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(394,2): error C2590: 'addrModeDE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(395,2): error C2590: 'addrModeHL': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(396,2): error C2590: 'addrModeSP': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(397,2): error C2590: 'addrModePC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(398,2): error C2590: 'addrModeDIRECT_BC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(399,2): error C2590: 'addrModeDIRECT_DE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(400,2): error C2590: 'addrModeDIRECT_HL': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(401,2): error C2590: 'addrModeDIRECT_C': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(402,2): error C2590: 'addrModeDIRECT_N8': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(403,2): error C2590: 'addrModeDIRECT_N16': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(404,2): error C2590: 'addrModeIMMEDIATE_N8': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(405,2): error C2590: 'addrModeIMMEDIATE_N16': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(333,3): error C2039: 'addrModeLHS': is not a member of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(206): message : see declaration of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(333,3): message : This diagnostic occurred in the compiler generated function 'void CpuZ80::Store(opState_t &,const uint16)'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(345,3): error C2039: 'addrModeRHS': is not a member of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(206): message : see declaration of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(345,3): message : This diagnostic occurred in the compiler generated function 'void CpuZ80::Load(opState_t &,uint16_t &)'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(35,2): error C2039: 'addrModeLHS': is not a member of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(206): message : see declaration of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(35,2): message : This diagnostic occurred in the compiler generated function 'void CpuZ80::LD_SP(opState_t &)'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C3646: 'frameResult': unknown override specifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C2143: syntax error: missing ',' before '['
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,48): error C2238: unexpected token(s) preceding ';'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(115,35): error C3646: 'currentSoundBuffer': unknown override specifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(115,35): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(82,3): error C2065: 'currentSoundBuffer': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,21): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,21): error C2143: syntax error: missing ';' before '*'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,23): error C2065: 'quque': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,61): error C2061: syntax error: identifier 'wtSampleQueue'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(212,9): error C2065: 'quque': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(81,41): error C2039: 'ScreenWidth': is not a member of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\ppu.h(8): message : see declaration of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(81,52): error C2065: 'ScreenWidth': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(81,52): error C2131: expression did not evaluate to a constant
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(81,52): message : a non-constant (sub-)expression was encountered
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(82,42): error C2039: 'ScreenHeight': is not a member of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\ppu.h(8): message : see declaration of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(82,54): error C2065: 'ScreenHeight': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(82,54): error C2131: expression did not evaluate to a constant
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(82,54): message : a non-constant (sub-)expression was encountered
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(84,61): error C2039: 'ScreenHeight': is not a member of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\ppu.h(8): message : see declaration of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(84,74): error C2065: 'ScreenHeight': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(87,65): error C2131: expression did not evaluate to a constant
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(87,56): message : failure was caused by non-constant arguments or reference to a non-constant symbol
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(87,56): message : see usage of 'nesWidth'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(88,67): error C2131: expression did not evaluate to a constant
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(88,57): message : failure was caused by non-constant arguments or reference to a non-constant symbol
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(88,57): message : see usage of 'nesHeight'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(16,2): error C2065: 'wtSampleQueue': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(16,17): error C2955: 'std::queue': use of class template requires template argument list
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\queue(58): message : see declaration of 'std::queue'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(16,55): error C2061: syntax error: identifier 'wtSampleQueue'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(17,9): error C2955: 'std::queue': use of class template requires template argument list
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.28.29333\include\queue(58): message : see declaration of 'std::queue'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(23,38): error C2440: 'initializing': cannot convert from 'GameboySystem' to 'wtSystem &'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(50,2): error C2065: 'wtFrameResult': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(50,17): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(50,28): error C2039: 'frameResult': is not a member of 'wtAppInterface'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(62): message : see declaration of 'wtAppInterface'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(52,27): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(56,32): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(56,65): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(56,28): error C2789: 'avgFrameTime': an object of const-qualified type must be initialized
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(56): message : see declaration of 'avgFrameTime'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(64,29): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(65,29): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(66,29): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(67,30): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(68,30): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(69,33): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(72,32): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(73,31): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(74,35): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(75,34): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(76,33): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(77,32): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(78,34): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(79,34): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(86,39): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(87,39): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(88,38): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(89,36): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(90,35): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(92,35): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(93,38): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(94,38): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(95,37): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(96,37): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(102,26): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(127,15): error C2027: use of undefined type 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(153,47): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(154,46): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(155,45): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(155,68): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(156,43): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(160,45): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(161,52): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(162,50): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(163,47): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(164,48): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(164,81): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(167,45): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(168,10): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(172,47): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(183,46): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(183,94): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(192,15): error C2027: use of undefined type 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(200,15): error C2027: use of undefined type 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imguiDisplay.cpp(200,15): fatal error C1003: error count exceeds 100; stopping compilation
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(213,47): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(214,47): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1326,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1326,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1360): message : see reference to class template instantiation 'ImVector<T>' being compiled
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1327,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1327,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1334,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1334,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1335,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1335,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1336,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1336,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1337,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1337,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1343,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1343,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1348,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1348,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1654,155): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1715,51): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1806,75): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(546,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(553,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(560,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(614,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(624,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(735,9): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMath.h(2082,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMath.h(2083,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMath.h(2122,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(30,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(64,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(117,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(160,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(225,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(245,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(268,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(294,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(295,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(320,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(346,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(347,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(372,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(400,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(440,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(469,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(470,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(497,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(526,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(527,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(553,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(586,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(629,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(653,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(654,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(677,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(699,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(700,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(722,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(748,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(784,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(849,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(929,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(930,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1010,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1091,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1092,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1173,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1222,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1223,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1277,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1295,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1313,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1335,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1336,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1356,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1378,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1379,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1399,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1431,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1472,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1498,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1499,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1523,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1549,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1550,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1574,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1610,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1655,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1676,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1677,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1698,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1719,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1720,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1741,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1771,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1810,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1857,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1912,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1913,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1978,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(2037,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(2038,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(2097,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(2141,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(2142,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathVector.inl(409,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathVector.inl(478,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathVector.inl(479,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathVector.inl(479,20): fatal error C1003: error count exceeds 100; stopping compilation
   renderer_dx12.cpp
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(383,2): error C2590: 'addrModeNONE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(384,2): error C2590: 'addrModeA': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(385,2): error C2590: 'addrModeF': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(386,2): error C2590: 'addrModeB': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(387,2): error C2590: 'addrModeC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(388,2): error C2590: 'addrModeE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(389,2): error C2590: 'addrModeD': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(390,2): error C2590: 'addrModeL': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(391,2): error C2590: 'addrModeH': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(392,2): error C2590: 'addrModeAF': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(393,2): error C2590: 'addrModeBC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(394,2): error C2590: 'addrModeDE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(395,2): error C2590: 'addrModeHL': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(396,2): error C2590: 'addrModeSP': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(397,2): error C2590: 'addrModePC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(398,2): error C2590: 'addrModeDIRECT_BC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(399,2): error C2590: 'addrModeDIRECT_DE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(400,2): error C2590: 'addrModeDIRECT_HL': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(401,2): error C2590: 'addrModeDIRECT_C': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(402,2): error C2590: 'addrModeDIRECT_N8': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(403,2): error C2590: 'addrModeDIRECT_N16': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(404,2): error C2590: 'addrModeIMMEDIATE_N8': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(405,2): error C2590: 'addrModeIMMEDIATE_N16': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(333,3): error C2039: 'addrModeLHS': is not a member of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(206): message : see declaration of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(333,3): message : This diagnostic occurred in the compiler generated function 'void CpuZ80::Store(opState_t &,const uint16)'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(345,3): error C2039: 'addrModeRHS': is not a member of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(206): message : see declaration of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(345,3): message : This diagnostic occurred in the compiler generated function 'void CpuZ80::Load(opState_t &,uint16_t &)'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(35,2): error C2039: 'addrModeLHS': is not a member of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(206): message : see declaration of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(35,2): message : This diagnostic occurred in the compiler generated function 'void CpuZ80::LD_SP(opState_t &)'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C3646: 'frameResult': unknown override specifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C2143: syntax error: missing ',' before '['
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,48): error C2238: unexpected token(s) preceding ';'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(115,35): error C3646: 'currentSoundBuffer': unknown override specifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(115,35): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(82,3): error C2065: 'currentSoundBuffer': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,21): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,21): error C2143: syntax error: missing ';' before '*'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,23): error C2065: 'quque': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,61): error C2061: syntax error: identifier 'wtSampleQueue'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(212,9): error C2065: 'quque': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(81,41): error C2039: 'ScreenWidth': is not a member of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\ppu.h(8): message : see declaration of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(81,52): error C2065: 'ScreenWidth': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(81,52): error C2131: expression did not evaluate to a constant
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(81,52): message : a non-constant (sub-)expression was encountered
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(82,42): error C2039: 'ScreenHeight': is not a member of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\ppu.h(8): message : see declaration of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(82,54): error C2065: 'ScreenHeight': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(82,54): error C2131: expression did not evaluate to a constant
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(82,54): message : a non-constant (sub-)expression was encountered
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(84,61): error C2039: 'ScreenHeight': is not a member of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\ppu.h(8): message : see declaration of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(84,74): error C2065: 'ScreenHeight': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(87,65): error C2131: expression did not evaluate to a constant
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(87,56): message : failure was caused by non-constant arguments or reference to a non-constant symbol
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(87,56): message : see usage of 'nesWidth'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(88,67): error C2131: expression did not evaluate to a constant
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(88,57): message : failure was caused by non-constant arguments or reference to a non-constant symbol
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(88,57): message : see usage of 'nesHeight'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(210,52): error C2398: Element '3': conversion from 'const int32_t' to 'float' requires a narrowing conversion
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(210,67): error C2398: Element '4': conversion from 'const int32_t' to 'float' requires a narrowing conversion
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(210,67): warning C4244: 'argument': conversion from 'const int32_t' to 'float', possible loss of data
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(210,52): warning C4244: 'argument': conversion from 'const int32_t' to 'float', possible loss of data
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(211,70): error C2398: Element '3': conversion from 'int32_t' to 'float' requires a narrowing conversion
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(211,92): error C2398: Element '4': conversion from 'const int32_t' to 'float' requires a narrowing conversion
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(211,92): warning C4244: 'argument': conversion from 'const int32_t' to 'float', possible loss of data
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(211,70): warning C4244: 'argument': conversion from 'int32_t' to 'float', possible loss of data
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(259,66): error C2039: 'ScreenWidth': is not a member of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\ppu.h(8): message : see declaration of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(259,77): error C2065: 'ScreenWidth': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(259,17): error C2789: 'x1': an object of const-qualified type must be initialized
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(259): message : see declaration of 'x1'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(261,66): error C2039: 'ScreenHeight': is not a member of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\ppu.h(8): message : see declaration of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(261,78): error C2065: 'ScreenHeight': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(261,17): error C2789: 'y1': an object of const-qualified type must be initialized
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(261): message : see declaration of 'y1'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(411,40): error C2039: 'ScreenWidth': is not a member of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\ppu.h(8): message : see declaration of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(411,51): error C2065: 'ScreenWidth': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(411,58): error C2039: 'ScreenHeight': is not a member of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\ppu.h(8): message : see declaration of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(411,71): error C2065: 'ScreenHeight': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(412,44): error C2039: 'NameTableWidthPixels': is not a member of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\ppu.h(8): message : see declaration of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(412,64): error C2065: 'NameTableWidthPixels': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(412,75): error C2039: 'NameTableHeightPixels': is not a member of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\ppu.h(8): message : see declaration of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(412,97): error C2065: 'NameTableHeightPixels': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(584,2): error C2065: 'wtFrameResult': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(584,17): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(584,28): error C2039: 'frameResult': is not a member of 'wtAppInterface'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(62): message : see declaration of 'wtAppInterface'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(589,30): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(590,30): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(591,30): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(592,30): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(593,30): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_dx12.cpp(594,30): error C2065: 'fr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(213,47): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(214,47): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1326,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1326,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1360): message : see reference to class template instantiation 'ImVector<T>' being compiled
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1327,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1327,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1334,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1334,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1335,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1335,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1336,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1336,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1337,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1337,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1343,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1343,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1348,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1348,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1654,155): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1715,51): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1806,75): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(546,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(553,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(560,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(614,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(624,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(735,9): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMath.h(2082,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMath.h(2083,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMath.h(2122,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(30,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(64,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(117,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(160,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(225,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(245,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(268,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(294,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(295,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(320,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(346,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(347,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(372,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(400,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(440,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(469,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(470,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(497,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(526,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(527,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(553,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(586,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(629,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(653,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(654,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(677,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(699,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(700,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(722,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(748,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(784,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(849,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(929,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(930,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1010,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1091,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1092,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1173,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1222,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1223,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1277,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1295,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1313,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1335,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1336,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1356,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1378,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1379,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1399,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1431,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1472,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1498,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1499,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1523,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1549,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1550,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1574,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1610,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1655,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1676,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1677,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1698,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1719,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1720,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1741,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1771,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1810,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1857,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1912,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1913,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1978,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(2037,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(2038,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(2097,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(2141,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(2142,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathVector.inl(409,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathVector.inl(478,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathVector.inl(479,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathVector.inl(479,20): fatal error C1003: error count exceeds 100; stopping compilation
   test.cpp
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(383,2): error C2590: 'addrModeNONE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(384,2): error C2590: 'addrModeA': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(385,2): error C2590: 'addrModeF': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(386,2): error C2590: 'addrModeB': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(387,2): error C2590: 'addrModeC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(388,2): error C2590: 'addrModeE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(389,2): error C2590: 'addrModeD': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(390,2): error C2590: 'addrModeL': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(391,2): error C2590: 'addrModeH': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(392,2): error C2590: 'addrModeAF': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(393,2): error C2590: 'addrModeBC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(394,2): error C2590: 'addrModeDE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(395,2): error C2590: 'addrModeHL': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(396,2): error C2590: 'addrModeSP': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(397,2): error C2590: 'addrModePC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(398,2): error C2590: 'addrModeDIRECT_BC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(399,2): error C2590: 'addrModeDIRECT_DE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(400,2): error C2590: 'addrModeDIRECT_HL': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(401,2): error C2590: 'addrModeDIRECT_C': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(402,2): error C2590: 'addrModeDIRECT_N8': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(403,2): error C2590: 'addrModeDIRECT_N16': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(404,2): error C2590: 'addrModeIMMEDIATE_N8': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(405,2): error C2590: 'addrModeIMMEDIATE_N16': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(333,3): error C2039: 'addrModeLHS': is not a member of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(206): message : see declaration of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(333,3): message : This diagnostic occurred in the compiler generated function 'void CpuZ80::Store(opState_t &,const uint16)'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(345,3): error C2039: 'addrModeRHS': is not a member of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(206): message : see declaration of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(345,3): message : This diagnostic occurred in the compiler generated function 'void CpuZ80::Load(opState_t &,uint16_t &)'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(35,2): error C2039: 'addrModeLHS': is not a member of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(206): message : see declaration of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(35,2): message : This diagnostic occurred in the compiler generated function 'void CpuZ80::LD_SP(opState_t &)'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C3646: 'frameResult': unknown override specifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C2143: syntax error: missing ',' before '['
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,48): error C2238: unexpected token(s) preceding ';'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(115,35): error C3646: 'currentSoundBuffer': unknown override specifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(115,35): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(82,3): error C2065: 'currentSoundBuffer': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,21): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,21): error C2143: syntax error: missing ';' before '*'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,23): error C2065: 'quque': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,61): error C2061: syntax error: identifier 'wtSampleQueue'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(212,9): error C2065: 'quque': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\test.cpp(6,29): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\test.cpp(6,23): error C2146: syntax error: missing ';' before identifier 'testFr'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\test.cpp(6,23): error C2065: 'testFr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\test.cpp(7,12): error C2027: use of undefined type 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\test.cpp(7,22): error C3861: 'InitConfig': identifier not found
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\test.cpp(8,14): error C2039: 'Init': is not a member of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\gbSystem.h(11): message : see declaration of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\test.cpp(9,14): error C2039: 'SetConfig': is not a member of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\gbSystem.h(11): message : see declaration of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\test.cpp(14,14): error C2039: 'SubmitCommand': is not a member of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\gbSystem.h(11): message : see declaration of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\test.cpp(16,14): error C2039: 'Run': is not a member of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\gbSystem.h(11): message : see declaration of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\test.cpp(17,14): error C2039: 'GetFrameResult': is not a member of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\gbSystem.h(11): message : see declaration of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\test.cpp(17,30): error C2065: 'testFr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\test.cpp(20,25): error C2065: 'testFr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\test.cpp(21,2): error C2065: 'testFr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\test.cpp(21,39): error C2065: 'testFr': undeclared identifier
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(213,47): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(214,47): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1326,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1326,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1360): message : see reference to class template instantiation 'ImVector<T>' being compiled
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1327,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1327,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1334,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1334,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1335,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1335,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1336,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1336,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1337,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1337,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1343,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1343,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1348,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1348,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1654,155): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1715,51): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1806,75): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(546,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(553,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(560,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(614,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(624,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(735,9): error C3861: 'assert': identifier not found
   tomboyApp.cpp
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(383,2): error C2590: 'addrModeNONE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(384,2): error C2590: 'addrModeA': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(385,2): error C2590: 'addrModeF': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(386,2): error C2590: 'addrModeB': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(387,2): error C2590: 'addrModeC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(388,2): error C2590: 'addrModeE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(389,2): error C2590: 'addrModeD': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(390,2): error C2590: 'addrModeL': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(391,2): error C2590: 'addrModeH': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(392,2): error C2590: 'addrModeAF': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(393,2): error C2590: 'addrModeBC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(394,2): error C2590: 'addrModeDE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(395,2): error C2590: 'addrModeHL': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(396,2): error C2590: 'addrModeSP': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(397,2): error C2590: 'addrModePC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(398,2): error C2590: 'addrModeDIRECT_BC': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(399,2): error C2590: 'addrModeDIRECT_DE': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(400,2): error C2590: 'addrModeDIRECT_HL': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(401,2): error C2590: 'addrModeDIRECT_C': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(402,2): error C2590: 'addrModeDIRECT_N8': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(403,2): error C2590: 'addrModeDIRECT_N16': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(404,2): error C2590: 'addrModeIMMEDIATE_N8': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(405,2): error C2590: 'addrModeIMMEDIATE_N16': only a constructor can have a base/member initializer list
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(333,3): error C2039: 'addrModeLHS': is not a member of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(206): message : see declaration of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(333,3): message : This diagnostic occurred in the compiler generated function 'void CpuZ80::Store(opState_t &,const uint16)'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(345,3): error C2039: 'addrModeRHS': is not a member of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(206): message : see declaration of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(345,3): message : This diagnostic occurred in the compiler generated function 'void CpuZ80::Load(opState_t &,uint16_t &)'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(35,2): error C2039: 'addrModeLHS': is not a member of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80.h(206): message : see declaration of 'CpuZ80'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\z80_ops(35,2): message : This diagnostic occurred in the compiler generated function 'void CpuZ80::LD_SP(opState_t &)'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C3646: 'frameResult': unknown override specifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,28): error C2143: syntax error: missing ',' before '['
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(112,48): error C2238: unexpected token(s) preceding ';'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(115,35): error C3646: 'currentSoundBuffer': unknown override specifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(115,35): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(82,3): error C2065: 'currentSoundBuffer': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,21): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,21): error C2143: syntax error: missing ';' before '*'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,23): error C2065: 'quque': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(211,61): error C2061: syntax error: identifier 'wtSampleQueue'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(212,9): error C2065: 'quque': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(81,41): error C2039: 'ScreenWidth': is not a member of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\ppu.h(8): message : see declaration of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(81,52): error C2065: 'ScreenWidth': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(81,52): error C2131: expression did not evaluate to a constant
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(81,52): message : a non-constant (sub-)expression was encountered
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(82,42): error C2039: 'ScreenHeight': is not a member of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\ppu.h(8): message : see declaration of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(82,54): error C2065: 'ScreenHeight': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(82,54): error C2131: expression did not evaluate to a constant
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(82,54): message : a non-constant (sub-)expression was encountered
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(84,61): error C2039: 'ScreenHeight': is not a member of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\ppu.h(8): message : see declaration of 'PPU'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(84,74): error C2065: 'ScreenHeight': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(87,65): error C2131: expression did not evaluate to a constant
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(87,56): message : failure was caused by non-constant arguments or reference to a non-constant symbol
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(87,56): message : see usage of 'nesWidth'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(88,67): error C2131: expression did not evaluate to a constant
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(88,57): message : failure was caused by non-constant arguments or reference to a non-constant symbol
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\renderer_d3d12.h(88,57): message : see usage of 'nesHeight'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(28,16): error C2079: 'audio' uses undefined struct 'wtAudioEngine'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(29,12): error C2079: 'sys' uses undefined class 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(59,37): error C2440: 'initializing': cannot convert from 'GameboySystem' to 'wtSystem &'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(77,14): error C2027: use of undefined type 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(77,24): error C3861: 'InitConfig': identifier not found
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(78,13): error C2027: use of undefined type 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(79,13): error C2027: use of undefined type 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(80,13): error C2027: use of undefined type 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(81,13): error C2027: use of undefined type 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(108,13): error C2027: use of undefined type 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(114,6): error C2027: use of undefined type 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(121,3): error C2065: 'wtFrameResult': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(121,18): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(121,27): error C2039: 'frameResult': is not a member of 'wtAppInterface'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(62): message : see declaration of 'wtAppInterface'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(124,12): error C2027: use of undefined type 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\interface.h(37): message : see declaration of 'wtSystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(124,29): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(153,3): error C2065: 'wtFrameResult': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(153,18): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(153,28): error C2039: 'frameResult': is not a member of 'wtAppInterface'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.h(62): message : see declaration of 'wtAppInterface'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(154,9): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(154,37): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(171,23): error C2065: 'fr': undeclared identifier
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(286,22): error C2440: '=': cannot convert from 'int *' to 'wtAudioEngine *'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(286,16): message : Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(287,21): error C2440: '=': cannot convert from 'int *' to 'GameboySystem *'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(287,17): message : Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(344,31): error C2039: 'GetInput': is not a member of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\gbSystem.h(11): message : see declaration of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(428,17): error C2039: 'SubmitCommand': is not a member of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\gbSystem.h(11): message : see declaration of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(435,17): error C2039: 'SubmitCommand': is not a member of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\gbSystem.h(11): message : see declaration of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(476,16): error C2039: 'GetInput': is not a member of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\gbSystem.h(11): message : see declaration of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(504,15): error C2039: 'GetInput': is not a member of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\gbSystem.h(11): message : see declaration of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\tomboyApp.cpp(515,15): error C2039: 'GetInput': is not a member of 'GameboySystem'
-C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyCore\gbSystem.h(11): message : see declaration of 'GameboySystem'
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(213,47): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(214,47): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1326,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1326,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1360): message : see reference to class template instantiation 'ImVector<T>' being compiled
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1327,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1327,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1334,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1334,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1335,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1335,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1336,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1336,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1337,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1337,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1343,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1343,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1348,63): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1348,63): message : 'assert': function declaration must be available as none of the arguments depend on a template parameter
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1654,155): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1715,51): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui.h(1806,75): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(546,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(553,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(560,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(614,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(624,9): error C3861: 'assert': identifier not found
+C:\Users\thoma\source\repos\gbEmu\tomBoy\tomboyApp\imgui\imgui_memory_editor\imgui_memory_editor.h(735,9): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMath.h(2082,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMath.h(2083,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMath.h(2122,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(30,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(64,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(117,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(160,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(225,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(245,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(268,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(294,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(295,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(320,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(346,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(347,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(372,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(400,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(440,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(469,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(470,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(497,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(526,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(527,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(553,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(586,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(629,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(653,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(654,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(677,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(699,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(700,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(722,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(748,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(784,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(849,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(929,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(930,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1010,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1091,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1092,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1173,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1222,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1223,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1277,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1295,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1313,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1335,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1336,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1356,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1378,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1379,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1399,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1431,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1472,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1498,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1499,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1523,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1549,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1550,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1574,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1610,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1655,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1676,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1677,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1698,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1719,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1720,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1741,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1771,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1810,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1857,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1912,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1913,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(1978,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(2037,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(2038,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(2097,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(2141,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathConvert.inl(2142,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathVector.inl(409,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathVector.inl(478,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathVector.inl(479,5): error C3861: 'assert': identifier not found
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\DirectXMathVector.inl(479,20): fatal error C1003: error count exceeds 100; stopping compilation
