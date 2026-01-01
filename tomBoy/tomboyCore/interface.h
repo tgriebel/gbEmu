@@ -46,7 +46,7 @@ namespace TomBoy
 	struct Emulator
 	{
 		GameboySystem*	system = nullptr;
-	//	Input			input;
+		Input			input;
 	};
 
 	EXPORT_DLL bool	Boot( Emulator* emu, const wchar_t* filePath );

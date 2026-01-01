@@ -90,7 +90,7 @@ namespace TomBoy
 		const int ret = emu->system->Init( filePath );
 		if ( ret == 0 )
 		{
-		//	emu->system->AttachInputHandler( &emu->input );
+			emu->system->AttachInputHandler( &emu->input );
 			return true;
 		}
 		return false;
