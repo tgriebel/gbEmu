@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <map>
 
+#include "common.h"
+
 namespace TomBoy
 {
 	enum class ButtonFlags : uint8_t
@@ -21,32 +23,13 @@ namespace TomBoy
 		BUTTON_B = 0X40,
 		BUTTON_A = 0X80,
 	};
+	DEFINE_ENUM_OPERATORS( ButtonFlags, uint8_t );
 
 	struct mouse_t
 	{
 		int32_t x;
 		int32_t y;
 	};
-
-	inline ButtonFlags operator |( const ButtonFlags lhs, const ButtonFlags rhs )
-	{
-		return static_cast<ButtonFlags>( static_cast<uint8_t>( lhs ) | static_cast<uint8_t>( rhs ) );
-	}
-
-	inline ButtonFlags operator &( const ButtonFlags lhs, const ButtonFlags rhs )
-	{
-		return static_cast<ButtonFlags>( static_cast<uint8_t>( lhs ) & static_cast<uint8_t>( rhs ) );
-	}
-
-	inline ButtonFlags operator >>( const ButtonFlags lhs, const ButtonFlags rhs )
-	{
-		return static_cast<ButtonFlags>( static_cast<uint8_t>( lhs ) >> static_cast<uint8_t>( rhs ) );
-	}
-
-	inline ButtonFlags operator <<( const ButtonFlags lhs, const ButtonFlags rhs )
-	{
-		return static_cast<ButtonFlags>( static_cast<uint8_t>( lhs ) << static_cast<uint8_t>( rhs ) );
-	}
 
 	struct EXPORT_CLASS_DLL keyBinding_t
 	{

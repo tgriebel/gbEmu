@@ -1,9 +1,2 @@
-﻿  command.cpp
-  gbSystem.cpp
-  interface.cpp
-  ppu.cpp
-  systemSerialize.cpp
-  tomboyMain.cpp
-  z80.cpp
-  Generating Code...
+﻿  gbSystem.cpp
   tomboy.vcxproj -> C:\Users\thoma\source\repos\gbEmu\tomBoy\x64\Debug\tomboyCore.lib

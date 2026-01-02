@@ -146,13 +146,13 @@ namespace TomBoy
 	void StoreKey( Input* input, const uint32_t key )
 	{
 		keyBinding_t keyBinding = input->keyMap[ key ];
-		input->keyBuffer = input->keyBuffer | static_cast<ButtonFlags>( keyBinding.buttonFlags );
+		input->keyBuffer = static_cast<ButtonFlags>( input->keyBuffer | keyBinding.buttonFlags );
 	}
 
 	void ReleaseKey( Input* input, const uint32_t key )
 	{
 		keyBinding_t keyBinding = input->keyMap[ key ];
-		input->keyBuffer = input->keyBuffer & static_cast<ButtonFlags>( ~static_cast<uint8_t>( keyBinding.buttonFlags ) );
+		input->keyBuffer = static_cast<ButtonFlags>( input->keyBuffer & static_cast<ButtonFlags>( ~static_cast<uint8_t>( keyBinding.buttonFlags ) ) );
 	}
 
 	void StoreMouseClick( Input* input, const int32_t x, const int32_t y )

@@ -16,6 +16,40 @@
 
 class GameboySystem
 {
+	union joypad_t
+	{
+		struct semantic
+		{
+			union
+			{
+				struct
+				{
+					uint8_t	right	: 1;
+					uint8_t	left	: 1;
+					uint8_t	up		: 1;
+					uint8_t	down	: 1;
+				};
+
+				struct
+				{
+					uint8_t	a		: 1;
+					uint8_t	b		: 1;
+					uint8_t	select	: 1;
+					uint8_t	start	: 1;
+				};
+
+				struct
+				{
+					uint8_t	buttonNibble	: 4;
+					uint8_t	dpadSelect		: 1;
+					uint8_t	buttonSelect	: 1;
+				};
+			};
+		} sem;
+
+		uint8_t byte;
+	};
+
 public:
 	// Memory Sizes
 	static const uint32_t VirtualMemorySize		= 0x10000;
@@ -110,6 +144,7 @@ public:
 	uint8_t					wram[ 8 ][ WorkRamSize ];
 	uint8_t					vram[ VRamSize ];
 	uint8_t					oam[ AttributeSize ];
+	joypad_t				joyPadReg;
 	int64_t					overflowCycles;
 	masterCycle_t			sysCycles;
 	const TomBoy::Input*	input;
@@ -159,6 +194,9 @@ public:
 	void					Shutdown();
 	bool					Run( const masterCycle_t& nextCycle );
 	int						RunEpoch( const std::chrono::nanoseconds& runCycles );
+
+	uint8_t					ReadInput( const uint16_t address );
+	void					WriteInput( const uint16_t address, const uint8_t value );
 
 	uint8_t					GetTilePalette( const uint8_t plane0, const uint8_t plane1, const uint8_t col );
 	void					DrawTile( TomBoy::wtRawImageInterface* tileMap, const uint32_t xOffset, const uint32_t yOffset, const int mode, const uint8_t tileId );

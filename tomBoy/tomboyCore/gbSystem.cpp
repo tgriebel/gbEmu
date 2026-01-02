@@ -97,6 +97,7 @@ uint8_t GameboySystem::ReadMemory( const uint16_t address )
 	else if ( InRange( mAddr, Mmio, MmioEnd ) )
 	{
 		if ( InRange( mAddr, Joypad ) ) {
+			return ReadInput( mAddr );
 		}
 		else if ( InRange( mAddr, Serial0, Serial1 ) ) {
 		}
@@ -169,6 +170,7 @@ void GameboySystem::WriteMemory( const uint16_t address, const uint16_t offset, 
 	else if ( InRange( mAddr, Mmio, MmioEnd ) )
 	{
 		if ( InRange( mAddr, Joypad ) ) {
+			WriteInput( mAddr, value );
 		}
 		else if ( InRange( mAddr, Serial0, Serial1 ) ) {
 		}
@@ -345,6 +347,35 @@ int GameboySystem::RunEpoch( const std::chrono::nanoseconds& runEpoch )
 	}
 
 	return isRunning;
+}
+
+
+uint8_t GameboySystem::ReadInput( const uint16_t address )
+{
+	// On GameBoy: 0 is pressed, 1 is released
+	if( joyPadReg.sem.buttonSelect == 0 )
+	{
+		joyPadReg.sem.left = input->keyBuffer & ButtonFlags::BUTTON_LEFT ? 0 : 1;
+		joyPadReg.sem.right = input->keyBuffer & ButtonFlags::BUTTON_RIGHT ? 0 : 1;
+		joyPadReg.sem.up = input->keyBuffer & ButtonFlags::BUTTON_UP ? 0 : 1;
+		joyPadReg.sem.down = input->keyBuffer & ButtonFlags::BUTTON_DOWN ? 0 : 1;
+	}
+
+	if ( joyPadReg.sem.dpadSelect == 0 )
+	{
+		joyPadReg.sem.a = input->keyBuffer & ButtonFlags::BUTTON_A ? 0 : 1;
+		joyPadReg.sem.b = input->keyBuffer & ButtonFlags::BUTTON_B ? 0 : 1;
+		joyPadReg.sem.select = input->keyBuffer & ButtonFlags::BUTTON_SELECT ? 0 : 1;
+		joyPadReg.sem.start = input->keyBuffer & ButtonFlags::BUTTON_START ? 0 : 1;
+	}
+
+	return joyPadReg.byte;
+}
+
+
+void GameboySystem::WriteInput( const uint16_t address, const uint8_t value )
+{
+	joyPadReg.byte = value & 0xF0; // Lower nibble is read-only
 }
 
 
